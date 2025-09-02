@@ -635,20 +635,29 @@
 
       <!-- SECCIÓN: Simulación de Tinaco -->
       <div id="tinaco" class="seccionApp hidden">
-        <h2 class="text-2xl font-bold mb-4">🛢️ Simulación de Tinaco</h2>
+        <h2 class="text-2xl font-bold mb-6">🛢️ Simulación Visual del Tinaco</h2>
 
-        <div class="max-w-xs mx-auto bg-white rounded-lg shadow-lg p-4">
-          <div class="text-center mb-2 font-medium text-gray-700">Nivel de Agua</div>
-          <div class="relative h-64 w-full border-4 border-blue-200 rounded-lg overflow-hidden bg-gray-100">
-            <div id="nivelTinaco" class="absolute bottom-0 left-0 w-full bg-blue-500 text-center text-white font-bold transition-all duration-500 ease-in-out" style="height: 40%;">
-              40%
+        <div class="flex flex-col items-center justify-center">
+          <!-- Contenedor del tinaco -->
+          <div class="relative h-80 w-48 rounded-full border-4 border-blue-300 bg-gradient-to-b from-gray-100 to-gray-300 overflow-hidden shadow-xl">
+            <!-- Agua -->
+            <div id="aguaTinaco" class="absolute bottom-0 left-0 w-full bg-blue-500 text-white text-center font-bold flex items-center justify-center transition-all duration-500 ease-in-out rounded-b-full"
+                 style="height: 50%;">
+              <span id="textoNivel">50%</span>
             </div>
           </div>
 
-          <div class="mt-4 space-y-2 text-center">
-            <button onclick="simularCambioNivel()" class="bg-indigo-600 text-white px-4 py-2 rounded">🔁 Simular Nivel</button>
-            <p class="text-sm text-gray-500">Este componente se conectará al sensor real.</p>
-          </div>
+          <!-- Botón -->
+          <button onclick="simularCambioNivel()" class="mt-6 flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16M4 4l16 16" />
+            </svg>
+            Simular Nivel
+          </button>
+
+          <p class="text-sm text-gray-500 mt-3 text-center w-full max-w-sm">
+            Esta simulación visual representa un tinaco vertical. En la versión final se conectará al sensor real de nivel.
+          </p>
         </div>
       </div>
 

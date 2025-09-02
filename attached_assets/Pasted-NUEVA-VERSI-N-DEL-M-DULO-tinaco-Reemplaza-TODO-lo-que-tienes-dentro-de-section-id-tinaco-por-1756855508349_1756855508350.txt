@@ -1,0 +1,77 @@
+NUEVA VERSIÓN DEL MÓDULO #tinaco
+📍 Reemplaza TODO lo que tienes dentro de <section id="tinaco"> por esto:
+<h2 class="text-2xl font-bold mb-6">🛢️ Simulación Visual del Tinaco</h2>
+
+<div class="flex flex-col items-center justify-center">
+  <!-- Contenedor del tinaco -->
+  <div class="relative h-80 w-48 rounded-full border-4 border-blue-300 bg-gradient-to-b from-gray-100 to-gray-300 overflow-hidden shadow-xl">
+    <!-- Agua -->
+    <div id="aguaTinaco" class="absolute bottom-0 left-0 w-full bg-blue-500 text-white text-center font-bold flex items-center justify-center transition-all duration-500 ease-in-out rounded-b-full"
+         style="height: 50%;">
+      <span id="textoNivel">50%</span>
+    </div>
+  </div>
+
+  <!-- Botón -->
+  <button onclick="simularCambioNivel()" class="mt-6 flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16M4 4l16 16" />
+    </svg>
+    Simular Nivel
+  </button>
+
+  <p class="text-sm text-gray-500 mt-3 text-center w-full max-w-sm">
+    Esta simulación visual representa un tinaco vertical. En la versión final se conectará al sensor real de nivel.
+  </p>
+</div>
+
+🧠 Explicación visual:
+
+h-80 w-48 → tinaco vertical ovalado
+
+rounded-full + rounded-b-full → apariencia redondeada tipo tinaco
+
+aguaTinaco se anima en altura con transición transition-all duration-500
+
+textoNivel siempre visible al centro del agua
+
+shadow-xl y gradient para que se vea estético
+
+🧪 Reemplaza esta función en app.js
+
+Busca y reemplaza tu función simularCambioNivel() por esta versión mejorada:
+
+function simularCambioNivel() {
+  const nivel = Math.floor(Math.random() * 100);
+  const agua = document.getElementById("aguaTinaco");
+  const texto = document.getElementById("textoNivel");
+
+  agua.style.height = `${nivel}%`;
+  texto.textContent = `${nivel}%`;
+
+  // Cambiar color según el nivel
+  if (nivel < 25) {
+    agua.classList.remove("bg-blue-500", "bg-yellow-400");
+    agua.classList.add("bg-red-500");
+  } else if (nivel < 50) {
+    agua.classList.remove("bg-blue-500", "bg-red-500");
+    agua.classList.add("bg-yellow-400");
+  } else {
+    agua.classList.remove("bg-yellow-400", "bg-red-500");
+    agua.classList.add("bg-blue-500");
+  }
+}
+
+🖼 Resultado esperado:
+
+Tinaco se ve vertical, elegante, con agua animada
+
+El porcentaje cambia de forma suave
+
+El color del agua cambia según el nivel:
+
+🔴 Rojo si < 25%
+
+🟡 Amarillo si entre 25%–49%
+
+🔵 Azul si 50% o más

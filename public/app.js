@@ -98,9 +98,23 @@ function mostrarSeccion(id) {
 // FUNCIONES DE SIMULACIÓN DE TINACO
 function simularCambioNivel() {
   const nivel = Math.floor(Math.random() * 100);
-  const barra = document.getElementById("nivelTinaco");
-  barra.style.height = `${nivel}%`;
-  barra.textContent = `${nivel}%`;
+  const agua = document.getElementById("aguaTinaco");
+  const texto = document.getElementById("textoNivel");
+
+  agua.style.height = `${nivel}%`;
+  texto.textContent = `${nivel}%`;
+
+  // Cambiar color según el nivel
+  if (nivel < 25) {
+    agua.classList.remove("bg-blue-500", "bg-yellow-400");
+    agua.classList.add("bg-red-500");
+  } else if (nivel < 50) {
+    agua.classList.remove("bg-blue-500", "bg-red-500");
+    agua.classList.add("bg-yellow-400");
+  } else {
+    agua.classList.remove("bg-yellow-400", "bg-red-500");
+    agua.classList.add("bg-blue-500");
+  }
 }
 
 function simularLlenado() {
