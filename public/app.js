@@ -1,157 +1,82 @@
 document.addEventListener("DOMContentLoaded", () => {
-  calcularPrecio(); // calculamos en cuanto se carga
+  calcularPrecio();
 });
 
-// Precios base de instalación
-const preciosBase = {
+// Valores base
+const precios = {
   tinaco1100: 1200,
   tinaco1200: 1800,
   cisterna3000: 3500,
+  tubo4m: 100,
+  conexion: 40,
+  cople: 10,
+  bombaAutomatica: 1000,
 };
 
-// Función para mostrar sección de tipo cisterna
-function mostrarTipoCisterna() {
-  const tipo = document.getElementById("tipoInstalacion").value;
-  document.getElementById("tipoCisternaSection").style.display =
-    tipo === "cisterna3000" ? "block" : "none";
-}
-
-// Función para cambiar cantidad
-function cambiarCantidad(id, delta) {
-  const input = document.getElementById(id);
-  let valor = parseInt(input.value) || 0;
-  valor = Math.max(0, valor + delta);
-  input.value = valor;
-  calcularPrecio();
-}
-
-// Función para calcular precio total
+// Calcula precio total y genera resumen
 function calcularPrecio() {
   let total = 0;
-  const resumen = [];
+  let resumen = [];
 
   const tipo = document.getElementById("tipoInstalacion").value;
-  if (tipo) {
-    total += preciosBase[tipo] || 0;
-    resumen.push(`🔧 Instalación: ${tipo} - $${preciosBase[tipo]}`);
+  if (tipo && precios[tipo]) {
+    total += precios[tipo];
+    resumen.push(`🔧 Instalación: $${precios[tipo]}`);
   }
 
-  const materiales = [
-    { id: "tubo4m", input: "cantTubo", precio: 100, nombre: "Tubo PPR" },
-    { id: "conexion", input: "cantConexion", precio: 40, nombre: "Conexión" },
-    { id: "cople", input: "cantCople", precio: 10, nombre: "Cople" },
-    { id: "codo", input: "cantCodo", precio: 12, nombre: "Codo" },
-    {
-      id: "bombaSencilla",
-      input: "cantBombaSencilla",
-      precio: 600,
-      nombre: "Bomba Sencilla",
-    },
-    {
-      id: "bombaAutomatica",
-      input: "cantBombaAutomatica",
-      precio: 1000,
-      nombre: "Bomba Automática",
-    },
-  ];
-
-  materiales.forEach((item) => {
-    if (document.getElementById(item.id).checked) {
-      const cantidad = parseInt(document.getElementById(item.input).value) || 0;
-      const subtotal = cantidad * item.precio;
-      total += subtotal;
-      resumen.push(
-        `${item.nombre}: ${cantidad} x $${item.precio} = $${subtotal}`,
-      );
+  ["tubo4m", "conexion", "cople", "bombaAutomatica"].forEach((id) => {
+    const checkbox = document.getElementById(id);
+    if (checkbox && checkbox.checked) {
+      total += precios[id];
+      resumen.push(`✔️ ${id} - $${precios[id]}`);
     }
   });
 
-  if (document.getElementById("llaves").checked) {
-    const val = parseInt(document.getElementById("tipoLlave").value);
-    total += val;
-    resumen.push(`🔑 Llave: $${val}`);
-  }
-
-  if (document.getElementById("tapa").checked) {
-    const val = parseInt(document.getElementById("tipoTapa").value);
-    total += val;
-    resumen.push(`🛡️ Tapa: $${val}`);
-  }
-
-  if (document.getElementById("kit").checked) {
-    total += 150;
-    resumen.push(`🧰 Kit Accesorios: $150`);
-  }
-
-  if (document.getElementById("brida").checked) {
-    total += 100;
-    resumen.push(`🔩 Brida: $100`);
-  }
-
   document.getElementById("precioTotal").textContent = `$${total}`;
   document.getElementById("resumen").innerHTML = resumen.join("<br>");
-  return total;
 }
 
-// Mostrar fotos
-function mostrarFotos() {
-  const input = document.getElementById("fotosProyecto");
-  const contenedor = document.getElementById("contenedorFotos");
-  contenedor.innerHTML = "";
-  Array.from(input.files).forEach((file) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const div = document.createElement("div");
-      div.className = "photo-item";
-      div.innerHTML = `<img src="${e.target.result}" alt="foto" />`;
-      contenedor.appendChild(div);
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-// Simular nivel de agua (valor aleatorio por ahora)
-setInterval(() => {
-  const nivel = Math.floor(Math.random() * 100);
-  const barra = document.getElementById("barraNivel");
-  barra.style.height = `${nivel}%`;
-  barra.textContent = `${nivel}%`;
-}, 5000);
-
-// Generar PDF
-async function generarPDF() {
+// Genera PDF con jsPDF
+function generarPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  doc.text("Cotización Instala DOF", 10, 10);
-  const resumen = document.getElementById("resumen").innerText.split("\n");
-  resumen.forEach((linea, i) => doc.text(linea, 10, 20 + i * 7));
+  const nombre = document.getElementById("clienteNombre").value;
+  const tel = document.getElementById("clienteTelefono").value;
+  const resumen = document.getElementById("resumen").innerText;
   const total = document.getElementById("precioTotal").textContent;
-  doc.text(`Total: ${total}`, 10, 20 + resumen.length * 7 + 10);
-  doc.save("cotizacion.pdf");
+
+  doc.text("Instala DOF - Cotización", 10, 10);
+  doc.text(`Cliente: ${nombre}`, 10, 20);
+  doc.text(`WhatsApp: ${tel}`, 10, 30);
+  doc.text("Resumen:", 10, 40);
+
+  resumen.split("\n").forEach((line, i) => {
+    doc.text(line, 10, 50 + i * 10);
+  });
+
+  doc.text(`Total: ${total}`, 10, 70 + resumen.split("\n").length * 10);
+  doc.save("cotizacion_instala_dof.pdf");
 }
 
-// Enviar por WhatsApp
+// Enviar WhatsApp
 function enviarWhatsApp() {
   const nombre = document.getElementById("clienteNombre").value;
   const telefono = document.getElementById("clienteTelefono").value;
-  const direccion = document.getElementById("clienteDireccion").value;
-  const total = document.getElementById("precioTotal").textContent;
   const resumen = document.getElementById("resumen").innerText;
+  const total = document.getElementById("precioTotal").textContent;
 
-  const mensaje = `📋 *Cotización Instala DOF*\n\n👤 *Cliente:* ${nombre}\n📍 *Dirección:* ${direccion}\n\n${resumen}\n\n💰 *Total:* ${total}`;
-  const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+  const mensaje = `🚿 *Instala DOF - Cotización* \n\n👤 *Cliente:* ${nombre}\n\n${resumen}\n\n💰 *Total:* ${total}`;
+  const url = `https://wa.me/52${telefono}?text=${encodeURIComponent(mensaje)}`;
   window.open(url, "_blank");
 }
 
-// Guardar en UltraBase (simulado)
+// Guardar en backend (simulado)
 function guardarEnUltraBase() {
   const data = {
     nombre: document.getElementById("clienteNombre").value,
     telefono: document.getElementById("clienteTelefono").value,
-    direccion: document.getElementById("clienteDireccion").value,
     resumen: document.getElementById("resumen").innerText,
     total: document.getElementById("precioTotal").textContent,
-    ubicacion: ubicacionCliente,
   };
 
   fetch("/guardar", {
@@ -160,40 +85,8 @@ function guardarEnUltraBase() {
     body: JSON.stringify(data),
   })
     .then((res) => res.json())
-    .then((res) => alert("Cotización guardada con éxito"))
+    .then((res) => alert("Guardado en UltraBase (simulado)"))
     .catch((err) => console.error("Error al guardar:", err));
-}
-
-// Enviar comando de bomba (ON/OFF) al servidor/ESP32
-function encenderBomba(estado) {
-  const clienteId = "cliente-demo"; // después será dinámico
-  fetch(`/api/bomba/${clienteId}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ encender: estado })
-  })
-    .then(res => res.json())
-    .then(data => alert(`Bomba ${estado ? "ENCENDIDA" : "APAGADA"}`))
-    .catch(err => alert("Error al enviar comando"));
-}
-
-// Variable para almacenar ubicación del cliente
-let ubicacionCliente = "";
-
-// Función para obtener ubicación del cliente
-function obtenerUbicacion() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        ubicacionCliente = `${latitude},${longitude}`;
-        document.getElementById("ubicacionText").textContent = `Ubicación registrada: ${ubicacionCliente}`;
-      },
-      () => alert("No se pudo obtener ubicación.")
-    );
-  } else {
-    alert("Navegador no soporta geolocalización");
-  }
 }
 
 // FUNCIONES DEL MENÚ LATERAL Y NAVEGACIÓN
@@ -203,6 +96,13 @@ function mostrarSeccion(id) {
 }
 
 // FUNCIONES DE SIMULACIÓN DE TINACO
+function simularCambioNivel() {
+  const nivel = Math.floor(Math.random() * 100);
+  const barra = document.getElementById("nivelTinaco");
+  barra.style.height = `${nivel}%`;
+  barra.textContent = `${nivel}%`;
+}
+
 function simularLlenado() {
   let nivelActual = parseInt(document.getElementById('aguaTinaco').style.height) || 45;
   nivelActual = Math.min(100, nivelActual + 15);
@@ -221,17 +121,25 @@ function actualizarTinaco(porcentaje) {
   const litrosActuales = document.getElementById('litrosActuales');
   const estadoBomba = document.getElementById('estadoBomba');
   
-  aguaTinaco.style.height = `${porcentaje}%`;
-  porcentajeTinaco.textContent = `${porcentaje}%`;
-  litrosActuales.textContent = Math.round(1200 * porcentaje / 100);
+  if (aguaTinaco) {
+    aguaTinaco.style.height = `${porcentaje}%`;
+  }
+  if (porcentajeTinaco) {
+    porcentajeTinaco.textContent = `${porcentaje}%`;
+  }
+  if (litrosActuales) {
+    litrosActuales.textContent = Math.round(1200 * porcentaje / 100);
+  }
   
   // Actualizar estado de la bomba
-  if (porcentaje < 30) {
-    estadoBomba.textContent = "Encendida (Auto)";
-    estadoBomba.className = "text-green-600 font-semibold";
-  } else {
-    estadoBomba.textContent = "Apagada";
-    estadoBomba.className = "text-gray-600";
+  if (estadoBomba) {
+    if (porcentaje < 30) {
+      estadoBomba.textContent = "Encendida (Auto)";
+      estadoBomba.className = "text-green-600 font-semibold";
+    } else {
+      estadoBomba.textContent = "Apagada";
+      estadoBomba.className = "text-gray-600";
+    }
   }
 }
 
@@ -255,6 +163,18 @@ function configurarWifi() {
 }
 
 // FUNCIONES DEL CONTROL DE BOMBA
+function encenderBomba(estado) {
+  const clienteId = "cliente-demo";
+  fetch(`/api/bomba/${clienteId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ encender: estado })
+  })
+    .then(res => res.json())
+    .then(data => alert(`Bomba ${estado ? "ENCENDIDA" : "APAGADA"}`))
+    .catch(err => alert("Error al enviar comando"));
+}
+
 function actualizarUmbral() {
   const umbral = document.getElementById('umbralEncendido').value;
   document.getElementById('valorUmbral').textContent = `${umbral}%`;

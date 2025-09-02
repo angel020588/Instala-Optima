@@ -1,0 +1,136 @@
+Pega este código completo en public/app.js:
+
+document.addEventListener("DOMContentLoaded", () => {
+  calcularPrecio();
+});
+
+// Valores base
+const precios = {
+  tinaco1100: 1200,
+  tinaco1200: 1800,
+  cisterna3000: 3500,
+  tubo4m: 100,
+  conexion: 40,
+  cople: 10,
+  bombaAutomatica: 1000,
+};
+
+// Calcula precio total y genera resumen
+function calcularPrecio() {
+  let total = 0;
+  let resumen = [];
+
+  const tipo = document.getElementById("tipoInstalacion").value;
+  if (tipo && precios[tipo]) {
+    total += precios[tipo];
+    resumen.push(`🔧 Instalación: $${precios[tipo]}`);
+  }
+
+  ["tubo4m", "conexion", "cople", "bombaAutomatica"].forEach((id) => {
+    const checkbox = document.getElementById(id);
+    if (checkbox && checkbox.checked) {
+      total += precios[id];
+      resumen.push(`✔️ ${id} - $${precios[id]}`);
+    }
+  });
+
+  document.getElementById("precioTotal").textContent = `$${total}`;
+  document.getElementById("resumen").innerHTML = resumen.join("<br>");
+}
+
+// Genera PDF con jsPDF
+function generarPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const nombre = document.getElementById("clienteNombre").value;
+  const tel = document.getElementById("clienteTelefono").value;
+  const resumen = document.getElementById("resumen").innerText;
+  const total = document.getElementById("precioTotal").textContent;
+
+  doc.text("Instala DOF - Cotización", 10, 10);
+  doc.text(`Cliente: ${nombre}`, 10, 20);
+  doc.text(`WhatsApp: ${tel}`, 10, 30);
+  doc.text("Resumen:", 10, 40);
+
+  resumen.split("\n").forEach((line, i) => {
+    doc.text(line, 10, 50 + i * 10);
+  });
+
+  doc.text(`Total: ${total}`, 10, 70 + resumen.split("\n").length * 10);
+  doc.save("cotizacion_instala_dof.pdf");
+}
+
+// Enviar WhatsApp
+function enviarWhatsApp() {
+  const nombre = document.getElementById("clienteNombre").value;
+  const telefono = document.getElementById("clienteTelefono").value;
+  const resumen = document.getElementById("resumen").innerText;
+  const total = document.getElementById("precioTotal").textContent;
+
+  const mensaje = `🚿 *Instala DOF - Cotización* \n\n👤 *Cliente:* ${nombre}\n\n${resumen}\n\n💰 *Total:* ${total}`;
+  const url = `https://wa.me/52${telefono}?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, "_blank");
+}
+
+// Guardar en backend (simulado)
+function guardarEnUltraBase() {
+  const data = {
+    nombre: document.getElementById("clienteNombre").value,
+    telefono: document.getElementById("clienteTelefono").value,
+    resumen: document.getElementById("resumen").innerText,
+    total: document.getElementById("precioTotal").textContent,
+  };
+
+  fetch("/guardar", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  })
+    .then((res) => res.json())
+    .then((res) => alert("Guardado en UltraBase (simulado)"))
+    .catch((err) => console.error("Error al guardar:", err));
+}
+
+
+🧠 Este archivo requiere que tengas también:
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="/app.js"></script>
+
+
+colocados al final de tu index.html antes del </body>.
+
+✅ 2. Simulación del Tinaco (llenado visual)
+
+Ahora vamos a llenar la sección #tinaco.
+
+🎯 Estructura visual del tinaco:
+
+Pega esto dentro de <section id="tinaco" ...> reemplazando su contenido:
+
+<h2 class="text-2xl font-bold mb-4">🛢️ Simulación de Tinaco</h2>
+
+<div class="max-w-xs mx-auto bg-white rounded-lg shadow-lg p-4">
+  <div class="text-center mb-2 font-medium text-gray-700">Nivel de Agua</div>
+  <div class="relative h-64 w-full border-4 border-blue-200 rounded-lg overflow-hidden bg-gray-100">
+    <div id="nivelTinaco" class="absolute bottom-0 left-0 w-full bg-blue-500 text-center text-white font-bold transition-all duration-500 ease-in-out" style="height: 40%;">
+      40%
+    </div>
+  </div>
+
+  <div class="mt-4 space-y-2 text-center">
+    <button onclick="simularCambioNivel()" class="bg-indigo-600 text-white px-4 py-2 rounded">🔁 Simular Nivel</button>
+    <p class="text-sm text-gray-500">Este componente se conectará al sensor real.</p>
+  </div>
+</div>
+
+🔧 Lógica en app.js (agrega esto al final):
+function simularCambioNivel() {
+  const nivel = Math.floor(Math.random() * 100);
+  const barra = document.getElementById("nivelTinaco");
+  barra.style.height = `${nivel}%`;
+  barra.textContent = `${nivel}%`;
+}
+
+
+💡 Luego vamos a conectar esto al valor real que mande el ESP32 por API, pero por ahora sirve para mostrarlo dinámico.

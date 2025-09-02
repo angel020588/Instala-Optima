@@ -135,7 +135,7 @@
     <div class="ml-64 p-6 space-y-8">
       
       <!-- SECCIÓN: Cotización de Instalación -->
-      <div id="cotizador" class="seccionApp">
+      <div id="cotizador" class="seccionApp space-y-6">
         <div class="grid lg:grid-cols-3 gap-8">
           <!-- Formulario Principal -->
           <div class="lg:col-span-2">
@@ -635,78 +635,51 @@
 
       <!-- SECCIÓN: Simulación de Tinaco -->
       <div id="tinaco" class="seccionApp hidden">
-        <div class="bg-white rounded-xl shadow-md p-8">
-          <h2 class="text-3xl font-bold text-gray-800 mb-6">🪣 Simulación de Tinaco</h2>
-          <div class="grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 class="text-xl font-semibold mb-4">Visualización en Tiempo Real</h3>
-              <div class="relative h-64 w-full bg-gray-200 rounded-lg overflow-hidden border-4 border-blue-300">
-                <div id="aguaTinaco" class="absolute bottom-0 left-0 w-full bg-blue-400 transition-all duration-1000" style="height: 45%;">
-                  <div class="text-center text-white font-bold pt-4">Agua: <span id="porcentajeTinaco">45%</span></div>
-                </div>
-                <div class="absolute top-2 left-2 text-gray-600 font-semibold">Tinaco 1200L</div>
-              </div>
-              <div class="mt-4 space-y-2">
-                <button onclick="simularLlenado()" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">💧 Simular Llenado</button>
-                <button onclick="simularVaciado()" class="bg-red-500 text-white px-4 py-2 rounded">🔽 Simular Vaciado</button>
-              </div>
+        <h2 class="text-2xl font-bold mb-4">🛢️ Simulación de Tinaco</h2>
+
+        <div class="max-w-xs mx-auto bg-white rounded-lg shadow-lg p-4">
+          <div class="text-center mb-2 font-medium text-gray-700">Nivel de Agua</div>
+          <div class="relative h-64 w-full border-4 border-blue-200 rounded-lg overflow-hidden bg-gray-100">
+            <div id="nivelTinaco" class="absolute bottom-0 left-0 w-full bg-blue-500 text-center text-white font-bold transition-all duration-500 ease-in-out" style="height: 40%;">
+              40%
             </div>
-            <div>
-              <h3 class="text-xl font-semibold mb-4">Estado del Sistema</h3>
-              <div class="space-y-3">
-                <div class="bg-gray-50 p-3 rounded">
-                  <strong>Capacidad:</strong> 1200 Litros
-                </div>
-                <div class="bg-gray-50 p-3 rounded">
-                  <strong>Nivel actual:</strong> <span id="litrosActuales">540</span> Litros
-                </div>
-                <div class="bg-gray-50 p-3 rounded">
-                  <strong>Estado bomba:</strong> <span id="estadoBomba">Apagada</span>
-                </div>
-                <div class="bg-gray-50 p-3 rounded">
-                  <strong>Presión:</strong> <span id="presionAgua">2.1</span> Bar
-                </div>
-              </div>
-            </div>
+          </div>
+
+          <div class="mt-4 space-y-2 text-center">
+            <button onclick="simularCambioNivel()" class="bg-indigo-600 text-white px-4 py-2 rounded">🔁 Simular Nivel</button>
+            <p class="text-sm text-gray-500">Este componente se conectará al sensor real.</p>
           </div>
         </div>
       </div>
 
       <!-- SECCIÓN: Sensor de Agua -->
       <div id="sensor" class="seccionApp hidden">
-        <div class="bg-white rounded-xl shadow-md p-8">
-          <h2 class="text-3xl font-bold text-gray-800 mb-6">📡 Sensor de Agua ESP32</h2>
-          <div class="grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 class="text-xl font-semibold mb-4">Configuración WiFi</h3>
-              <div class="space-y-4">
-                <div>
-                  <label class="block text-sm font-semibold text-gray-700 mb-2">Red WiFi:</label>
-                  <input type="text" id="wifiName" placeholder="Nombre de la red" class="w-full px-4 py-2 border rounded-lg" />
-                </div>
-                <div>
-                  <label class="block text-sm font-semibold text-gray-700 mb-2">Contraseña:</label>
-                  <input type="password" id="wifiPass" placeholder="Contraseña WiFi" class="w-full px-4 py-2 border rounded-lg" />
-                </div>
-                <button onclick="configurarWifi()" class="bg-green-500 text-white px-6 py-2 rounded-lg">📶 Configurar WiFi</button>
-              </div>
-            </div>
-            <div>
-              <h3 class="text-xl font-semibold mb-4">Estado del Sensor</h3>
-              <div class="space-y-3">
-                <div class="bg-green-50 p-3 rounded border-l-4 border-green-400">
-                  <strong>Estado:</strong> <span id="estadoSensor">Conectado</span>
-                </div>
-                <div class="bg-blue-50 p-3 rounded border-l-4 border-blue-400">
-                  <strong>Señal WiFi:</strong> <span id="senalWifi">-45 dBm</span>
-                </div>
-                <div class="bg-yellow-50 p-3 rounded border-l-4 border-yellow-400">
-                  <strong>Batería:</strong> <span id="bateriaSensor">85%</span>
-                </div>
-                <div class="bg-purple-50 p-3 rounded border-l-4 border-purple-400">
-                  <strong>Última lectura:</strong> <span id="ultimaLectura">Hace 2 min</span>
-                </div>
-              </div>
+        <h2 class="text-2xl font-bold mb-4">📡 Sensor de Nivel de Agua</h2>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Imagen referencial -->
+          <div class="bg-white p-4 rounded shadow text-center">
+            <img src="https://i.imgur.com/Ny3pnEb.png" alt="Sensor Instalación" class="mx-auto h-64 object-contain mb-4" />
+            <p class="text-sm text-gray-600">Ejemplo visual de instalación dentro del tinaco.</p>
+          </div>
+
+          <!-- Explicación técnica -->
+          <div class="bg-white p-6 rounded shadow">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">¿Cómo instalar el sensor?</h3>
+            <ul class="list-disc pl-5 text-gray-700 space-y-2 text-sm">
+              <li>Coloca el sensor flotador o ultrasónico en la parte superior del tinaco.</li>
+              <li>La caja del ESP32 se instala **fuera del tinaco**, protegida del sol y la lluvia.</li>
+              <li>Conecta el sensor al ESP32 usando los pines digitales.</li>
+              <li>El ESP32 debe conectarse a tu red WiFi local para enviar los datos.</li>
+              <li>Usa el botón de configuración para ingresar SSID y contraseña desde la app.</li>
+            </ul>
+
+            <div class="mt-4">
+              <label class="block text-sm font-medium mb-1">Conectar a WiFi</label>
+              <input type="text" placeholder="Nombre de tu Red (SSID)" class="w-full p-2 border rounded mb-2" />
+              <input type="password" placeholder="Contraseña" class="w-full p-2 border rounded mb-2" />
+              <button class="bg-blue-600 text-white px-4 py-2 rounded w-full">🔗 Conectar</button>
+              <p class="text-xs text-gray-500 mt-2">Este botón será funcional cuando el ESP32 esté en modo configuración.</p>
             </div>
           </div>
         </div>

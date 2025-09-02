@@ -1,0 +1,43 @@
+Inserta este contenido en <section id="sensor" ...>
+
+Reemplaza lo que tienes dentro del #sensor por esto:
+
+<h2 class="text-2xl font-bold mb-4">📡 Sensor de Nivel de Agua</h2>
+
+<div class="grid md:grid-cols-2 gap-6">
+  <!-- Imagen referencial -->
+  <div class="bg-white p-4 rounded shadow text-center">
+    <img src="https://i.imgur.com/Ny3pnEb.png" alt="Sensor Instalación" class="mx-auto h-64 object-contain mb-4" />
+    <p class="text-sm text-gray-600">Ejemplo visual de instalación dentro del tinaco.</p>
+  </div>
+
+  <!-- Explicación técnica -->
+  <div class="bg-white p-6 rounded shadow">
+    <h3 class="text-lg font-semibold text-gray-800 mb-2">¿Cómo instalar el sensor?</h3>
+    <ul class="list-disc pl-5 text-gray-700 space-y-2 text-sm">
+      <li>Coloca el sensor flotador o ultrasónico en la parte superior del tinaco.</li>
+      <li>La caja del ESP32 se instala **fuera del tinaco**, protegida del sol y la lluvia.</li>
+      <li>Conecta el sensor al ESP32 usando los pines digitales.</li>
+      <li>El ESP32 debe conectarse a tu red WiFi local para enviar los datos.</li>
+      <li>Usa el botón de configuración para ingresar SSID y contraseña desde la app.</li>
+    </ul>
+
+    <div class="mt-4">
+      <label class="block text-sm font-medium mb-1">Conectar a WiFi</label>
+      <input type="text" placeholder="Nombre de tu Red (SSID)" class="w-full p-2 border rounded mb-2" />
+      <input type="password" placeholder="Contraseña" class="w-full p-2 border rounded mb-2" />
+      <button class="bg-blue-600 text-white px-4 py-2 rounded w-full">🔗 Conectar</button>
+      <p class="text-xs text-gray-500 mt-2">Este botón será funcional cuando el ESP32 esté en modo configuración.</p>
+    </div>
+  </div>
+</div>
+
+🧠 ¿Qué hace esta sección?
+
+Tiene una imagen referencial (puedes cambiarla por otra más real)
+
+Instrucciones paso a paso con lenguaje claro
+
+Inputs simulados para conexión a WiFi (luego los hacemos funcionales)
+
+Interfaz profesional con Tailwind para enseñar al cliente cómo se instala

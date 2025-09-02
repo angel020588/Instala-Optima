@@ -1,0 +1,67 @@
+Objetivo de esta corrección:
+
+✅ Insertar el cotizador completo de instalación dentro del section id="cotizacion"
+✅ Mantener el layout con menú lateral intacto
+✅ Dejar solo el contenido dinámico del formulario, sin repetir <html> ni <head>
+
+✅ CORREGIDO: contenido para #cotizacion
+
+Reemplaza esto que tienes actualmente en #cotizacion:
+
+<section id="cotizacion" class="seccionApp activa">
+  <h2 class="text-2xl font-bold mb-4">🧰 Cotización de Instalación</h2>
+  <p class="text-gray-600">Aquí va el formulario completo de cotización que ya desarrollamos.</p>
+</section>
+
+
+Por esto otro (👇 resumido por ahora para no saturarte el index, te entrego los módulos completos uno por uno):
+
+<section id="cotizacion" class="seccionApp activa space-y-6">
+  <h2 class="text-2xl font-bold mb-4">🧰 Cotización de Instalación</h2>
+
+  <!-- Tipo de Instalación -->
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Instalación</label>
+    <select id="tipoInstalacion" onchange="calcularPrecio()" class="w-full p-2 border rounded">
+      <option value="">Selecciona una opción</option>
+      <option value="tinaco1100">🔵 Tinaco 1100L - Tipo Bala</option>
+      <option value="tinaco1200">🟢 Tinaco 1200L - Estándar</option>
+      <option value="cisterna3000">🟠 Cisterna 3000L</option>
+    </select>
+  </div>
+
+  <!-- Materiales -->
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-2">Materiales</label>
+    <div class="grid md:grid-cols-2 gap-2">
+      <label><input type="checkbox" id="tubo4m" onchange="calcularPrecio()" /> Tubo PPR - $100</label>
+      <label><input type="checkbox" id="conexion" onchange="calcularPrecio()" /> Conexiones - $40</label>
+      <label><input type="checkbox" id="cople" onchange="calcularPrecio()" /> Cople - $10</label>
+      <label><input type="checkbox" id="bombaAutomatica" onchange="calcularPrecio()" /> Bomba Automática - $1000</label>
+    </div>
+  </div>
+
+  <!-- Precio total -->
+  <div class="bg-gray-100 p-4 rounded border">
+    <h3 class="text-lg font-semibold mb-2">Resumen</h3>
+    <div id="resumen" class="text-sm text-gray-600 mb-2">Selecciona los elementos para cotizar.</div>
+    <div class="text-xl font-bold text-green-600">Total: <span id="precioTotal">$0</span></div>
+  </div>
+
+  <!-- Cliente -->
+  <div>
+    <label class="block text-sm font-medium mb-1">Nombre del cliente</label>
+    <input id="clienteNombre" type="text" class="w-full p-2 border rounded" />
+  </div>
+  <div>
+    <label class="block text-sm font-medium mb-1">WhatsApp</label>
+    <input id="clienteTelefono" type="tel" class="w-full p-2 border rounded" />
+  </div>
+
+  <!-- Botones -->
+  <div class="flex gap-3 mt-4">
+    <button onclick="generarPDF()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">📄 PDF</button>
+    <button onclick="enviarWhatsApp()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">📲 Enviar WhatsApp</button>
+    <button onclick="guardarEnUltraBase()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded">🧠 Guardar</button>
+  </div>
+</section>
