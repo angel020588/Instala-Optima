@@ -164,15 +164,18 @@ function configurarWifi() {
 
 // FUNCIONES DEL CONTROL DE BOMBA
 function encenderBomba(estado) {
-  const clienteId = "cliente-demo";
-  fetch(`/api/bomba/${clienteId}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ encender: estado })
-  })
-    .then(res => res.json())
-    .then(data => alert(`Bomba ${estado ? "ENCENDIDA" : "APAGADA"}`))
-    .catch(err => alert("Error al enviar comando"));
+  const estadoTexto = estado ? "Encendida" : "Apagada";
+  const color = estado ? "text-green-600" : "text-red-600";
+  const div = document.getElementById("estadoBomba");
+
+  div.textContent = estadoTexto;
+  div.className = "text-lg font-bold " + color;
+
+  // Aquí puedes agregar una llamada real al ESP32 si ya está conectado
+  // Ejemplo:
+  // fetch(`/api/bomba`, { method: "POST", body: JSON.stringify({ encender: estado }) })
+
+  console.log(`Bomba ${estado ? "ENCENDIDA" : "APAGADA"}`);
 }
 
 function actualizarUmbral() {
@@ -232,4 +235,31 @@ function generarRespuestaBot(mensaje) {
   } else {
     return 'Gracias por tu pregunta. Te puedo ayudar con información sobre sensores, precios, garantías, instalación, y funcionamiento del sistema. ¿Qué te interesa saber específicamente?';
   }
+}
+
+// NUEVA FUNCIÓN PARA EL CHATBOT SIMPLIFICADO
+function responderIA() {
+  const input = document.getElementById("inputIA");
+  const chat = document.getElementById("chatBot");
+  const pregunta = input.value.trim().toLowerCase();
+
+  if (!pregunta) return;
+
+  // Mostrar mensaje del usuario
+  chat.innerHTML += `<div class="text-right text-sm text-green-600">🧑 Tú: ${pregunta}</div>`;
+
+  // Respuestas básicas
+  let respuesta = "Lo siento, no entendí eso. Intenta preguntar de otra forma.";
+  if (pregunta.includes("sensor")) {
+    respuesta = "El sensor se coloca en la parte superior del tinaco. Se conecta por cable al ESP32 que va protegido en una caja cerca del tinaco.";
+  } else if (pregunta.includes("bomba")) {
+    respuesta = "La bomba automática se enciende sola si el agua baja del nivel que tú configures. También puedes encenderla manualmente desde la app.";
+  } else if (pregunta.includes("tinaco")) {
+    respuesta = "Tenemos varias opciones de instalación. El costo depende de los materiales, pero puedes usar la sección de Cotización para obtener el precio exacto.";
+  }
+
+  // Mostrar respuesta
+  chat.innerHTML += `<div class="text-sm text-blue-600">🤖 InstalaBot: ${respuesta}</div>`;
+  input.value = "";
+  chat.scrollTop = chat.scrollHeight;
 }
