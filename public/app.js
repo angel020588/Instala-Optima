@@ -195,3 +195,121 @@ function obtenerUbicacion() {
     alert("Navegador no soporta geolocalización");
   }
 }
+
+// FUNCIONES DEL MENÚ LATERAL Y NAVEGACIÓN
+function mostrarSeccion(id) {
+  document.querySelectorAll('.seccionApp').forEach(sec => sec.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+// FUNCIONES DE SIMULACIÓN DE TINACO
+function simularLlenado() {
+  let nivelActual = parseInt(document.getElementById('aguaTinaco').style.height) || 45;
+  nivelActual = Math.min(100, nivelActual + 15);
+  actualizarTinaco(nivelActual);
+}
+
+function simularVaciado() {
+  let nivelActual = parseInt(document.getElementById('aguaTinaco').style.height) || 45;
+  nivelActual = Math.max(0, nivelActual - 15);
+  actualizarTinaco(nivelActual);
+}
+
+function actualizarTinaco(porcentaje) {
+  const aguaTinaco = document.getElementById('aguaTinaco');
+  const porcentajeTinaco = document.getElementById('porcentajeTinaco');
+  const litrosActuales = document.getElementById('litrosActuales');
+  const estadoBomba = document.getElementById('estadoBomba');
+  
+  aguaTinaco.style.height = `${porcentaje}%`;
+  porcentajeTinaco.textContent = `${porcentaje}%`;
+  litrosActuales.textContent = Math.round(1200 * porcentaje / 100);
+  
+  // Actualizar estado de la bomba
+  if (porcentaje < 30) {
+    estadoBomba.textContent = "Encendida (Auto)";
+    estadoBomba.className = "text-green-600 font-semibold";
+  } else {
+    estadoBomba.textContent = "Apagada";
+    estadoBomba.className = "text-gray-600";
+  }
+}
+
+// FUNCIONES DEL SENSOR
+function configurarWifi() {
+  const wifiName = document.getElementById('wifiName').value;
+  const wifiPass = document.getElementById('wifiPass').value;
+  
+  if (!wifiName || !wifiPass) {
+    alert('Por favor completa ambos campos');
+    return;
+  }
+  
+  // Simular configuración
+  alert(`Configurando WiFi "${wifiName}"...`);
+  setTimeout(() => {
+    alert('¡WiFi configurado exitosamente!');
+    document.getElementById('estadoSensor').textContent = 'Conectado';
+    document.getElementById('senalWifi').textContent = '-42 dBm';
+  }, 2000);
+}
+
+// FUNCIONES DEL CONTROL DE BOMBA
+function actualizarUmbral() {
+  const umbral = document.getElementById('umbralEncendido').value;
+  document.getElementById('valorUmbral').textContent = `${umbral}%`;
+}
+
+function guardarConfigBomba() {
+  const umbral = document.getElementById('umbralEncendido').value;
+  const tiempo = document.getElementById('tiempoMax').value;
+  alert(`Configuración guardada: Encender al ${umbral}%, máximo ${tiempo} minutos`);
+}
+
+// FUNCIONES DEL CHATBOT
+function enviarMensaje() {
+  const input = document.getElementById('chatInput');
+  const mensaje = input.value.trim();
+  
+  if (!mensaje) return;
+  
+  // Agregar mensaje del usuario
+  agregarMensajeChat('Usuario', mensaje, 'bg-gray-100');
+  input.value = '';
+  
+  // Simular respuesta del bot
+  setTimeout(() => {
+    const respuesta = generarRespuestaBot(mensaje);
+    agregarMensajeChat('Bot', respuesta, 'bg-blue-100');
+  }, 1000);
+}
+
+function preguntaRapida(pregunta) {
+  document.getElementById('chatInput').value = pregunta;
+  enviarMensaje();
+}
+
+function agregarMensajeChat(remitente, mensaje, claseCSS) {
+  const chatMessages = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `${claseCSS} p-3 rounded-lg mb-2`;
+  div.innerHTML = `<strong>${remitente}:</strong> ${mensaje}`;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function generarRespuestaBot(mensaje) {
+  const mensajeLower = mensaje.toLowerCase();
+  
+  if (mensajeLower.includes('sensor')) {
+    return 'El sensor ESP32 mide el nivel de agua cada 10 segundos y envía los datos por WiFi. Es completamente inalámbrico y tiene batería para 6 meses.';
+  } else if (mensajeLower.includes('costo') || mensajeLower.includes('precio')) {
+    return 'El costo varía según el tipo de instalación: Tinaco 1100L desde $1,200, Tinaco 1200L desde $1,800, Cisterna 3000L desde $3,500. ¡Usa nuestro cotizador para un precio exacto!';
+  } else if (mensajeLower.includes('garantía')) {
+    return 'Sí, incluimos garantía de 2 años en equipos y 1 año en instalación. También ofrecemos soporte técnico 24/7 y mantenimiento preventivo.';
+  } else if (mensajeLower.includes('internet')) {
+    return 'Sí, necesitas conexión WiFi para que el sensor envíe datos y recibir alertas. El consumo de datos es mínimo: menos de 1MB al mes.';
+  } else {
+    return 'Gracias por tu pregunta. Te puedo ayudar con información sobre sensores, precios, garantías, instalación, y funcionamiento del sistema. ¿Qué te interesa saber específicamente?';
+  }
+}

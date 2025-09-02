@@ -118,36 +118,27 @@
     </style>
   </head>
   <body class="bg-gray-100 min-h-screen">
-    <!-- Header -->
-    <header class="gradient-bg text-white py-6">
-      <div class="container mx-auto px-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-4">
-            <div
-              class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center"
-            >
-              <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"
-                />
-              </svg>
-            </div>
-            <div>
-              <h1 class="text-3xl font-bold">Instala DOF</h1>
-              <p class="text-blue-200">Calculadora de Precios Profesional</p>
-            </div>
-          </div>
-          <div class="hidden md:flex items-center space-x-2 text-sm">
-            <span class="bg-green-500 w-2 h-2 rounded-full"></span>
-            <span>Sistema Activo</span>
-          </div>
-        </div>
+    <!-- Menú Lateral -->
+    <div class="w-64 bg-gray-900 text-white fixed top-0 left-0 h-screen p-4 space-y-6">
+      <h2 class="text-2xl font-bold mb-6">Instala DOF</h2>
+      <button onclick="mostrarSeccion('cotizador')" class="w-full text-left hover:bg-gray-800 p-2 rounded">🧰 Cotización de Instalación</button>
+      <button onclick="mostrarSeccion('optima')" class="w-full text-left hover:bg-gray-800 p-2 rounded">💧 Instala Óptima</button>
+      <div class="pl-4 space-y-1">
+        <button onclick="mostrarSeccion('tinaco')" class="text-left hover:underline">➤ Simulación de Tinaco</button>
+        <button onclick="mostrarSeccion('sensor')" class="text-left hover:underline">➤ Sensor de Agua</button>
+        <button onclick="mostrarSeccion('bomba')" class="text-left hover:underline">➤ Bomba Automática</button>
       </div>
-    </header>
-    <div class="container mx-auto px-4 py-8">
-      <div class="grid lg:grid-cols-3 gap-8">
-        <!-- Formulario Principal -->
-        <div class="lg:col-span-2">
+      <button onclick="mostrarSeccion('chatbot')" class="w-full text-left hover:bg-gray-800 p-2 rounded">🤖 Bot Asistente IA</button>
+    </div>
+
+    <!-- Contenido dinámico -->
+    <div class="ml-64 p-6 space-y-8">
+      
+      <!-- SECCIÓN: Cotización de Instalación -->
+      <div id="cotizador" class="seccionApp">
+        <div class="grid lg:grid-cols-3 gap-8">
+          <!-- Formulario Principal -->
+          <div class="lg:col-span-2">
           <div class="bg-white rounded-xl card-shadow p-6 industrial-border">
             <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
               <svg
@@ -607,8 +598,184 @@
           <button onclick="generarPDF()" class="btn-primary text-white px-6 py-3 rounded-lg font-semibold">📄 Descargar Cotización</button>
           <button onclick="enviarWhatsApp()" class="btn-secondary text-white px-6 py-3 rounded-lg font-semibold">📲 Enviar por WhatsApp</button>
           <button onclick="guardarEnUltraBase()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold">🧠 Guardar Cotización</button>
+        </div>
+        <!-- 👆 Aquí termina la segunda parte -->
+        </div>
       </div>
-      <!-- 👆 Aquí termina la segunda parte -->
+
+      <!-- SECCIÓN: Instala Óptima -->
+      <div id="optima" class="seccionApp hidden">
+        <div class="bg-white rounded-xl shadow-md p-8">
+          <h2 class="text-3xl font-bold text-gray-800 mb-6">💧 Instala Óptima</h2>
+          <p class="text-lg text-gray-600 mb-4">Sistema integral de gestión de agua para hogares y oficinas.</p>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-blue-50 p-4 rounded-lg">
+              <h3 class="text-xl font-semibold mb-2">Características principales:</h3>
+              <ul class="list-disc pl-5 space-y-1">
+                <li>Monitoreo en tiempo real</li>
+                <li>Control automático de bomba</li>
+                <li>Alertas por WhatsApp</li>
+                <li>Sensor ESP32 inalámbrico</li>
+                <li>App móvil incluida</li>
+              </ul>
+            </div>
+            <div class="bg-green-50 p-4 rounded-lg">
+              <h3 class="text-xl font-semibold mb-2">Beneficios:</h3>
+              <ul class="list-disc pl-5 space-y-1">
+                <li>Ahorro de agua hasta 30%</li>
+                <li>Prevención de fallas en bomba</li>
+                <li>Instalación profesional</li>
+                <li>Garantía de 2 años</li>
+                <li>Soporte técnico 24/7</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN: Simulación de Tinaco -->
+      <div id="tinaco" class="seccionApp hidden">
+        <div class="bg-white rounded-xl shadow-md p-8">
+          <h2 class="text-3xl font-bold text-gray-800 mb-6">🪣 Simulación de Tinaco</h2>
+          <div class="grid md:grid-cols-2 gap-8">
+            <div>
+              <h3 class="text-xl font-semibold mb-4">Visualización en Tiempo Real</h3>
+              <div class="relative h-64 w-full bg-gray-200 rounded-lg overflow-hidden border-4 border-blue-300">
+                <div id="aguaTinaco" class="absolute bottom-0 left-0 w-full bg-blue-400 transition-all duration-1000" style="height: 45%;">
+                  <div class="text-center text-white font-bold pt-4">Agua: <span id="porcentajeTinaco">45%</span></div>
+                </div>
+                <div class="absolute top-2 left-2 text-gray-600 font-semibold">Tinaco 1200L</div>
+              </div>
+              <div class="mt-4 space-y-2">
+                <button onclick="simularLlenado()" class="bg-blue-500 text-white px-4 py-2 rounded mr-2">💧 Simular Llenado</button>
+                <button onclick="simularVaciado()" class="bg-red-500 text-white px-4 py-2 rounded">🔽 Simular Vaciado</button>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold mb-4">Estado del Sistema</h3>
+              <div class="space-y-3">
+                <div class="bg-gray-50 p-3 rounded">
+                  <strong>Capacidad:</strong> 1200 Litros
+                </div>
+                <div class="bg-gray-50 p-3 rounded">
+                  <strong>Nivel actual:</strong> <span id="litrosActuales">540</span> Litros
+                </div>
+                <div class="bg-gray-50 p-3 rounded">
+                  <strong>Estado bomba:</strong> <span id="estadoBomba">Apagada</span>
+                </div>
+                <div class="bg-gray-50 p-3 rounded">
+                  <strong>Presión:</strong> <span id="presionAgua">2.1</span> Bar
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN: Sensor de Agua -->
+      <div id="sensor" class="seccionApp hidden">
+        <div class="bg-white rounded-xl shadow-md p-8">
+          <h2 class="text-3xl font-bold text-gray-800 mb-6">📡 Sensor de Agua ESP32</h2>
+          <div class="grid md:grid-cols-2 gap-8">
+            <div>
+              <h3 class="text-xl font-semibold mb-4">Configuración WiFi</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">Red WiFi:</label>
+                  <input type="text" id="wifiName" placeholder="Nombre de la red" class="w-full px-4 py-2 border rounded-lg" />
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">Contraseña:</label>
+                  <input type="password" id="wifiPass" placeholder="Contraseña WiFi" class="w-full px-4 py-2 border rounded-lg" />
+                </div>
+                <button onclick="configurarWifi()" class="bg-green-500 text-white px-6 py-2 rounded-lg">📶 Configurar WiFi</button>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold mb-4">Estado del Sensor</h3>
+              <div class="space-y-3">
+                <div class="bg-green-50 p-3 rounded border-l-4 border-green-400">
+                  <strong>Estado:</strong> <span id="estadoSensor">Conectado</span>
+                </div>
+                <div class="bg-blue-50 p-3 rounded border-l-4 border-blue-400">
+                  <strong>Señal WiFi:</strong> <span id="senalWifi">-45 dBm</span>
+                </div>
+                <div class="bg-yellow-50 p-3 rounded border-l-4 border-yellow-400">
+                  <strong>Batería:</strong> <span id="bateriaSensor">85%</span>
+                </div>
+                <div class="bg-purple-50 p-3 rounded border-l-4 border-purple-400">
+                  <strong>Última lectura:</strong> <span id="ultimaLectura">Hace 2 min</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN: Bomba Automática -->
+      <div id="bomba" class="seccionApp hidden">
+        <div class="bg-white rounded-xl shadow-md p-8">
+          <h2 class="text-3xl font-bold text-gray-800 mb-6">⚙️ Control de Bomba Automática</h2>
+          <div class="grid md:grid-cols-2 gap-8">
+            <div>
+              <h3 class="text-xl font-semibold mb-4">Control Manual</h3>
+              <div class="space-y-4">
+                <div class="flex items-center space-x-4">
+                  <button onclick="encenderBomba(true)" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold">🟢 Encender Bomba</button>
+                  <button onclick="encenderBomba(false)" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold">🔴 Apagar Bomba</button>
+                </div>
+                <div class="bg-yellow-50 p-4 rounded-lg">
+                  <p class="text-sm text-yellow-800">⚠️ El control manual tiene prioridad sobre el automático durante 30 minutos.</p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold mb-4">Configuración Automática</h3>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">Umbral de encendido:</label>
+                  <div class="flex items-center space-x-2">
+                    <input type="range" id="umbralEncendido" min="5" max="50" value="30" class="flex-1" onchange="actualizarUmbral()" />
+                    <span id="valorUmbral" class="font-bold text-blue-600">30%</span>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">Tiempo máximo de funcionamiento:</label>
+                  <select id="tiempoMax" class="w-full px-4 py-2 border rounded-lg">
+                    <option value="30">30 minutos</option>
+                    <option value="60" selected>60 minutos</option>
+                    <option value="120">2 horas</option>
+                  </select>
+                </div>
+                <button onclick="guardarConfigBomba()" class="bg-blue-500 text-white px-6 py-2 rounded-lg">💾 Guardar Configuración</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN: Chatbot IA -->
+      <div id="chatbot" class="seccionApp hidden">
+        <div class="bg-white rounded-xl shadow-md p-8">
+          <h2 class="text-3xl font-bold text-gray-800 mb-6">🤖 Bot Asistente IA</h2>
+          <div class="h-96 bg-gray-50 rounded-lg p-4 mb-4 overflow-y-auto" id="chatMessages">
+            <div class="bg-blue-100 p-3 rounded-lg mb-2">
+              <strong>Bot:</strong> ¡Hola! Soy tu asistente virtual de Instala DOF. ¿En qué puedo ayudarte hoy?
+            </div>
+          </div>
+          <div class="flex space-x-2">
+            <input type="text" id="chatInput" placeholder="Escribe tu pregunta aquí..." class="flex-1 px-4 py-2 border rounded-lg" onkeypress="if(event.key==='Enter') enviarMensaje()" />
+            <button onclick="enviarMensaje()" class="bg-blue-500 text-white px-6 py-2 rounded-lg">Enviar</button>
+          </div>
+          <div class="mt-4 grid grid-cols-2 gap-2">
+            <button onclick="preguntaRapida('¿Cómo funciona el sensor?')" class="bg-gray-200 text-gray-700 px-3 py-2 rounded text-sm">¿Cómo funciona el sensor?</button>
+            <button onclick="preguntaRapida('¿Cuánto cuesta la instalación?')" class="bg-gray-200 text-gray-700 px-3 py-2 rounded text-sm">¿Cuánto cuesta?</button>
+            <button onclick="preguntaRapida('¿Incluye garantía?')" class="bg-gray-200 text-gray-700 px-3 py-2 rounded text-sm">¿Incluye garantía?</button>
+            <button onclick="preguntaRapida('¿Necesito internet?')" class="bg-gray-200 text-gray-700 px-3 py-2 rounded text-sm">¿Necesito internet?</button>
+          </div>
+        </div>
+      </div>
+
     </div>
     
     <script src="app.js"></script>
