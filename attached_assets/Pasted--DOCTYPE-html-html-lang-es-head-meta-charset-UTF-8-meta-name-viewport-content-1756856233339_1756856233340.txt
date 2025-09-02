@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instala DOF</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+  <!-- Sidebar fijo -->
+  <div class="fixed top-0 left-0 h-full w-60 bg-[#0b0d11] text-white p-6 z-10 hidden md:block">
+    <h2 class="text-xl font-bold mb-8">Instala DOF</h2>
+    <ul class="space-y-4">
+      <li><a href="#" class="hover:underline">Cotización de Instalación</a></li>
+      <li><a href="#" class="hover:underline">Instala Óptima</a></li>
+      <li><a href="#" class="hover:underline">Simulación de Tinaco</a></li>
+      <li><a href="#" class="hover:underline">Sensor de Agua</a></li>
+      <li><a href="#" class="hover:underline">Bomba Automática</a></li>
+      <li><a href="#" class="hover:underline">Bot Asistente IA</a></li>
+    </ul>
+  </div>
+
+  <!-- Navbar móvil -->
+  <div class="md:hidden bg-[#0b0d11] text-white flex items-center justify-between px-4 py-3">
+    <h2 class="text-lg font-semibold">Instala DOF</h2>
+    <button id="toggleMenu" class="text-white focus:outline-none">☰</button>
+  </div>
+  <div id="mobileMenu" class="hidden md:hidden bg-[#0b0d11] text-white p-4">
+    <ul class="space-y-2">
+      <li><a href="#" class="block py-2 border-b border-gray-600">Cotización de Instalación</a></li>
+      <li><a href="#" class="block py-2 border-b border-gray-600">Instala Óptima</a></li>
+      <li><a href="#" class="block py-2 border-b border-gray-600">Simulación de Tinaco</a></li>
+      <li><a href="#" class="block py-2 border-b border-gray-600">Sensor de Agua</a></li>
+      <li><a href="#" class="block py-2 border-b border-gray-600">Bomba Automática</a></li>
+      <li><a href="#" class="block py-2">Bot Asistente IA</a></li>
+    </ul>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="md:ml-60 p-6">
+    <h1 class="text-2xl font-bold mb-4">Bienvenido a Instala DOF</h1>
+    <p class="mb-2">Aquí puedes preguntar por ejemplo:</p>
+    <ul class="list-disc list-inside mb-4">
+      <li>¿Cómo instalar un tinaco?</li>
+      <li>¿Qué sensor usar?</li>
+    </ul>
+    <input type="text" placeholder="Escribe tu duda" class="w-full md:w-1/2 p-2 border border-gray-300 rounded mb-4">
+    <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Enviar</button>
+  </div>
+
+  <script>
+    const toggleBtn = document.getElementById('toggleMenu');
+    const mobileMenu = document.getElementById('mobileMenu');
+    toggleBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+  </script>
+</body>
+</html>

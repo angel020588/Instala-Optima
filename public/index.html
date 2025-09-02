@@ -117,22 +117,38 @@
       }
     </style>
   </head>
-  <body class="bg-gray-100 min-h-screen">
-    <!-- Menú Lateral -->
-    <div class="w-64 bg-gray-900 text-white fixed top-0 left-0 h-screen p-4 space-y-6">
-      <h2 class="text-2xl font-bold mb-6">Instala DOF</h2>
-      <button onclick="mostrarSeccion('cotizador')" class="w-full text-left hover:bg-gray-800 p-2 rounded">🧰 Cotización de Instalación</button>
-      <button onclick="mostrarSeccion('optima')" class="w-full text-left hover:bg-gray-800 p-2 rounded">💧 Instala Óptima</button>
-      <div class="pl-4 space-y-1">
-        <button onclick="mostrarSeccion('tinaco')" class="text-left hover:underline">➤ Simulación de Tinaco</button>
-        <button onclick="mostrarSeccion('sensor')" class="text-left hover:underline">➤ Sensor de Agua</button>
-        <button onclick="mostrarSeccion('bomba')" class="text-left hover:underline">➤ Bomba Automática</button>
-      </div>
-      <button onclick="mostrarSeccion('chatbot')" class="w-full text-left hover:bg-gray-800 p-2 rounded">🤖 Bot Asistente IA</button>
-    </div>
+<body class="bg-gray-100 text-gray-900">
+  <!-- Sidebar fijo -->
+  <div class="fixed top-0 left-0 h-full w-60 bg-[#0b0d11] text-white p-6 z-10 hidden md:block">
+    <h2 class="text-xl font-bold mb-8">Instala DOF</h2>
+    <ul class="space-y-4">
+      <li><a href="#" onclick="mostrarSeccion('cotizador')" class="hover:underline">🧰 Cotización de Instalación</a></li>
+      <li><a href="#" onclick="mostrarSeccion('optima')" class="hover:underline">📊 Instala Óptima</a></li>
+      <li><a href="#" onclick="mostrarSeccion('tinaco')" class="hover:underline">🪣 Simulación de Tinaco</a></li>
+      <li><a href="#" onclick="mostrarSeccion('sensor')" class="hover:underline">📡 Sensor de Agua</a></li>
+      <li><a href="#" onclick="mostrarSeccion('bomba')" class="hover:underline">⚙️ Bomba Automática</a></li>
+      <li><a href="#" onclick="mostrarSeccion('chatbot')" class="hover:underline">🤖 Bot Asistente IA</a></li>
+    </ul>
+  </div>
 
-    <!-- Contenido dinámico -->
-    <div class="ml-64 p-6 space-y-8">
+  <!-- Navbar móvil -->
+  <div class="md:hidden bg-[#0b0d11] text-white flex items-center justify-between px-4 py-3">
+    <h2 class="text-lg font-semibold">Instala DOF</h2>
+    <button id="toggleMenu" class="text-white focus:outline-none">☰</button>
+  </div>
+  <div id="mobileMenu" class="hidden md:hidden bg-[#0b0d11] text-white p-4">
+    <ul class="space-y-2">
+      <li><a href="#" onclick="mostrarSeccion('cotizador')" class="block py-2 border-b border-gray-600">🧰 Cotización de Instalación</a></li>
+      <li><a href="#" onclick="mostrarSeccion('optima')" class="block py-2 border-b border-gray-600">📊 Instala Óptima</a></li>
+      <li><a href="#" onclick="mostrarSeccion('tinaco')" class="block py-2 border-b border-gray-600">🪣 Simulación de Tinaco</a></li>
+      <li><a href="#" onclick="mostrarSeccion('sensor')" class="block py-2 border-b border-gray-600">📡 Sensor de Agua</a></li>
+      <li><a href="#" onclick="mostrarSeccion('bomba')" class="block py-2 border-b border-gray-600">⚙️ Bomba Automática</a></li>
+      <li><a href="#" onclick="mostrarSeccion('chatbot')" class="block py-2">🤖 Bot Asistente IA</a></li>
+    </ul>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="md:ml-60 p-6">
       
       <!-- SECCIÓN: Cotización de Instalación -->
       <div id="cotizador" class="seccionApp space-y-6">
@@ -746,6 +762,15 @@
 
     </div>
     
-    <script src="app.js"></script>
-  </body>
+  <script>
+    const toggleBtn = document.getElementById('toggleMenu');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (toggleBtn && mobileMenu) {
+      toggleBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
 </html>
