@@ -1,5 +1,5 @@
 <!-- index.html para Instala DOF - Estructura visual completa con Tailwind -->
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
@@ -7,776 +7,236 @@
     <title>Instala DOF</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
-      body {
-        font-family: "Inter", sans-serif;
-      }
-      .gradient-bg {
-        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-      }
-      .card-shadow {
-        box-shadow:
-          0 20px 25px -5px rgba(0, 0, 0, 0.1),
-          0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      }
-      .input-focus:focus {
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        border-color: #3b82f6;
-      }
-      .btn-primary {
-        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-        transition: all 0.3s ease;
-      }
-      .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
-      }
-      .btn-secondary {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        transition: all 0.3s ease;
-      }
-      .btn-secondary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
-      }
-      .industrial-border {
-        border: 2px solid #475569;
-        border-radius: 8px;
-        position: relative;
-      }
-      .industrial-border::before {
-        content: "";
-        position: absolute;
-        top: -2px;
-        left: -2px;
-        right: -2px;
-        bottom: -2px;
-        background: linear-gradient(45deg, #3b82f6, #10b981, #f59e0b);
-        border-radius: 10px;
-        z-index: -1;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-      .industrial-border:hover::before {
-        opacity: 1;
-      }
-      .price-display {
-        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-        border: 2px solid #3b82f6;
-      }
-      .material-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-      }
-      .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-      }
-      .modal.show {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .photo-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 8px;
-        margin-top: 8px;
-      }
-      .photo-item {
-        position: relative;
-        aspect-ratio: 1;
-      }
-      .photo-item img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 4px;
-      }
-      .photo-remove {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background: #ef4444;
-        color: white;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        font-size: 12px;
-      }
-    </style>
   </head>
-<body class="bg-gray-100 text-gray-900">
-  <!-- Sidebar fijo -->
-  <div class="fixed top-0 left-0 h-full w-60 bg-[#0b0d11] text-white p-6 z-10 hidden md:block">
-    <h2 class="text-xl font-bold mb-8">Instala DOF</h2>
-    <ul class="space-y-4">
-      <li><a href="#" onclick="mostrarSeccion('cotizador')" class="hover:underline">🧰 Cotización de Instalación</a></li>
-      <li><a href="#" onclick="mostrarSeccion('optima')" class="hover:underline">📊 Instala Óptima</a></li>
-      <li><a href="#" onclick="mostrarSeccion('tinaco')" class="hover:underline">🪣 Simulación de Tinaco</a></li>
-      <li><a href="#" onclick="mostrarSeccion('sensor')" class="hover:underline">📡 Sensor de Agua</a></li>
-      <li><a href="#" onclick="mostrarSeccion('bomba')" class="hover:underline">⚙️ Bomba Automática</a></li>
-      <li><a href="#" onclick="mostrarSeccion('chatbot')" class="hover:underline">🤖 Bot Asistente IA</a></li>
-    </ul>
-  </div>
+  <body class="bg-gray-950 text-white font-sans">
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <aside class="w-64 bg-gray-900 p-6 hidden md:block">
+        <h1 class="text-2xl font-bold mb-6 text-cyan-400">Instala DOF</h1>
+        <nav class="flex flex-col space-y-4">
+          <button onclick="showModule('inicio')" class="text-left hover:text-cyan-300">🏠 Instala Óptima</button>
+          <button onclick="showModule('cotizacion')" class="text-left hover:text-cyan-300">🧰 Cotización</button>
+          <button onclick="showModule('tinaco')" class="text-left hover:text-cyan-300">🪣 Simulación de Tinaco</button>
+          <button onclick="showModule('sensor')" class="text-left hover:text-cyan-300">📡 Sensor de Agua y WiFi</button>
+          <button onclick="showModule('bomba')" class="text-left hover:text-cyan-300">⚙️ Encendido de Bomba</button>
+          <button onclick="showModule('bot')" class="text-left hover:text-cyan-300">🤖 Asistente IA</button>
+        </nav>
+      </aside>
 
-  <!-- Navbar móvil -->
-  <div class="md:hidden bg-[#0b0d11] text-white flex items-center justify-between px-4 py-3">
-    <h2 class="text-lg font-semibold">Instala DOF</h2>
-    <button id="toggleMenu" class="text-white focus:outline-none">☰</button>
-  </div>
-  <div id="mobileMenu" class="hidden md:hidden bg-[#0b0d11] text-white p-4">
-    <ul class="space-y-2">
-      <li><a href="#" onclick="mostrarSeccion('cotizador')" class="block py-2 border-b border-gray-600">🧰 Cotización de Instalación</a></li>
-      <li><a href="#" onclick="mostrarSeccion('optima')" class="block py-2 border-b border-gray-600">📊 Instala Óptima</a></li>
-      <li><a href="#" onclick="mostrarSeccion('tinaco')" class="block py-2 border-b border-gray-600">🪣 Simulación de Tinaco</a></li>
-      <li><a href="#" onclick="mostrarSeccion('sensor')" class="block py-2 border-b border-gray-600">📡 Sensor de Agua</a></li>
-      <li><a href="#" onclick="mostrarSeccion('bomba')" class="block py-2 border-b border-gray-600">⚙️ Bomba Automática</a></li>
-      <li><a href="#" onclick="mostrarSeccion('chatbot')" class="block py-2">🤖 Bot Asistente IA</a></li>
-    </ul>
-  </div>
+      <!-- Contenido Principal -->
+      <main class="flex-1 p-4 md:p-10">
+        <!-- Módulo 1: Bienvenida -->
+        <section id="inicio" class="hidden">
+          <h2 class="text-3xl font-bold mb-4 text-cyan-300">Bienvenido a Instala DOF</h2>
+          <p class="text-lg mb-6">Instalamos, conectamos y optimizamos tu sistema de agua.</p>
+          <button onclick="showModule('cotizacion')" class="bg-cyan-500 hover:bg-cyan-400 text-white px-6 py-2 rounded">Comenzar Cotización</button>
+          <div class="mt-6 p-6 bg-gray-800 rounded-lg">
+            <h3 class="text-xl font-semibold text-cyan-300 mb-4">¿Qué ofrecemos?</h3>
+            <ul class="space-y-2 text-gray-300">
+              <li>• Instalación profesional de tinacos y cisternas</li>
+              <li>• Sensores IoT para monitoreo en tiempo real</li>
+              <li>• Bombas automáticas inteligentes</li>
+              <li>• Soporte técnico 24/7</li>
+            </ul>
+          </div>
+        </section>
 
-  <!-- Contenido principal -->
-  <div class="md:ml-60 p-6 space-y-8">
-      
-      <!-- SECCIÓN: Cotización de Instalación -->
-      <div id="cotizador" class="seccionApp space-y-6">
-        <div class="grid lg:grid-cols-3 gap-8">
-          <!-- Formulario Principal -->
-          <div class="lg:col-span-2">
-          <div class="bg-white rounded-xl card-shadow p-6 industrial-border">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-              <svg
-                class="w-6 h-6 mr-3 text-blue-500"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Configuración del Proyecto
-            </h2>
+        <!-- Módulo 2: Cotización -->
+        <section id="cotizacion" class="hidden">
+          <h2 class="text-2xl font-semibold mb-6 text-cyan-300">🧰 Cotización de Instalación</h2>
+          
+          <div class="bg-gray-800 rounded-lg p-6 space-y-6">
             <!-- Tipo de Instalación -->
-            <div class="mb-6">
-              <label class="block text-sm font-semibold text-gray-700 mb-3"
-                >Tipo de Instalación</label
-              >
-              <select
-                id="tipoInstalacion"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg input-focus"
-                onchange="mostrarTipoCisterna(); calcularPrecio()"
-              >
-                <option value="">Selecciona el tipo de instalación</option>
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2">Tipo de Instalación</label>
+              <select id="tipoInstalacion" onchange="calcularPrecio()" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white">
+                <option value="">Selecciona una opción</option>
                 <option value="tinaco1100">🔵 Tinaco 1100L - Tipo Bala</option>
                 <option value="tinaco1200">🟢 Tinaco 1200L - Estándar</option>
-                <option value="cisterna3000">
-                  🟠 Cisterna 3000L - Subterránea/Exterior
-                </option>
+                <option value="cisterna3000">🟠 Cisterna 3000L</option>
               </select>
             </div>
-            <!-- Tipo de Cisterna -->
-            <div class="mb-6" id="tipoCisternaSection" style="display: none">
-              <label class="block text-sm font-semibold text-gray-700 mb-3"
-                >Tipo de Cisterna</label
-              >
-              <select
-                id="tipoCisterna"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg input-focus"
-                onchange="calcularPrecio()"
-              >
-                <option value="subterranea">
-                  🔵 Subterránea - Bajo tierra
-                </option>
-                <option value="exterior">🟢 Exterior - En superficie</option>
-              </select>
-            </div>
-            <!-- Materiales PPR -->
-            <div class="mb-6">
-              <label class="block text-sm font-semibold text-gray-700 mb-3"
-                >Materiales PPR Requeridos</label
-              >
-              <div class="grid md:grid-cols-2 gap-4">
-                <div class="space-y-3">
-                  <div
-                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                  >
-                    <label class="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="tubo4m"
-                        class="mr-2"
-                        onchange="calcularPrecio()"
-                      />
-                      <span class="text-sm font-medium">Tubo PPR Media</span>
-                    </label>
-                    <div class="flex items-center space-x-2">
-                      <button
-                        type="button"
-                        onclick="cambiarCantidad('cantTubo', -1)"
-                        class="w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600 flex items-center justify-center"
-                      >
-                        -
-                      </button>
-                      <input
-                        type="number"
-                        id="cantTubo"
-                        min="0"
-                        value="0"
-                        class="w-16 px-2 py-1 border rounded text-center"
-                        onchange="calcularPrecio()"
-                        readonly
-                      />
-                      <button
-                        type="button"
-                        onclick="cambiarCantidad('cantTubo', 1)"
-                        class="w-8 h-8 bg-green-500 text-white rounded-full hover:bg-green-600 flex items-center justify-center"
-                      >
-                        +
-                      </button>
-                      <span class="text-sm text-gray-600">$100 c/u</span>
-                    </div>
-                  </div>
-                  <div
-                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                  >
-                    <label class="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="conexion"
-                        class="mr-2"
-                        onchange="calcularPrecio()"
-                      />
-                      <span class="text-sm font-medium"
-                        >Conexión Macho y Hembra</span
-                      >
-                    </label>
-                    <div class="flex items-center space-x-2">
-                      <button
-                        type="button"
-                        onclick="cambiarCantidad('cantConexion', -1)"
-                        class="w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600 flex items-center justify-center"
-                      >
-                        -
-                      </button>
-                      <input
-                        type="number"
-                        id="cantConexion"
-                        min="0"
-                        value="0"
-                        class="w-16 px-2 py-1 border rounded text-center"
-                        onchange="calcularPrecio()"
-                        readonly
-                      />
-                      <button
-                        type="button"
-                        onclick="cambiarCantidad('cantConexion', 1)"
-                        class="w-8 h-8 bg-green-500 text-white rounded-full hover:bg-green-600 flex items-center justify-center"
-                      >
-                        +
-                      </button>
-                      <span class="text-sm text-gray-600">$40 c/u</span>
-                    </div>
-                  </div>
-                  <div
-                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                  >
-                    <label class="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="cople"
-                        class="mr-2"
-                        onchange="calcularPrecio()"
-                      />
-                      <span class="text-sm font-medium">Cople</span>
-                    </label>
-                    <div class="flex items-center space-x-2">
-                      <button
-                        type="button"
-                        onclick="cambiarCantidad('cantCople', -1)"
-                        class="w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600 flex items-center justify-center"
-                      >
-                        -
-                      </button>
-                      <input
-                        type="number"
-                        id="cantCople"
-                        min="0"
-                        value="0"
-                        class="w-16 px-2 py-1 border rounded text-center"
-                        onchange="calcularPrecio()"
-                        readonly
-                      />
-                      <button
-                        type="button"
-                        onclick="cambiarCantidad('cantCople', 1)"
-                        class="w-8 h-8 bg-green-500 text-white rounded-full hover:bg-green-600 flex items-center justify-center"
-                      >
-                        +
-                      </button>
-                      <span class="text-sm text-gray-600">$10 c/u</span>
-                    </div>
-                  </div>
-                  <div
-                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                  >
-                    <label class="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="codo"
-                        class="mr-2"
-                        onchange="calcularPrecio()"
-                      />
-                      <span class="text-sm font-medium">Codo</span>
-                    </label>
-                    <div class="flex items-center space-x-2">
-                      <button
-                        type="button"
-                        onclick="cambiarCantidad('cantCodo', -1)"
-                        class="w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600 flex items-center justify-center"
-                      >
-                        -
-                      </button>
-                      <input
-                        type="number"
-                        id="cantCodo"
-                        min="0"
-                        value="0"
-                        class="w-16 px-2 py-1 border rounded text-center"
-                        onchange="calcularPrecio()"
-                        readonly
-                      />
-                      <button
-                        type="button"
-                        onclick="cambiarCantidad('cantCodo', 1)"
-                        class="w-8 h-8 bg-green-500 text-white rounded-full hover:bg-green-600 flex items-center justify-center"
-                      >
-                        +
-                      </button>
-                      <span class="text-sm text-gray-600">$12 c/u</span>
-                    </div>
-                  </div>
-                  <!-- Bombas como productos -->
-                  <div
-                    class="flex items-center justify-between p-3 bg-purple-50 rounded-lg"
-                  >
-                    <label class="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="bombaSencilla"
-                        class="mr-2"
-                        onchange="calcularPrecio()"
-                      />
-                      <span class="text-sm font-medium">Bomba Sencilla</span>
-                    </label>
-                    <div class="flex items-center space-x-2">
-                      <button
-                        type="button"
-                        onclick="cambiarCantidad('cantBombaSencilla', -1)"
-                        class="w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600 flex items-center justify-center"
-                      >
-                        -
-                      </button>
-                      <input
-                        type="number"
-                        id="cantBombaSencilla"
-                        min="0"
-                        value="0"
-                        class="w-16 px-2 py-1 border rounded text-center"
-                        onchange="calcularPrecio()"
-                        readonly
-                      />
-                      <button
-                        type="button"
-                        onclick="cambiarCantidad('cantBombaSencilla', 1)"
-                        class="w-8 h-8 bg-green-500 text-white rounded-full hover:bg-green-600 flex items-center justify-center"
-                      >
-                        +
-                      </button>
-                      <span class="text-sm text-gray-600">$600 c/u</span>
-                    </div>
-                  </div>
-                  <div
-                    class="flex items-center justify-between p-3 bg-indigo-50 rounded-lg"
-                  >
-                    <label class="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="bombaAutomatica"
-                        class="mr-2"
-                        onchange="calcularPrecio()"
-                      />
-                      <span class="text-sm font-medium">Bomba Automática</span>
-                    </label>
-                    <div class="flex items-center space-x-2">
-                      <button
-                        type="button"
-                        onclick="cambiarCantidad('cantBombaAutomatica', -1)"
-                        class="w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600 flex items-center justify-center"
-                      >
-                        -
-                      </button>
-                      <input
-                        type="number"
-                        id="cantBombaAutomatica"
-                        min="0"
-                        value="0"
-                        class="w-16 px-2 py-1 border rounded text-center"
-                        onchange="calcularPrecio()"
-                        readonly
-                      />
-                      <button
-                        type="button"
-                        onclick="cambiarCantidad('cantBombaAutomatica', 1)"
-                        class="w-8 h-8 bg-green-500 text-white rounded-full hover:bg-green-600 flex items-center justify-center"
-                      >
-                        +
-                      </button>
-                      <span class="text-sm text-gray-600">$1,000 c/u</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="space-y-3">
-                  <div class="p-3 bg-gray-50 rounded-lg">
-                    <label class="flex items-center mb-2">
-                      <input
-                        type="checkbox"
-                        id="llaves"
-                        class="mr-2"
-                        onchange="calcularPrecio()"
-                      />
-                      <span class="text-sm font-medium">Llaves</span>
-                    </label>
-                    <select
-                      id="tipoLlave"
-                      class="w-full px-3 py-2 border rounded-lg"
-                      onchange="calcularPrecio()"
-                    >
-                      <option value="100">Estándar - $100</option>
-                      <option value="150">Media - $150</option>
-                      <option value="200">Premium - $200</option>
-                      <option value="250">Profesional - $250</option>
-                    </select>
-                  </div>
-                  <div class="p-3 bg-gray-50 rounded-lg">
-                    <label class="flex items-center mb-2">
-                      <input
-                        type="checkbox"
-                        id="tapa"
-                        class="mr-2"
-                        onchange="calcularPrecio()"
-                      />
-                      <span class="text-sm font-medium">Tapa Tinaco</span>
-                    </label>
-                    <select
-                      id="tipoTapa"
-                      class="w-full px-3 py-2 border rounded-lg"
-                      onchange="calcularPrecio()"
-                    >
-                      <option value="170">Sin aro - $170</option>
-                      <option value="250">Con aro - $250</option>
-                    </select>
-                  </div>
-                  <div
-                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                  >
-                    <label class="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="kit"
-                        class="mr-2"
-                        onchange="calcularPrecio()"
-                      />
-                      <span class="text-sm font-medium">Kit Accesorios</span>
-                    </label>
-                    <span class="text-sm text-gray-600">$150</span>
-                  </div>
-                  <div
-                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                  >
-                    <label class="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="brida"
-                        class="mr-2"
-                        onchange="calcularPrecio()"
-                      />
-                      <span class="text-sm font-medium">Brida</span>
-                    </label>
-                    <span class="text-sm text-gray-600">$100</span>
-                  </div>
-                </div>
+
+            <!-- Materiales -->
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2">Materiales</label>
+              <div class="grid md:grid-cols-2 gap-3">
+                <label class="flex items-center space-x-2 text-gray-300">
+                  <input type="checkbox" id="tubo4m" onchange="calcularPrecio()" class="text-cyan-400" />
+                  <span>Tubo PPR - $100</span>
+                </label>
+                <label class="flex items-center space-x-2 text-gray-300">
+                  <input type="checkbox" id="conexion" onchange="calcularPrecio()" class="text-cyan-400" />
+                  <span>Conexiones - $40</span>
+                </label>
+                <label class="flex items-center space-x-2 text-gray-300">
+                  <input type="checkbox" id="cople" onchange="calcularPrecio()" class="text-cyan-400" />
+                  <span>Cople - $10</span>
+                </label>
+                <label class="flex items-center space-x-2 text-gray-300">
+                  <input type="checkbox" id="bombaAutomatica" onchange="calcularPrecio()" class="text-cyan-400" />
+                  <span>Bomba Automática - $1000</span>
+                </label>
               </div>
             </div>
-            <!-- Características del Proyecto -->
-            <div class="grid md:grid-cols-2 gap-6 mb-6">
+
+            <!-- Precio total -->
+            <div class="bg-gray-700 p-4 rounded border border-cyan-400">
+              <h3 class="text-lg font-semibold mb-2 text-cyan-300">Resumen</h3>
+              <div id="resumen" class="text-sm text-gray-300 mb-2">Selecciona los elementos para cotizar.</div>
+              <div class="text-xl font-bold text-cyan-400">Total: <span id="precioTotal">$0</span></div>
+            </div>
+
+            <!-- Cliente -->
+            <div class="grid md:grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-3"
-                  >Número de Pisos</label
-                >
-                <select
-                  id="pisos"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg input-focus"
-                  onchange="calcularPrecio()"
-                >
-                  <option value="1">1 Piso</option>
-                  <option value="2">2 Pisos</option>
-                  <option value="3">3 Pisos</option>
-                </select>
+                <label class="block text-sm font-medium text-gray-300 mb-1">Nombre del cliente</label>
+                <input id="clienteNombre" type="text" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white" />
               </div>
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-3"
-                  >Tipo de Inmueble</label
-                >
-                <select
-                  id="tipoInmueble"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg input-focus"
-                  onchange="calcularPrecio()"
-                >
-                  <option value="casa">Casa</option>
-                  <option value="departamento">Departamento</option>
-                  <option value="oficina">Oficina</option>
-                </select>
+                <label class="block text-sm font-medium text-gray-300 mb-1">WhatsApp</label>
+                <input id="clienteTelefono" type="tel" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white" />
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    
-      <!-- 👇 Aquí inicia la segunda parte: total, cliente, fotos, sensor, botones -->
-      <!-- PRECIO TOTAL -->
-      <div class="bg-white rounded-xl shadow-md p-6 mb-8 price-display text-white">
-          <h3 class="text-xl font-bold mb-4">Resumen y Total</h3>
-          <div id="resumen" class="text-sm mb-3">Selecciona los elementos para cotizar.</div>
-          <div class="text-2xl font-bold text-green-400">Total: <span id="precioTotal">$0.00</span></div>
-      </div>
 
-      <!-- DATOS DEL CLIENTE -->
-      <div class="bg-white rounded-xl shadow-md p-6 mb-8 industrial-border">
-          <h3 class="text-xl font-bold mb-4 text-gray-800">Datos del Cliente</h3>
-          <div class="grid md:grid-cols-2 gap-4">
-              <input id="clienteNombre" type="text" placeholder="Nombre completo" class="px-4 py-3 border rounded-lg w-full" />
-              <input id="clienteTelefono" type="tel" placeholder="Teléfono / WhatsApp" class="px-4 py-3 border rounded-lg w-full" />
-              <input id="clienteDireccion" type="text" placeholder="Dirección" class="px-4 py-3 border rounded-lg w-full col-span-2" />
+            <!-- Botones -->
+            <div class="flex gap-3 mt-6">
+              <button onclick="generarPDF()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">📄 PDF</button>
+              <button onclick="enviarWhatsApp()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">📲 Enviar WhatsApp</button>
+              <button onclick="guardarEnUltraBase()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded">🧠 Guardar</button>
+            </div>
           </div>
+        </section>
+
+        <!-- Módulo 3: Simulación Tinaco -->
+        <section id="tinaco" class="hidden">
+          <h2 class="text-2xl font-semibold mb-6 text-cyan-300">🪣 Simulación de Tinaco</h2>
           
-          <button onclick="obtenerUbicacion()" class="bg-blue-500 text-white px-4 py-2 rounded mt-3">
-            📍 Compartir Ubicación
-          </button>
-          <p id="ubicacionText" class="text-sm text-gray-500 mt-2"></p>
-      </div>
-
-      <!-- FOTOS DEL PROYECTO -->
-      <div class="bg-white rounded-xl shadow-md p-6 mb-8 industrial-border">
-          <h3 class="text-xl font-bold mb-4 text-gray-800">Fotos del Proyecto</h3>
-          <input type="file" id="fotosProyecto" accept="image/*" multiple class="mb-3" onchange="mostrarFotos()" />
-          <div id="contenedorFotos" class="photo-grid"></div>
-      </div>
-
-      <!-- SENSOR DE NIVEL -->
-      <div class="bg-white rounded-xl shadow-md p-6 mb-8 industrial-border">
-          <h3 class="text-xl font-bold mb-4 text-gray-800">Nivel de Agua (Sensor ESP32)</h3>
-          <div class="relative h-48 w-full bg-gray-200 rounded-lg overflow-hidden">
-              <div id="barraNivel" class="absolute bottom-0 left-0 w-full bg-blue-500 text-center text-white text-xs font-bold" style="height: 0%;">
-                  0%
-              </div>
-          </div>
-          
-          <!-- CONTROL DE BOMBA -->
-          <div class="mt-6 bg-white p-4 rounded-lg shadow-lg">
-            <h4 class="text-lg font-bold text-gray-800 mb-2">Control de Bomba</h4>
-            <label class="flex items-center space-x-3">
-              <span>Encender automáticamente si baja de:</span>
-              <input type="number" id="umbralAuto" min="5" max="90" value="30" class="w-20 border px-2 py-1 rounded" />%
-            </label>
-
-            <div class="mt-4 flex items-center space-x-4">
-              <span class="font-semibold">Encendido Manual:</span>
-              <button onclick="encenderBomba(true)" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">Encender</button>
-              <button onclick="encenderBomba(false)" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">Apagar</button>
-            </div>
-
-            <p class="text-sm mt-2 text-gray-500">El ESP32 revisará cada 10 segundos si debe encender la bomba.</p>
-          </div>
-      </div>
-
-      <!-- BOTONES -->
-      <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
-          <button onclick="generarPDF()" class="btn-primary text-white px-6 py-3 rounded-lg font-semibold">📄 Descargar Cotización</button>
-          <button onclick="enviarWhatsApp()" class="btn-secondary text-white px-6 py-3 rounded-lg font-semibold">📲 Enviar por WhatsApp</button>
-          <button onclick="guardarEnUltraBase()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold">🧠 Guardar Cotización</button>
-        </div>
-        <!-- 👆 Aquí termina la segunda parte -->
-        </div>
-      </div>
-
-      <!-- SECCIÓN: Instala Óptima -->
-      <div id="optima" class="seccionApp hidden">
-        <div class="bg-white rounded-xl shadow-md p-8">
-          <h2 class="text-3xl font-bold text-gray-800 mb-6">💧 Instala Óptima</h2>
-          <p class="text-lg text-gray-600 mb-4">Sistema integral de gestión de agua para hogares y oficinas.</p>
-          <div class="grid md:grid-cols-2 gap-6">
-            <div class="bg-blue-50 p-4 rounded-lg">
-              <h3 class="text-xl font-semibold mb-2">Características principales:</h3>
-              <ul class="list-disc pl-5 space-y-1">
-                <li>Monitoreo en tiempo real</li>
-                <li>Control automático de bomba</li>
-                <li>Alertas por WhatsApp</li>
-                <li>Sensor ESP32 inalámbrico</li>
-                <li>App móvil incluida</li>
-              </ul>
-            </div>
-            <div class="bg-green-50 p-4 rounded-lg">
-              <h3 class="text-xl font-semibold mb-2">Beneficios:</h3>
-              <ul class="list-disc pl-5 space-y-1">
-                <li>Ahorro de agua hasta 30%</li>
-                <li>Prevención de fallas en bomba</li>
-                <li>Instalación profesional</li>
-                <li>Garantía de 2 años</li>
-                <li>Soporte técnico 24/7</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECCIÓN: Simulación de Tinaco -->
-      <div id="tinaco" class="seccionApp hidden">
-        <div class="max-w-4xl mx-auto">
-          <h2 class="text-2xl font-bold mb-8 text-center">🛢️ Simulación Visual del Tinaco</h2>
-
           <div class="flex flex-col items-center justify-center py-8">
-          <!-- Contenedor del tinaco -->
-          <div class="relative h-80 w-48 rounded-full border-4 border-blue-300 bg-gradient-to-b from-gray-100 to-gray-300 overflow-hidden shadow-xl">
-            <!-- Agua -->
-            <div id="aguaTinaco" class="absolute bottom-0 left-0 w-full bg-blue-500 text-white text-center font-bold flex items-center justify-center transition-all duration-500 ease-in-out rounded-b-full"
-                 style="height: 50%;">
-              <span id="textoNivel">50%</span>
+            <!-- Contenedor del tinaco -->
+            <div class="relative h-80 w-48 rounded-full border-4 border-cyan-400 bg-gradient-to-b from-gray-700 to-gray-800 overflow-hidden shadow-xl">
+              <!-- Agua -->
+              <div id="aguaTinaco" class="absolute bottom-0 left-0 w-full bg-cyan-500 text-white text-center font-bold flex items-center justify-center transition-all duration-500 ease-in-out rounded-b-full"
+                   style="height: 50%;">
+                <span id="textoNivel">50%</span>
+              </div>
             </div>
-          </div>
 
-          <!-- Botón -->
-          <button onclick="simularCambioNivel()" class="mt-6 flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16M4 4l16 16" />
-            </svg>
-            Simular Nivel
-          </button>
+            <!-- Botón -->
+            <button onclick="simularCambioNivel()" class="mt-6 flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg shadow">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16M4 4l16 16" />
+              </svg>
+              Simular Nivel
+            </button>
 
-            <p class="text-sm text-gray-500 mt-6 text-center w-full max-w-sm">
+            <p class="text-sm text-gray-400 mt-6 text-center w-full max-w-sm">
               Esta simulación visual representa un tinaco vertical. En la versión final se conectará al sensor real de nivel.
             </p>
           </div>
-        </div>
-      </div>
+        </section>
 
-      <!-- SECCIÓN: Sensor de Agua -->
-      <div id="sensor" class="seccionApp hidden">
-        <div class="max-w-6xl">
-          <h2 class="text-2xl font-bold mb-8">📡 Sensor de Nivel de Agua</h2>
-
+        <!-- Módulo 4: Sensor Agua y WiFi -->
+        <section id="sensor" class="hidden">
+          <h2 class="text-2xl font-semibold mb-6 text-cyan-300">📡 Instalación del Sensor</h2>
+          
           <div class="grid md:grid-cols-2 gap-8">
             <!-- Imagen referencial -->
-            <div class="bg-white p-6 rounded-lg shadow-md text-center">
-            <img src="https://i.imgur.com/Ny3pnEb.png" alt="Sensor Instalación" class="mx-auto h-64 object-contain mb-4" />
-            <p class="text-sm text-gray-600">Ejemplo visual de instalación dentro del tinaco.</p>
-          </div>
+            <div class="bg-gray-800 p-6 rounded-lg shadow-md text-center">
+              <img src="https://i.imgur.com/Ny3pnEb.png" alt="Sensor Instalación" class="mx-auto h-64 object-contain mb-4" />
+              <p class="text-sm text-gray-400">Ejemplo visual de instalación dentro del tinaco.</p>
+            </div>
 
             <!-- Explicación técnica -->
-            <div class="bg-white p-6 rounded-lg shadow-md">
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">¿Cómo instalar el sensor?</h3>
-            <ul class="list-disc pl-5 text-gray-700 space-y-2 text-sm">
-              <li>Coloca el sensor flotador o ultrasónico en la parte superior del tinaco.</li>
-              <li>La caja del ESP32 se instala **fuera del tinaco**, protegida del sol y la lluvia.</li>
-              <li>Conecta el sensor al ESP32 usando los pines digitales.</li>
-              <li>El ESP32 debe conectarse a tu red WiFi local para enviar los datos.</li>
-              <li>Usa el botón de configuración para ingresar SSID y contraseña desde la app.</li>
-            </ul>
+            <div class="bg-gray-800 p-6 rounded-lg shadow-md">
+              <h3 class="text-lg font-semibold text-cyan-300 mb-4">¿Cómo instalar el sensor?</h3>
+              <ul class="list-disc pl-5 text-gray-300 space-y-2 text-sm">
+                <li>Coloca el sensor flotador o ultrasónico en la parte superior del tinaco.</li>
+                <li>La caja del ESP32 se instala **fuera del tinaco**, protegida del sol y la lluvia.</li>
+                <li>Conecta el sensor al ESP32 usando los pines digitales.</li>
+                <li>El ESP32 debe conectarse a tu red WiFi local para enviar los datos.</li>
+                <li>Usa el botón de configuración para ingresar SSID y contraseña desde la app.</li>
+              </ul>
+
+              <div class="mt-6">
+                <label class="block text-sm font-medium text-cyan-300 mb-2">Conectar a WiFi</label>
+                <input type="text" placeholder="Nombre de tu Red (SSID)" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white mb-2" />
+                <input type="password" placeholder="Contraseña" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white mb-3" />
+                <button class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded w-full">🔗 Conectar</button>
+                <p class="text-xs text-gray-400 mt-2">Este botón será funcional cuando el ESP32 esté en modo configuración.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Módulo 5: Bomba -->
+        <section id="bomba" class="hidden">
+          <h2 class="text-2xl font-semibold mb-6 text-cyan-300">⚙️ Encendido de Bomba</h2>
+          
+          <div class="bg-gray-800 rounded-lg p-8 shadow-md max-w-2xl space-y-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2">Encender bomba automáticamente si el nivel es menor a:</label>
+              <div class="flex items-center gap-2">
+                <input id="umbralAuto" type="number" value="30" min="5" max="95" class="w-20 border border-gray-600 px-2 py-1 rounded text-center bg-gray-700 text-white" />
+                <span class="text-sm text-gray-400">%</span>
+              </div>
+            </div>
 
             <div class="mt-4">
-              <label class="block text-sm font-medium mb-1">Conectar a WiFi</label>
-              <input type="text" placeholder="Nombre de tu Red (SSID)" class="w-full p-2 border rounded mb-2" />
-              <input type="password" placeholder="Contraseña" class="w-full p-2 border rounded mb-2" />
-              <button class="bg-blue-600 text-white px-4 py-2 rounded w-full">🔗 Conectar</button>
-              <p class="text-xs text-gray-500 mt-2">Este botón será funcional cuando el ESP32 esté en modo configuración.</p>
+              <h4 class="text-sm font-semibold text-cyan-300 mb-2">Encendido Manual</h4>
+              <div class="flex gap-4">
+                <button onclick="encenderBomba(true)" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Encender</button>
+                <button onclick="encenderBomba(false)" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Apagar</button>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <span class="text-sm text-gray-400">Estado actual de la bomba:</span>
+              <div id="estadoBomba" class="text-lg font-bold text-cyan-400">Desconectada</div>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
 
-      <!-- SECCIÓN: Bomba Automática -->
-      <div id="bomba" class="seccionApp hidden">
-        <div class="max-w-4xl">
-          <h2 class="text-2xl font-bold mb-8">⚙️ Control de Bomba Automática</h2>
+        <!-- Módulo 6: Bot IA -->
+        <section id="bot" class="hidden">
+          <h2 class="text-2xl font-semibold mb-6 text-cyan-300">🤖 Asistente Inteligente</h2>
+          
+          <div class="bg-gray-800 rounded-lg p-8 shadow-md max-w-2xl space-y-6">
+            <div id="chatBot" class="h-64 overflow-y-auto bg-gray-700 p-3 rounded text-sm text-gray-200 space-y-2 border border-gray-600">
+              <div class="font-semibold text-cyan-400">🤖 InstalaBot:</div>
+              <div>Hola, ¿en qué puedo ayudarte? Puedes preguntar por ejemplo:</div>
+              <ul class="list-disc pl-5 text-gray-300">
+                <li>¿Cómo se instala el sensor?</li>
+                <li>¿Cuánto cuesta instalar un tinaco?</li>
+                <li>¿Qué hace la bomba automática?</li>
+              </ul>
+            </div>
 
-          <div class="bg-white rounded-lg p-8 shadow-md max-w-2xl space-y-6">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Encender bomba automáticamente si el nivel es menor a:</label>
-            <div class="flex items-center gap-2">
-              <input id="umbralAuto" type="number" value="30" min="5" max="95" class="w-20 border px-2 py-1 rounded text-center" />
-              <span class="text-sm text-gray-600">%</span>
+            <div class="flex gap-2">
+              <input id="inputIA" type="text" placeholder="Escribe tu pregunta..." class="flex-1 border border-gray-600 px-3 py-2 rounded bg-gray-700 text-white" />
+              <button onclick="responderIA()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded">Enviar</button>
             </div>
           </div>
-
-          <div class="mt-4">
-            <h4 class="text-sm font-semibold text-gray-800 mb-1">Encendido Manual</h4>
-            <div class="flex gap-4">
-              <button onclick="encenderBomba(true)" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Encender</button>
-              <button onclick="encenderBomba(false)" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Apagar</button>
-            </div>
-          </div>
-
-          <div class="mt-4">
-            <span class="text-sm text-gray-500">Estado actual de la bomba:</span>
-            <div id="estadoBomba" class="text-lg font-bold text-blue-600">Desconectada</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECCIÓN: Chatbot IA -->
-      <div id="chatbot" class="seccionApp hidden">
-        <div class="max-w-4xl">
-          <h2 class="text-2xl font-bold mb-8">🤖 Asistente Inteligente</h2>
-
-          <div class="bg-white rounded-lg p-8 shadow-md max-w-2xl space-y-6">
-          <div id="chatBot" class="h-64 overflow-y-auto bg-gray-100 p-3 rounded text-sm text-gray-800 space-y-2 border border-gray-300">
-            <div class="font-semibold text-blue-600">🤖 InstalaBot:</div>
-            <div>Hola, ¿en qué puedo ayudarte? Puedes preguntar por ejemplo:</div>
-            <ul class="list-disc pl-5 text-gray-700">
-              <li>¿Cómo se instala el sensor?</li>
-              <li>¿Cuánto cuesta instalar un tinaco?</li>
-              <li>¿Qué hace la bomba automática?</li>
-            </ul>
-          </div>
-
-          <div class="flex gap-2">
-            <input id="inputIA" type="text" placeholder="Escribe tu pregunta..." class="flex-1 border px-3 py-2 rounded" />
-            <button onclick="responderIA()" class="bg-indigo-600 text-white px-4 py-2 rounded">Enviar</button>
-          </div>
-        </div>
-      </div>
-
+        </section>
+      </main>
     </div>
-    
-  <script>
-    const toggleBtn = document.getElementById('toggleMenu');
-    const mobileMenu = document.getElementById('mobileMenu');
-    if (toggleBtn && mobileMenu) {
-      toggleBtn.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
-      });
-    }
-  </script>
-  <script src="app.js"></script>
-</body>
+
+    <!-- Navbar móvil -->
+    <nav class="fixed bottom-0 w-full bg-gray-900 flex justify-around p-2 text-sm text-cyan-200 md:hidden">
+      <button onclick="showModule('inicio')">🏠</button>
+      <button onclick="showModule('cotizacion')">🧰</button>
+      <button onclick="showModule('tinaco')">🪣</button>
+      <button onclick="showModule('bot')">🤖</button>
+    </nav>
+
+    <script>
+      function showModule(id) {
+        document.querySelectorAll("main section").forEach(s => s.classList.add("hidden"));
+        document.getElementById(id).classList.remove("hidden");
+      }
+      // Cargar módulo inicial
+      showModule("inicio");
+    </script>
+    <script src="app.js"></script>
+  </body>
 </html>
