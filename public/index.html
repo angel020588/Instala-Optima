@@ -148,7 +148,7 @@
   </div>
 
   <!-- Contenido principal -->
-  <div class="md:ml-60 p-6">
+  <div class="md:ml-60 p-6 space-y-8">
       
       <!-- SECCIÓN: Cotización de Instalación -->
       <div id="cotizador" class="seccionApp space-y-6">
@@ -651,9 +651,10 @@
 
       <!-- SECCIÓN: Simulación de Tinaco -->
       <div id="tinaco" class="seccionApp hidden">
-        <h2 class="text-2xl font-bold mb-6">🛢️ Simulación Visual del Tinaco</h2>
+        <div class="max-w-4xl mx-auto">
+          <h2 class="text-2xl font-bold mb-8 text-center">🛢️ Simulación Visual del Tinaco</h2>
 
-        <div class="flex flex-col items-center justify-center">
+          <div class="flex flex-col items-center justify-center py-8">
           <!-- Contenedor del tinaco -->
           <div class="relative h-80 w-48 rounded-full border-4 border-blue-300 bg-gradient-to-b from-gray-100 to-gray-300 overflow-hidden shadow-xl">
             <!-- Agua -->
@@ -671,25 +672,27 @@
             Simular Nivel
           </button>
 
-          <p class="text-sm text-gray-500 mt-3 text-center w-full max-w-sm">
-            Esta simulación visual representa un tinaco vertical. En la versión final se conectará al sensor real de nivel.
-          </p>
+            <p class="text-sm text-gray-500 mt-6 text-center w-full max-w-sm">
+              Esta simulación visual representa un tinaco vertical. En la versión final se conectará al sensor real de nivel.
+            </p>
+          </div>
         </div>
       </div>
 
       <!-- SECCIÓN: Sensor de Agua -->
       <div id="sensor" class="seccionApp hidden">
-        <h2 class="text-2xl font-bold mb-4">📡 Sensor de Nivel de Agua</h2>
+        <div class="max-w-6xl">
+          <h2 class="text-2xl font-bold mb-8">📡 Sensor de Nivel de Agua</h2>
 
-        <div class="grid md:grid-cols-2 gap-6">
-          <!-- Imagen referencial -->
-          <div class="bg-white p-4 rounded shadow text-center">
+          <div class="grid md:grid-cols-2 gap-8">
+            <!-- Imagen referencial -->
+            <div class="bg-white p-6 rounded-lg shadow-md text-center">
             <img src="https://i.imgur.com/Ny3pnEb.png" alt="Sensor Instalación" class="mx-auto h-64 object-contain mb-4" />
             <p class="text-sm text-gray-600">Ejemplo visual de instalación dentro del tinaco.</p>
           </div>
 
-          <!-- Explicación técnica -->
-          <div class="bg-white p-6 rounded shadow">
+            <!-- Explicación técnica -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
             <h3 class="text-lg font-semibold text-gray-800 mb-2">¿Cómo instalar el sensor?</h3>
             <ul class="list-disc pl-5 text-gray-700 space-y-2 text-sm">
               <li>Coloca el sensor flotador o ultrasónico en la parte superior del tinaco.</li>
@@ -712,9 +715,10 @@
 
       <!-- SECCIÓN: Bomba Automática -->
       <div id="bomba" class="seccionApp hidden">
-        <h2 class="text-2xl font-bold mb-4">⚙️ Control de Bomba Automática</h2>
+        <div class="max-w-4xl">
+          <h2 class="text-2xl font-bold mb-8">⚙️ Control de Bomba Automática</h2>
 
-        <div class="bg-white rounded-lg p-6 shadow-md max-w-xl space-y-4">
+          <div class="bg-white rounded-lg p-8 shadow-md max-w-2xl space-y-6">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Encender bomba automáticamente si el nivel es menor a:</label>
             <div class="flex items-center gap-2">
@@ -740,9 +744,10 @@
 
       <!-- SECCIÓN: Chatbot IA -->
       <div id="chatbot" class="seccionApp hidden">
-        <h2 class="text-2xl font-bold mb-4">🤖 Asistente Inteligente</h2>
+        <div class="max-w-4xl">
+          <h2 class="text-2xl font-bold mb-8">🤖 Asistente Inteligente</h2>
 
-        <div class="bg-white rounded-lg p-6 shadow-md max-w-xl space-y-4">
+          <div class="bg-white rounded-lg p-8 shadow-md max-w-2xl space-y-6">
           <div id="chatBot" class="h-64 overflow-y-auto bg-gray-100 p-3 rounded text-sm text-gray-800 space-y-2 border border-gray-300">
             <div class="font-semibold text-blue-600">🤖 InstalaBot:</div>
             <div>Hola, ¿en qué puedo ayudarte? Puedes preguntar por ejemplo:</div>
