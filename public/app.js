@@ -151,6 +151,7 @@ function guardarEnUltraBase() {
     direccion: document.getElementById("clienteDireccion").value,
     resumen: document.getElementById("resumen").innerText,
     total: document.getElementById("precioTotal").textContent,
+    ubicacion: ubicacionCliente,
   };
 
   fetch("/guardar", {
@@ -161,4 +162,36 @@ function guardarEnUltraBase() {
     .then((res) => res.json())
     .then((res) => alert("Cotización guardada con éxito"))
     .catch((err) => console.error("Error al guardar:", err));
+}
+
+// Enviar comando de bomba (ON/OFF) al servidor/ESP32
+function encenderBomba(estado) {
+  const clienteId = "cliente-demo"; // después será dinámico
+  fetch(`/api/bomba/${clienteId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ encender: estado })
+  })
+    .then(res => res.json())
+    .then(data => alert(`Bomba ${estado ? "ENCENDIDA" : "APAGADA"}`))
+    .catch(err => alert("Error al enviar comando"));
+}
+
+// Variable para almacenar ubicación del cliente
+let ubicacionCliente = "";
+
+// Función para obtener ubicación del cliente
+function obtenerUbicacion() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        ubicacionCliente = `${latitude},${longitude}`;
+        document.getElementById("ubicacionText").textContent = `Ubicación registrada: ${ubicacionCliente}`;
+      },
+      () => alert("No se pudo obtener ubicación.")
+    );
+  } else {
+    alert("Navegador no soporta geolocalización");
+  }
 }
