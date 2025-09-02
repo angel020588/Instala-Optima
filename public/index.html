@@ -544,6 +544,49 @@
           </div>
         </div>
       </div>
+      
+      <!-- 👇 Aquí inicia la segunda parte: total, cliente, fotos, sensor, botones -->
+      <!-- PRECIO TOTAL -->
+      <div class="bg-white rounded-xl shadow-md p-6 mb-8 price-display text-white">
+          <h3 class="text-xl font-bold mb-4">Resumen y Total</h3>
+          <div id="resumen" class="text-sm mb-3">Selecciona los elementos para cotizar.</div>
+          <div class="text-2xl font-bold text-green-400">Total: <span id="precioTotal">$0.00</span></div>
+      </div>
+
+      <!-- DATOS DEL CLIENTE -->
+      <div class="bg-white rounded-xl shadow-md p-6 mb-8 industrial-border">
+          <h3 class="text-xl font-bold mb-4 text-gray-800">Datos del Cliente</h3>
+          <div class="grid md:grid-cols-2 gap-4">
+              <input id="clienteNombre" type="text" placeholder="Nombre completo" class="px-4 py-3 border rounded-lg w-full" />
+              <input id="clienteTelefono" type="tel" placeholder="Teléfono / WhatsApp" class="px-4 py-3 border rounded-lg w-full" />
+              <input id="clienteDireccion" type="text" placeholder="Dirección" class="px-4 py-3 border rounded-lg w-full col-span-2" />
+          </div>
+      </div>
+
+      <!-- FOTOS DEL PROYECTO -->
+      <div class="bg-white rounded-xl shadow-md p-6 mb-8 industrial-border">
+          <h3 class="text-xl font-bold mb-4 text-gray-800">Fotos del Proyecto</h3>
+          <input type="file" id="fotosProyecto" accept="image/*" multiple class="mb-3" onchange="mostrarFotos()" />
+          <div id="contenedorFotos" class="photo-grid"></div>
+      </div>
+
+      <!-- SENSOR DE NIVEL -->
+      <div class="bg-white rounded-xl shadow-md p-6 mb-8 industrial-border">
+          <h3 class="text-xl font-bold mb-4 text-gray-800">Nivel de Agua (Sensor ESP32)</h3>
+          <div class="relative h-48 w-full bg-gray-200 rounded-lg overflow-hidden">
+              <div id="barraNivel" class="absolute bottom-0 left-0 w-full bg-blue-500 text-center text-white text-xs font-bold" style="height: 0%;">
+                  0%
+              </div>
+          </div>
+      </div>
+
+      <!-- BOTONES -->
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+          <button onclick="generarPDF()" class="btn-primary text-white px-6 py-3 rounded-lg font-semibold">📄 Descargar Cotización</button>
+          <button onclick="enviarWhatsApp()" class="btn-secondary text-white px-6 py-3 rounded-lg font-semibold">📲 Enviar por WhatsApp</button>
+          <button onclick="guardarEnUltraBase()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold">🧠 Guardar Cotización</button>
+      </div>
+      <!-- 👆 Aquí termina la segunda parte -->
     </div>
   </body>
 </html>
