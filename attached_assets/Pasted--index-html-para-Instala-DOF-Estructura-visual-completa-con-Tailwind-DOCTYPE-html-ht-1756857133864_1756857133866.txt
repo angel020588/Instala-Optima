@@ -1,0 +1,89 @@
+<!-- index.html para Instala DOF - Estructura visual completa con Tailwind -->
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instala DOF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-950 text-white font-sans">
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <aside class="w-64 bg-gray-900 p-6 hidden md:block">
+        <h1 class="text-2xl font-bold mb-6 text-cyan-400">Instala DOF</h1>
+        <nav class="flex flex-col space-y-4">
+          <button onclick="showModule('inicio')" class="text-left hover:text-cyan-300">Instala Óptima</button>
+          <button onclick="showModule('cotizacion')" class="text-left hover:text-cyan-300">Cotización</button>
+          <button onclick="showModule('tinaco')" class="text-left hover:text-cyan-300">Simulación de Tinaco</button>
+          <button onclick="showModule('sensor')" class="text-left hover:text-cyan-300">Sensor de Agua y WiFi</button>
+          <button onclick="showModule('bomba')" class="text-left hover:text-cyan-300">Encendido de Bomba</button>
+          <button onclick="showModule('bot')" class="text-left hover:text-cyan-300">Asistente IA</button>
+        </nav>
+      </aside>
+
+      <!-- Contenido Principal -->
+      <main class="flex-1 p-4 md:p-10">
+        <!-- Módulo 1: Bienvenida -->
+        <section id="inicio" class="hidden">
+          <h2 class="text-3xl font-bold mb-4 text-cyan-300">Bienvenido a Instala DOF</h2>
+          <p class="text-lg mb-6">Instalamos, conectamos y optimizamos tu sistema de agua.</p>
+          <button onclick="showModule('cotizacion')" class="bg-cyan-500 hover:bg-cyan-400 text-white px-6 py-2 rounded">Comenzar Cotización</button>
+          <img src="/img/instala.png" alt="Instala DOF" class="mt-6 rounded-lg w-full max-w-md" />
+        </section>
+
+        <!-- Módulo 2: Cotización -->
+        <section id="cotizacion" class="hidden">
+          <h2 class="text-2xl font-semibold mb-4 text-cyan-300">Cotización de Instalación</h2>
+          <!-- Aquí va el formulario completo -->
+          <p class="text-sm text-gray-400">(Aquí se integrará el formulario de precio, PDF, ubicación y WhatsApp)</p>
+        </section>
+
+        <!-- Módulo 3: Simulación Tinaco -->
+        <section id="tinaco" class="hidden">
+          <h2 class="text-2xl font-semibold mb-4 text-cyan-300">Simulación de Tinaco</h2>
+          <p class="text-sm text-gray-400">(Aquí irá la animación y nivel del tinaco, simulación de llenado y encendido de bomba)</p>
+        </section>
+
+        <!-- Módulo 4: Sensor Agua y WiFi -->
+        <section id="sensor" class="hidden">
+          <h2 class="text-2xl font-semibold mb-4 text-cyan-300">Instalación del Sensor</h2>
+          <ul class="list-disc list-inside text-sm text-gray-300">
+            <li>Ubicación recomendada del sensor.</li>
+            <li>Conexión del dispositivo a la caja impresa.</li>
+            <li>Conexión al WiFi.</li>
+          </ul>
+        </section>
+
+        <!-- Módulo 5: Bomba -->
+        <section id="bomba" class="hidden">
+          <h2 class="text-2xl font-semibold mb-4 text-cyan-300">Encendido de Bomba</h2>
+          <p class="text-sm text-gray-400">(Aquí se mostrará el botón ON/OFF y la configuración del encendido automático)</p>
+        </section>
+
+        <!-- Módulo 6: Bot IA -->
+        <section id="bot" class="hidden">
+          <h2 class="text-2xl font-semibold mb-4 text-cyan-300">Asistente Inteligente</h2>
+          <p class="text-sm text-gray-400">(Aquí estará el chat IA explicando todas las funciones de la app)</p>
+        </section>
+      </main>
+    </div>
+
+    <!-- Navbar móvil -->
+    <nav class="fixed bottom-0 w-full bg-gray-900 flex justify-around p-2 text-sm text-cyan-200 md:hidden">
+      <button onclick="showModule('inicio')">Inicio</button>
+      <button onclick="showModule('cotizacion')">Cotiza</button>
+      <button onclick="showModule('tinaco')">Tinaco</button>
+      <button onclick="showModule('bot')">IA</button>
+    </nav>
+
+    <script>
+      function showModule(id) {
+        document.querySelectorAll("main section").forEach(s => s.classList.add("hidden"));
+        document.getElementById(id).classList.remove("hidden");
+      }
+      // Cargar módulo inicial
+      showModule("inicio");
+    </script>
+  </body>
+</html>
