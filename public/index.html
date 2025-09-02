@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Precios - Instala DOF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .gradient-bg {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      }
+      .card-shadow {
+        box-shadow:
+          0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      .input-focus:focus {
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        border-color: #3b82f6;
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        transition: all 0.3s ease;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+      }
+      .btn-secondary {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        transition: all 0.3s ease;
+      }
+      .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+      }
+      .industrial-border {
+        border: 2px solid #475569;
+        border-radius: 8px;
+        position: relative;
+      }
+      .industrial-border::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(45deg, #3b82f6, #10b981, #f59e0b);
+        border-radius: 10px;
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .industrial-border:hover::before {
+        opacity: 1;
+      }
+      .price-display {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        border: 2px solid #3b82f6;
+      }
+      .material-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      .modal.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .photo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .photo-item {
+        position: relative;
+        aspect-ratio: 1;
+      }
+      .photo-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+      .photo-remove {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #ef4444;
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-6">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <div
+              class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center"
+            >
+              <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"
+                />
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-3xl font-bold">Instala DOF</h1>
+              <p class="text-blue-200">Calculadora de Precios Profesional</p>
+            </div>
+          </div>
+          <div class="hidden md:flex items-center space-x-2 text-sm">
+            <span class="bg-green-500 w-2 h-2 rounded-full"></span>
+            <span>Sistema Activo</span>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="container mx-auto px-4 py-8">
+      <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Formulario Principal -->
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-xl card-shadow p-6 industrial-border">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+              <svg
+                class="w-6 h-6 mr-3 text-blue-500"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Configuración del Proyecto
+            </h2>
+            <!-- Tipo de Instalación -->
+            <div class="mb-6">
+              <label class="block text-sm font-semibold text-gray-700 mb-3"
+                >Tipo de Instalación</label
+              >
+              <select
+                id="tipoInstalacion"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg input-focus"
+                onchange="mostrarTipoCisterna(); calcularPrecio()"
+              >
+                <option value="">Selecciona el tipo de instalación</option>
+                <option value="tinaco1100">🔵 Tinaco 1100L - Tipo Bala</option>
+                <option value="tinaco1200">🟢 Tinaco 1200L - Estándar</option>
+                <option value="cisterna3000">
+                  🟠 Cisterna 3000L - Subterránea/Exterior
+                </option>
+              </select>
+            </div>
+            <!-- Tipo de Cisterna -->
+            <div class="mb-6" id="tipoCisternaSection" style="display: none">
+              <label class="block text-sm font-semibold text-gray-700 mb-3"
+                >Tipo de Cisterna</label
+              >
+              <select
+                id="tipoCisterna"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg input-focus"
+                onchange="calcularPrecio()"
+              >
+                <option value="subterranea">
+                  🔵 Subterránea - Bajo tierra
+                </option>
+                <option value="exterior">🟢 Exterior - En superficie</option>
+              </select>
+            </div>
+            <!-- Materiales PPR -->
+            <div class="mb-6">
+              <label class="block text-sm font-semibold text-gray-700 mb-3"
+                >Materiales PPR Requeridos</label
+              >
+              <div class="grid md:grid-cols-2 gap-4">
+                <div class="space-y-3">
+                  <div
+                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
+                    <label class="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="tubo4m"
+                        class="mr-2"
+                        onchange="calcularPrecio()"
+                      />
+                      <span class="text-sm font-medium">Tubo PPR Media</span>
+                    </label>
+                    <div class="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        onclick="cambiarCantidad('cantTubo', -1)"
+                        class="w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600 flex items-center justify-center"
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        id="cantTubo"
+                        min="0"
+                        value="0"
+                        class="w-16 px-2 py-1 border rounded text-center"
+                        onchange="calcularPrecio()"
+                        readonly
+                      />
+                      <button
+                        type="button"
+                        onclick="cambiarCantidad('cantTubo', 1)"
+                        class="w-8 h-8 bg-green-500 text-white rounded-full hover:bg-green-600 flex items-center justify-center"
+                      >
+                        +
+                      </button>
+                      <span class="text-sm text-gray-600">$100 c/u</span>
+                    </div>
+                  </div>
+                  <div
+                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
+                    <label class="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="conexion"
+                        class="mr-2"
+                        onchange="calcularPrecio()"
+                      />
+                      <span class="text-sm font-medium"
+                        >Conexión Macho y Hembra</span
+                      >
+                    </label>
+                    <div class="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        onclick="cambiarCantidad('cantConexion', -1)"
+                        class="w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600 flex items-center justify-center"
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        id="cantConexion"
+                        min="0"
+                        value="0"
+                        class="w-16 px-2 py-1 border rounded text-center"
+                        onchange="calcularPrecio()"
+                        readonly
+                      />
+                      <button
+                        type="button"
+                        onclick="cambiarCantidad('cantConexion', 1)"
+                        class="w-8 h-8 bg-green-500 text-white rounded-full hover:bg-green-600 flex items-center justify-center"
+                      >
+                        +
+                      </button>
+                      <span class="text-sm text-gray-600">$40 c/u</span>
+                    </div>
+                  </div>
+                  <div
+                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
+                    <label class="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="cople"
+                        class="mr-2"
+                        onchange="calcularPrecio()"
+                      />
+                      <span class="text-sm font-medium">Cople</span>
+                    </label>
+                    <div class="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        onclick="cambiarCantidad('cantCople', -1)"
+                        class="w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600 flex items-center justify-center"
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        id="cantCople"
+                        min="0"
+                        value="0"
+                        class="w-16 px-2 py-1 border rounded text-center"
+                        onchange="calcularPrecio()"
+                        readonly
+                      />
+                      <button
+                        type="button"
+                        onclick="cambiarCantidad('cantCople', 1)"
+                        class="w-8 h-8 bg-green-500 text-white rounded-full hover:bg-green-600 flex items-center justify-center"
+                      >
+                        +
+                      </button>
+                      <span class="text-sm text-gray-600">$10 c/u</span>
+                    </div>
+                  </div>
+                  <div
+                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
+                    <label class="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="codo"
+                        class="mr-2"
+                        onchange="calcularPrecio()"
+                      />
+                      <span class="text-sm font-medium">Codo</span>
+                    </label>
+                    <div class="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        onclick="cambiarCantidad('cantCodo', -1)"
+                        class="w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600 flex items-center justify-center"
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        id="cantCodo"
+                        min="0"
+                        value="0"
+                        class="w-16 px-2 py-1 border rounded text-center"
+                        onchange="calcularPrecio()"
+                        readonly
+                      />
+                      <button
+                        type="button"
+                        onclick="cambiarCantidad('cantCodo', 1)"
+                        class="w-8 h-8 bg-green-500 text-white rounded-full hover:bg-green-600 flex items-center justify-center"
+                      >
+                        +
+                      </button>
+                      <span class="text-sm text-gray-600">$12 c/u</span>
+                    </div>
+                  </div>
+                  <!-- Bombas como productos -->
+                  <div
+                    class="flex items-center justify-between p-3 bg-purple-50 rounded-lg"
+                  >
+                    <label class="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="bombaSencilla"
+                        class="mr-2"
+                        onchange="calcularPrecio()"
+                      />
+                      <span class="text-sm font-medium">Bomba Sencilla</span>
+                    </label>
+                    <div class="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        onclick="cambiarCantidad('cantBombaSencilla', -1)"
+                        class="w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600 flex items-center justify-center"
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        id="cantBombaSencilla"
+                        min="0"
+                        value="0"
+                        class="w-16 px-2 py-1 border rounded text-center"
+                        onchange="calcularPrecio()"
+                        readonly
+                      />
+                      <button
+                        type="button"
+                        onclick="cambiarCantidad('cantBombaSencilla', 1)"
+                        class="w-8 h-8 bg-green-500 text-white rounded-full hover:bg-green-600 flex items-center justify-center"
+                      >
+                        +
+                      </button>
+                      <span class="text-sm text-gray-600">$600 c/u</span>
+                    </div>
+                  </div>
+                  <div
+                    class="flex items-center justify-between p-3 bg-indigo-50 rounded-lg"
+                  >
+                    <label class="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="bombaAutomatica"
+                        class="mr-2"
+                        onchange="calcularPrecio()"
+                      />
+                      <span class="text-sm font-medium">Bomba Automática</span>
+                    </label>
+                    <div class="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        onclick="cambiarCantidad('cantBombaAutomatica', -1)"
+                        class="w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600 flex items-center justify-center"
+                      >
+                        -
+                      </button>
+                      <input
+                        type="number"
+                        id="cantBombaAutomatica"
+                        min="0"
+                        value="0"
+                        class="w-16 px-2 py-1 border rounded text-center"
+                        onchange="calcularPrecio()"
+                        readonly
+                      />
+                      <button
+                        type="button"
+                        onclick="cambiarCantidad('cantBombaAutomatica', 1)"
+                        class="w-8 h-8 bg-green-500 text-white rounded-full hover:bg-green-600 flex items-center justify-center"
+                      >
+                        +
+                      </button>
+                      <span class="text-sm text-gray-600">$1,000 c/u</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="space-y-3">
+                  <div class="p-3 bg-gray-50 rounded-lg">
+                    <label class="flex items-center mb-2">
+                      <input
+                        type="checkbox"
+                        id="llaves"
+                        class="mr-2"
+                        onchange="calcularPrecio()"
+                      />
+                      <span class="text-sm font-medium">Llaves</span>
+                    </label>
+                    <select
+                      id="tipoLlave"
+                      class="w-full px-3 py-2 border rounded-lg"
+                      onchange="calcularPrecio()"
+                    >
+                      <option value="100">Estándar - $100</option>
+                      <option value="150">Media - $150</option>
+                      <option value="200">Premium - $200</option>
+                      <option value="250">Profesional - $250</option>
+                    </select>
+                  </div>
+                  <div class="p-3 bg-gray-50 rounded-lg">
+                    <label class="flex items-center mb-2">
+                      <input
+                        type="checkbox"
+                        id="tapa"
+                        class="mr-2"
+                        onchange="calcularPrecio()"
+                      />
+                      <span class="text-sm font-medium">Tapa Tinaco</span>
+                    </label>
+                    <select
+                      id="tipoTapa"
+                      class="w-full px-3 py-2 border rounded-lg"
+                      onchange="calcularPrecio()"
+                    >
+                      <option value="170">Sin aro - $170</option>
+                      <option value="250">Con aro - $250</option>
+                    </select>
+                  </div>
+                  <div
+                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
+                    <label class="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="kit"
+                        class="mr-2"
+                        onchange="calcularPrecio()"
+                      />
+                      <span class="text-sm font-medium">Kit Accesorios</span>
+                    </label>
+                    <span class="text-sm text-gray-600">$150</span>
+                  </div>
+                  <div
+                    class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                  >
+                    <label class="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="brida"
+                        class="mr-2"
+                        onchange="calcularPrecio()"
+                      />
+                      <span class="text-sm font-medium">Brida</span>
+                    </label>
+                    <span class="text-sm text-gray-600">$100</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Características del Proyecto -->
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-3"
+                  >Número de Pisos</label
+                >
+                <select
+                  id="pisos"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg input-focus"
+                  onchange="calcularPrecio()"
+                >
+                  <option value="1">1 Piso</option>
+                  <option value="2">2 Pisos</option>
+                  <option value="3">3 Pisos</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-3"
+                  >Tipo de Inmueble</label
+                >
+                <select
+                  id="tipoInmueble"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg input-focus"
+                  onchange="calcularPrecio()"
+                >
+                  <option value="casa">Casa</option>
+                  <option value="departamento">Departamento</option>
+                  <option value="oficina">Oficina</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
