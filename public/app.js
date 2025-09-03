@@ -309,29 +309,52 @@ function generarRespuestaBot(mensaje) {
   }
 }
 
-// NUEVA FUNCIÓN PARA EL CHATBOT SIMPLIFICADO
-function responderIA() {
+// NUEVA FUNCIÓN PARA EL CHATBOT CON IA REAL
+async function responderIA() {
   const input = document.getElementById("inputIA");
   const chat = document.getElementById("chatBot");
-  const pregunta = input.value.trim().toLowerCase();
+  const pregunta = input.value.trim();
 
   if (!pregunta) return;
 
   // Mostrar mensaje del usuario
   chat.innerHTML += `<div class="text-right text-sm text-green-600">🧑 Tú: ${pregunta}</div>`;
-
-  // Respuestas básicas
-  let respuesta = "Lo siento, no entendí eso. Intenta preguntar de otra forma.";
-  if (pregunta.includes("sensor")) {
-    respuesta = "El sensor se coloca en la parte superior del tinaco. Se conecta por cable al ESP32 que va protegido en una caja cerca del tinaco.";
-  } else if (pregunta.includes("bomba")) {
-    respuesta = "La bomba automática se enciende sola si el agua baja del nivel que tú configures. También puedes encenderla manualmente desde la app.";
-  } else if (pregunta.includes("tinaco")) {
-    respuesta = "Tenemos varias opciones de instalación. El costo depende de los materiales, pero puedes usar la sección de Cotización para obtener el precio exacto.";
-  }
-
-  // Mostrar respuesta
-  chat.innerHTML += `<div class="text-sm text-blue-600">🤖 InstalaBot: ${respuesta}</div>`;
+  
+  // Mostrar indicador de carga
+  chat.innerHTML += `<div class="text-sm text-blue-600" id="loading-msg">🤖 InstalaBot: Escribiendo...</div>`;
   input.value = "";
+  chat.scrollTop = chat.scrollHeight;
+
+  try {
+    // Llamar a la API de OpenAI a través del backend
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ 
+        mensaje: pregunta,
+        contexto: "Eres un asistente especializado en sistemas de agua e instalaciones hidráulicas para la empresa 'Instala Óptima'. Ayudas con preguntas sobre sensores ESP32, tinacos, bombas, cotizaciones y instalaciones de agua. Responde de manera profesional y útil en español."
+      })
+    });
+
+    const data = await response.json();
+    
+    // Remover indicador de carga
+    document.getElementById("loading-msg").remove();
+    
+    // Mostrar respuesta de la IA
+    chat.innerHTML += `<div class="text-sm text-blue-600">🤖 InstalaBot: ${data.respuesta}</div>`;
+    
+  } catch (error) {
+    console.error('Error al consultar IA:', error);
+    
+    // Remover indicador de carga
+    document.getElementById("loading-msg").remove();
+    
+    // Respuesta de fallback
+    chat.innerHTML += `<div class="text-sm text-blue-600">🤖 InstalaBot: Lo siento, tengo problemas técnicos. Puedes preguntar sobre sensores, bombas, tinacos o cotizaciones y te ayudo con información básica.</div>`;
+  }
+  
   chat.scrollTop = chat.scrollHeight;
 }
