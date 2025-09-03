@@ -2,6 +2,21 @@ const express = require('express');
 const router = express.Router();
 const Cotizacion = require('../models/Cotizacion');
 
+// GET /api/cotizaciones - Obtener todas las cotizaciones
+router.get("/", async (req, res) => {
+  try {
+    const cotizaciones = await Cotizacion.findAll({
+      order: [["createdAt", "DESC"]],
+      limit: 50
+    });
+
+    res.json({ mensaje: "✅ Cotizaciones desde UltraBase", data: cotizaciones });
+  } catch (err) {
+    console.error("❌ Error al obtener cotizaciones:", err);
+    res.status(500).json({ error: "Error al consultar cotizaciones" });
+  }
+});
+
 // Guardar nueva cotización
 router.post('/guardar', async (req, res) => {
   try {
