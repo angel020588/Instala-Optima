@@ -43,7 +43,18 @@
 
         <!-- Módulo 2: Cotización -->
         <section id="cotizacion" class="hidden">
-          <h2 class="text-2xl font-semibold mb-6 text-cyan-300">Cotiza tu Instalación</h2>
+          <h2 class="text-2xl font-semibold mb-6 text-cyan-300">Cotización de Instalación</h2>
+          
+          <div class="bg-gray-700 p-4 rounded mb-6 grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span class="text-gray-300">Folio: </span>
+              <span class="text-cyan-400 font-bold" id="folio"></span>
+            </div>
+            <div>
+              <span class="text-gray-300">Fecha: </span>
+              <span class="text-cyan-400 font-bold" id="fecha"></span>
+            </div>
+          </div>
           
           <form class="bg-gray-800 rounded-lg p-6 space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -66,44 +77,49 @@
             </div>
 
             <div>
-              <label class="block font-medium text-gray-300 mb-3">Materiales</label>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <label class="flex items-center space-x-2 text-gray-300">
-                  <input type="checkbox" id="tubo4m" onchange="calcularPrecio()" class="text-cyan-400" data-precio="100" value="Tubo PPR" />
-                  <span>Tubo PPR ($100)</span>
-                </label>
-                <label class="flex items-center space-x-2 text-gray-300">
-                  <input type="checkbox" class="text-cyan-400" data-precio="15" value="Codo PPR" />
-                  <span>Codo PPR ($15)</span>
-                </label>
-                <label class="flex items-center space-x-2 text-gray-300">
-                  <input type="checkbox" id="cople" onchange="calcularPrecio()" class="text-cyan-400" data-precio="10" value="Cople PPR" />
-                  <span>Cople PPR ($10)</span>
-                </label>
-                <label class="flex items-center space-x-2 text-gray-300">
-                  <input type="checkbox" id="conexion" onchange="calcularPrecio()" class="text-cyan-400" data-precio="20" value="Conexión macho" />
-                  <span>Conexión macho ($20)</span>
-                </label>
-                <label class="flex items-center space-x-2 text-gray-300">
-                  <input type="checkbox" class="text-cyan-400" data-precio="20" value="Conexión hembra" />
-                  <span>Conexión hembra ($20)</span>
-                </label>
-                <label class="flex items-center space-x-2 text-gray-300">
-                  <input type="checkbox" class="text-cyan-400" data-precio="600" value="Presurizador manual" />
-                  <span>Presurizador manual ($600)</span>
-                </label>
-                <label class="flex items-center space-x-2 text-gray-300">
-                  <input type="checkbox" id="bombaAutomatica" onchange="calcularPrecio()" class="text-cyan-400" data-precio="1000" value="Presurizador automático" />
-                  <span>Presurizador automático ($1000)</span>
-                </label>
+              <label class="block font-medium text-gray-300 mb-3">Productos y Cantidades</label>
+              <div class="space-y-3">
+                <div class="flex justify-between items-center border-b border-gray-600 py-2">
+                  <span class="text-gray-300">Tubo PPR - <strong>$100</strong></span>
+                  <input type="number" min="0" class="w-20 border border-gray-600 rounded px-2 py-1 bg-gray-700 text-white" value="0" onchange="calcularTotal()" data-precio="100" id="cant-tubo" />
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-600 py-2">
+                  <span class="text-gray-300">Codo PPR - <strong>$15</strong></span>
+                  <input type="number" min="0" class="w-20 border border-gray-600 rounded px-2 py-1 bg-gray-700 text-white" value="0" onchange="calcularTotal()" data-precio="15" id="cant-codo" />
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-600 py-2">
+                  <span class="text-gray-300">Cople PPR - <strong>$10</strong></span>
+                  <input type="number" min="0" class="w-20 border border-gray-600 rounded px-2 py-1 bg-gray-700 text-white" value="0" onchange="calcularTotal()" data-precio="10" id="cant-cople" />
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-600 py-2">
+                  <span class="text-gray-300">Conexión macho - <strong>$20</strong></span>
+                  <input type="number" min="0" class="w-20 border border-gray-600 rounded px-2 py-1 bg-gray-700 text-white" value="0" onchange="calcularTotal()" data-precio="20" id="cant-macho" />
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-600 py-2">
+                  <span class="text-gray-300">Conexión hembra - <strong>$20</strong></span>
+                  <input type="number" min="0" class="w-20 border border-gray-600 rounded px-2 py-1 bg-gray-700 text-white" value="0" onchange="calcularTotal()" data-precio="20" id="cant-hembra" />
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-600 py-2">
+                  <span class="text-gray-300">Presurizador manual - <strong>$600</strong></span>
+                  <input type="number" min="0" class="w-20 border border-gray-600 rounded px-2 py-1 bg-gray-700 text-white" value="0" onchange="calcularTotal()" data-precio="600" id="cant-manual" />
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-600 py-2">
+                  <span class="text-gray-300">Presurizador automático - <strong>$1000</strong></span>
+                  <input type="number" min="0" class="w-20 border border-gray-600 rounded px-2 py-1 bg-gray-700 text-white" value="0" onchange="calcularTotal()" data-precio="1000" id="cant-automatico" />
+                </div>
+              </div>
+              
+              <div class="flex items-center space-x-2 mt-4">
+                <input type="checkbox" id="manoObra" onchange="calcularTotal()" class="text-cyan-400" />
+                <label for="manoObra" class="text-gray-300">Agregar mano de obra ($750)</label>
               </div>
             </div>
 
             <!-- Precio total -->
             <div class="bg-gray-700 p-4 rounded border border-cyan-400">
-              <h3 class="text-lg font-semibold mb-2 text-cyan-300">Resumen</h3>
-              <div id="resumen" class="text-sm text-gray-300 mb-2">Selecciona los elementos para cotizar.</div>
-              <div class="text-xl font-bold text-cyan-400">Total: <span id="precioTotal">$0</span></div>
+              <h3 class="text-lg font-semibold mb-2 text-cyan-300">Resumen de Cotización</h3>
+              <div id="resumen" class="text-sm text-gray-300 mb-2">Ingresa cantidades para cotizar.</div>
+              <div class="text-2xl font-bold text-green-400 text-right">Total: $<span id="precioTotal">0</span></div>
             </div>
 
             <div class="flex gap-3 mt-6">
@@ -228,14 +244,35 @@
 
     <!-- Contenido para PDF (oculto) -->
     <div id="pdf-content" class="hidden bg-white text-black p-6">
-      <h2 class="text-2xl font-bold mb-4">Cotización - Instala DOF</h2>
-      <p><strong>Nombre:</strong> <span id="pdf-nombre"></span></p>
-      <p><strong>Teléfono:</strong> <span id="pdf-telefono"></span></p>
-      <p><strong>Ubicación:</strong> <span id="pdf-ubicacion"></span></p>
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold mb-2">Instala Óptima - Cotización</h2>
+        <p><strong>Folio:</strong> <span id="pdf-folio"></span> | <strong>Fecha:</strong> <span id="pdf-fecha"></span></p>
+      </div>
+      
+      <div class="mb-4">
+        <h3 class="text-lg font-bold mb-2">Datos del Cliente:</h3>
+        <p><strong>Nombre:</strong> <span id="pdf-nombre"></span></p>
+        <p><strong>Teléfono:</strong> <span id="pdf-telefono"></span></p>
+        <p><strong>Ubicación:</strong> <span id="pdf-ubicacion"></span></p>
+      </div>
+      
       <hr class="my-4" />
-      <div id="pdf-productos"></div>
+      
+      <div class="mb-4">
+        <h3 class="text-lg font-bold mb-2">Productos:</h3>
+        <div id="pdf-productos"></div>
+      </div>
+      
       <hr class="my-4" />
-      <p><strong>Total estimado:</strong> $<span id="pdf-total"></span> MXN</p>
+      
+      <div class="text-right">
+        <p class="text-xl font-bold">TOTAL: $<span id="pdf-total"></span> MXN</p>
+      </div>
+      
+      <div class="mt-8 text-center text-sm text-gray-600">
+        <p>Esta cotización es válida por 30 días</p>
+        <p>¡Gracias por confiar en Instala Óptima!</p>
+      </div>
     </div>
 
     <script>
@@ -275,26 +312,108 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
+      // Variables globales
+      let folio = Math.floor(100000 + Math.random() * 900000);
+      let fecha = new Date().toLocaleDateString();
+      
+      // Inicializar al cargar
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('folio').textContent = folio;
+        document.getElementById('fecha').textContent = fecha;
+      });
+
+      function calcularTotal() {
+        const inputs = document.querySelectorAll('input[type="number"][data-precio]');
+        const manoObra = document.getElementById('manoObra').checked;
+        let total = 0;
+        let resumen = [];
+
+        inputs.forEach(input => {
+          const cantidad = parseInt(input.value) || 0;
+          const precio = parseInt(input.dataset.precio);
+          const subtotal = cantidad * precio;
+          
+          if (cantidad > 0) {
+            total += subtotal;
+            const nombre = input.previousElementSibling.textContent.split(' - ')[0];
+            resumen.push(`${nombre}: ${cantidad} × $${precio} = $${subtotal}`);
+          }
+        });
+
+        if (manoObra) {
+          total += 750;
+          resumen.push('Mano de obra: $750');
+        }
+
+        document.getElementById('precioTotal').textContent = total;
+        
+        const resumenDiv = document.getElementById('resumen');
+        if (resumen.length > 0) {
+          resumenDiv.innerHTML = resumen.join('<br>');
+        } else {
+          resumenDiv.textContent = 'Ingresa cantidades para cotizar.';
+        }
+      }
+
       function generarPDF() {
         // Obtener datos del formulario
         const nombre = document.getElementById("clienteNombre").value;
         const telefono = document.getElementById("clienteTelefono").value;
         const ubicacion = document.getElementById("ubicacion").value;
 
-        const productosSeleccionados = Array.from(document.querySelectorAll("input[type='checkbox']:checked"));
+        if (!nombre) {
+          alert('Por favor ingresa el nombre del cliente');
+          return;
+        }
+
+        const inputs = document.querySelectorAll('input[type="number"][data-precio]');
+        const manoObra = document.getElementById('manoObra').checked;
         const pdfProductosDiv = document.getElementById("pdf-productos");
         pdfProductosDiv.innerHTML = "";
         let total = 0;
 
-        productosSeleccionados.forEach(p => {
-          const precio = parseInt(p.dataset.precio);
-          total += precio;
-          const item = document.createElement("p");
-          item.innerHTML = `✅ ${p.value}: $${precio}`;
-          pdfProductosDiv.appendChild(item);
+        // Crear tabla de productos
+        let tabla = '<table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">';
+        tabla += '<tr style="background-color: #f0f0f0; font-weight: bold;">';
+        tabla += '<td style="border: 1px solid #ccc; padding: 8px;">Producto</td>';
+        tabla += '<td style="border: 1px solid #ccc; padding: 8px;">Precio Unit.</td>';
+        tabla += '<td style="border: 1px solid #ccc; padding: 8px;">Cantidad</td>';
+        tabla += '<td style="border: 1px solid #ccc; padding: 8px;">Subtotal</td>';
+        tabla += '</tr>';
+
+        inputs.forEach(input => {
+          const cantidad = parseInt(input.value) || 0;
+          if (cantidad > 0) {
+            const precio = parseInt(input.dataset.precio);
+            const subtotal = cantidad * precio;
+            total += subtotal;
+            const nombre = input.previousElementSibling.textContent.split(' - ')[0];
+            
+            tabla += '<tr>';
+            tabla += `<td style="border: 1px solid #ccc; padding: 8px;">${nombre}</td>`;
+            tabla += `<td style="border: 1px solid #ccc; padding: 8px;">$${precio}</td>`;
+            tabla += `<td style="border: 1px solid #ccc; padding: 8px;">${cantidad}</td>`;
+            tabla += `<td style="border: 1px solid #ccc; padding: 8px;">$${subtotal}</td>`;
+            tabla += '</tr>';
+          }
         });
 
+        if (manoObra) {
+          total += 750;
+          tabla += '<tr>';
+          tabla += '<td style="border: 1px solid #ccc; padding: 8px;">Mano de obra</td>';
+          tabla += '<td style="border: 1px solid #ccc; padding: 8px;">$750</td>';
+          tabla += '<td style="border: 1px solid #ccc; padding: 8px;">1</td>';
+          tabla += '<td style="border: 1px solid #ccc; padding: 8px;">$750</td>';
+          tabla += '</tr>';
+        }
+
+        tabla += '</table>';
+        pdfProductosDiv.innerHTML = tabla;
+
         // Llenar los datos en el PDF
+        document.getElementById("pdf-folio").textContent = folio;
+        document.getElementById("pdf-fecha").textContent = fecha;
         document.getElementById("pdf-nombre").textContent = nombre;
         document.getElementById("pdf-telefono").textContent = telefono;
         document.getElementById("pdf-ubicacion").textContent = ubicacion;
@@ -302,7 +421,7 @@
 
         // Generar y descargar
         const pdfElement = document.getElementById("pdf-content");
-        html2pdf().from(pdfElement).save(`cotizacion-${nombre}.pdf`);
+        html2pdf().from(pdfElement).save(`cotizacion-${folio}.pdf`);
       }
     </script>
     <script src="app.js"></script>

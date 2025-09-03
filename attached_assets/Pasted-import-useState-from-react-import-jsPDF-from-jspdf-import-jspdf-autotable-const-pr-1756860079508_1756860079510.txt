@@ -1,0 +1,101 @@
+import { useState } from 'react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+
+const productos = [
+  { nombre: 'Tubo PPR', precio: 100 },
+  { nombre: 'Codo', precio: 15 },
+  { nombre: 'Cople', precio: 10 },
+  { nombre: 'Conexión macho', precio: 20 },
+  { nombre: 'Conexión hembra', precio: 20 },
+  { nombre: 'Presurizador manual', precio: 600 },
+  { nombre: 'Presurizador automático', precio: 1000 }
+];
+
+export default function CotizacionForm() {
+  const [cantidades, setCantidades] = useState(Array(productos.length).fill(0));
+  const [manoObra, setManoObra] = useState(false);
+  const fecha = new Date().toLocaleDateString();
+  const folio = Math.floor(100000 + Math.random() * 900000); // 6 dígitos aleatorio
+
+  const calcularTotal = () => {
+    let total = productos.reduce((acc, prod, i) => acc + prod.precio * cantidades[i], 0);
+    if (manoObra) total += 750;
+    return total;
+  };
+
+  const generarPDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text('Instala Óptima - Cotización', 14, 20);
+    doc.setFontSize(12);
+    doc.text(`Folio: ${folio}`, 14, 30);
+    doc.text(`Fecha: ${fecha}`, 14, 36);
+
+    const data = productos
+      .map((prod, i) => {
+        if (cantidades[i] > 0) {
+          return [prod.nombre, `$${prod.precio}`, cantidades[i], `$${prod.precio * cantidades[i]}`];
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    if (manoObra) {
+      data.push(['Mano de obra', '$750', 1, '$750']);
+    }
+
+    doc.autoTable({
+      startY: 45,
+      head: [['Producto', 'Precio Unitario', 'Cantidad', 'Subtotal']],
+      body: data
+    });
+
+    doc.text(`TOTAL: $${calcularTotal()}`, 14, doc.autoTable.previous.finalY + 10);
+    doc.addImage('/logo.png', 'PNG', 150, 10, 40, 20); // asegúrate de tener logo.png en public/
+    doc.addImage('/firma.png', 'PNG', 140, doc.autoTable.previous.finalY + 20, 50, 20); // firma digital
+    doc.save(`cotizacion-${folio}.pdf`);
+  };
+
+  return (
+    <div className="p-6 bg-white rounded-lg shadow-lg max-w-3xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6 text-gray-800">Cotización de Instalación</h1>
+
+      <form className="space-y-6">
+        {productos.map((prod, i) => (
+          <div key={i} className="flex justify-between items-center border-b py-2">
+            <span>{prod.nombre} – <strong>${prod.precio}</strong></span>
+            <input
+              type="number"
+              min="0"
+              className="w-20 border border-gray-300 rounded px-2 py-1"
+              value={cantidades[i]}
+              onChange={(e) => {
+                const newCant = [...cantidades];
+                newCant[i] = parseInt(e.target.value) || 0;
+                setCantidades(newCant);
+              }}
+            />
+          </div>
+        ))}
+
+        <div className="flex items-center space-x-2">
+          <input type="checkbox" id="manoObra" checked={manoObra} onChange={() => setManoObra(!manoObra)} />
+          <label htmlFor="manoObra">Agregar mano de obra ($750)</label>
+        </div>
+
+        <div className="text-xl font-semibold text-right text-green-600">
+          Total: ${calcularTotal()}
+        </div>
+
+        <button
+          type="button"
+          onClick={generarPDF}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Descargar PDF
+        </button>
+      </form>
+    </div>
+  );
+}
