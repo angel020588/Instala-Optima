@@ -20,6 +20,7 @@
           <button onclick="showModule('sensor')" class="text-left hover:text-cyan-300">📡 Sensor de Agua y WiFi</button>
           <button onclick="showModule('bomba')" class="text-left hover:text-cyan-300">⚙️ Encendido de Bomba</button>
           <button onclick="showModule('bot')" class="text-left hover:text-cyan-300">🤖 Asistente IA</button>
+          <button onclick="showModule('historial'); obtenerHistorial()" class="text-left hover:text-cyan-300">📋 Historial</button>
         </nav>
       </aside>
 
@@ -231,6 +232,30 @@
             </div>
           </div>
         </section>
+
+        <!-- Módulo 7: Historial -->
+        <section id="historial" class="hidden">
+          <h2 class="text-2xl font-semibold mb-6 text-cyan-300">📋 Historial de Cotizaciones</h2>
+
+          <div class="overflow-x-auto bg-gray-800 rounded-lg shadow p-4">
+            <table class="w-full text-sm text-left text-gray-300">
+              <thead class="text-xs uppercase bg-gray-700 text-cyan-400">
+                <tr>
+                  <th scope="col" class="px-4 py-2">Folio</th>
+                  <th scope="col" class="px-4 py-2">Fecha</th>
+                  <th scope="col" class="px-4 py-2">Cliente</th>
+                  <th scope="col" class="px-4 py-2">Total</th>
+                  <th scope="col" class="px-4 py-2">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tablaHistorial" class="divide-y divide-gray-700"></tbody>
+            </table>
+
+            <div class="mt-4 text-right">
+              <button onclick="descargarExcel()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">⬇️ Exportar a Excel</button>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
 
@@ -240,12 +265,19 @@
       <button onclick="showModule('cotizacion')">🧰</button>
       <button onclick="showModule('tinaco')">🪣</button>
       <button onclick="showModule('bot')">🤖</button>
+      <button onclick="showModule('historial'); obtenerHistorial()">📋</button>
     </nav>
 
     <!-- Contenido para PDF (oculto) -->
-    <div id="pdf-content" class="hidden bg-white text-black p-6">
+    <div id="pdf-content" class="hidden bg-white text-black p-6 relative">
+      <!-- Logo superior derecho -->
+      <img src="public/logo.png" style="position: absolute; top: 10px; right: 20px; height: 60px;" />
+
+      <!-- Marca de agua centrada -->
+      <img src="public/logo.png" style="position: absolute; opacity: 0.3; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60%;" />
+
       <div class="text-center mb-6">
-        <h2 class="text-2xl font-bold mb-2">Instala Óptima - Cotización</h2>
+        <h2 class="text-3xl font-extrabold mb-2">INSTALACIÓN ÓPTIMA</h2>
         <p><strong>Folio:</strong> <span id="pdf-folio"></span> | <strong>Fecha:</strong> <span id="pdf-fecha"></span></p>
       </div>
       
@@ -255,20 +287,20 @@
         <p><strong>Teléfono:</strong> <span id="pdf-telefono"></span></p>
         <p><strong>Ubicación:</strong> <span id="pdf-ubicacion"></span></p>
       </div>
-      
+
       <hr class="my-4" />
-      
+
       <div class="mb-4">
         <h3 class="text-lg font-bold mb-2">Productos:</h3>
         <div id="pdf-productos"></div>
       </div>
-      
+
       <hr class="my-4" />
-      
+
       <div class="text-right">
         <p class="text-xl font-bold">TOTAL: $<span id="pdf-total"></span> MXN</p>
       </div>
-      
+
       <div class="mt-8 text-center text-sm text-gray-600">
         <p>Esta cotización es válida por 30 días</p>
         <p>¡Gracias por confiar en Instala Óptima!</p>
@@ -423,7 +455,88 @@
         const pdfElement = document.getElementById("pdf-content");
         html2pdf().from(pdfElement).save(`cotizacion-${folio}.pdf`);
       }
+      
+      // Función para obtener historial
+      async function obtenerHistorial() {
+        try {
+          const res = await fetch("/api/cotizaciones");
+          const data = await res.json();
+          const tabla = document.getElementById("tablaHistorial");
+          tabla.innerHTML = "";
+
+          data.data.forEach(cot => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td class="px-4 py-2">${cot.folio}</td>
+              <td class="px-4 py-2">${cot.fecha}</td>
+              <td class="px-4 py-2">${cot.nombreCliente}</td>
+              <td class="px-4 py-2 text-green-400 font-bold">$${cot.total}</td>
+              <td class="px-4 py-2">
+                <button onclick='reimprimirPDF(${JSON.stringify(cot)})' class="text-cyan-400 hover:underline">Ver PDF</button>
+              </td>
+            `;
+            tabla.appendChild(tr);
+          });
+        } catch (error) {
+          alert("Error al obtener cotizaciones");
+          console.error(error);
+        }
+      }
+
+      // Función para reimprimir PDF
+      function reimprimirPDF(cot) {
+        document.getElementById("pdf-folio").textContent = cot.folio;
+        document.getElementById("pdf-fecha").textContent = cot.fecha;
+        document.getElementById("pdf-nombre").textContent = cot.nombreCliente;
+        document.getElementById("pdf-telefono").textContent = cot.telefono;
+        document.getElementById("pdf-ubicacion").textContent = cot.ubicacion;
+        document.getElementById("pdf-total").textContent = cot.total;
+
+        let tabla = '<table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">';
+        tabla += '<tr style="background-color: #f0f0f0; font-weight: bold;">';
+        tabla += '<td style="border: 1px solid #ccc; padding: 8px;">Producto</td>';
+        tabla += '<td style="border: 1px solid #ccc; padding: 8px;">Precio Unit.</td>';
+        tabla += '<td style="border: 1px solid #ccc; padding: 8px;">Cantidad</td>';
+        tabla += '<td style="border: 1px solid #ccc; padding: 8px;">Subtotal</td>';
+        tabla += '</tr>';
+
+        cot.productos.forEach(p => {
+          tabla += `<tr>
+            <td style="border: 1px solid #ccc; padding: 8px;">${p.nombre}</td>
+            <td style="border: 1px solid #ccc; padding: 8px;">$${p.precio}</td>
+            <td style="border: 1px solid #ccc; padding: 8px;">${p.cantidad}</td>
+            <td style="border: 1px solid #ccc; padding: 8px;">$${p.subtotal}</td>
+          </tr>`;
+        });
+
+        tabla += '</table>';
+        document.getElementById("pdf-productos").innerHTML = tabla;
+
+        const pdfElement = document.getElementById("pdf-content");
+        html2pdf().from(pdfElement).save(`cotizacion-${cot.folio}.pdf`);
+      }
+
+      // Función para descargar Excel
+      async function descargarExcel() {
+        const res = await fetch("/api/cotizaciones");
+        const { data } = await res.json();
+        const datos = data.map(c => ({
+          Folio: c.folio,
+          Fecha: c.fecha,
+          Cliente: c.nombreCliente,
+          Teléfono: c.telefono,
+          Ubicación: c.ubicacion,
+          Total: c.total
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(datos);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Cotizaciones");
+        XLSX.writeFile(wb, "Historial_Cotizaciones.xlsx");
+      }
     </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
