@@ -43,39 +43,58 @@
 
         <!-- Módulo 2: Cotización -->
         <section id="cotizacion" class="hidden">
-          <h2 class="text-2xl font-semibold mb-6 text-cyan-300">🧰 Cotización de Instalación</h2>
+          <h2 class="text-2xl font-semibold mb-6 text-cyan-300">Cotiza tu Instalación</h2>
           
-          <div class="bg-gray-800 rounded-lg p-6 space-y-6">
-            <!-- Tipo de Instalación -->
-            <div>
-              <label class="block text-sm font-medium text-gray-300 mb-2">Tipo de Instalación</label>
-              <select id="tipoInstalacion" onchange="calcularPrecio()" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white">
-                <option value="">Selecciona una opción</option>
-                <option value="tinaco1100">🔵 Tinaco 1100L - Tipo Bala</option>
-                <option value="tinaco1200">🟢 Tinaco 1200L - Estándar</option>
-                <option value="cisterna3000">🟠 Cisterna 3000L</option>
-              </select>
+          <form class="bg-gray-800 rounded-lg p-6 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block font-medium text-gray-300 mb-1">Nombre del cliente</label>
+                <input id="clienteNombre" type="text" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white" placeholder="Juan Pérez">
+              </div>
+              <div>
+                <label class="block font-medium text-gray-300 mb-1">Teléfono</label>
+                <input id="clienteTelefono" type="tel" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white" placeholder="55 1234 5678">
+              </div>
+              <div>
+                <label class="block font-medium text-gray-300 mb-1">Ubicación</label>
+                <input type="text" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white" placeholder="Ciudad o dirección">
+              </div>
+              <div>
+                <label class="block font-medium text-gray-300 mb-1">Enviar ubicación GPS</label>
+                <button type="button" onclick="enviarUbicacion()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded">Enviar ubicación</button>
+              </div>
             </div>
 
-            <!-- Materiales -->
             <div>
-              <label class="block text-sm font-medium text-gray-300 mb-2">Materiales</label>
-              <div class="grid md:grid-cols-2 gap-3">
+              <label class="block font-medium text-gray-300 mb-3">Materiales</label>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <label class="flex items-center space-x-2 text-gray-300">
                   <input type="checkbox" id="tubo4m" onchange="calcularPrecio()" class="text-cyan-400" />
-                  <span>Tubo PPR - $100</span>
+                  <span>Tubo PPR ($100)</span>
                 </label>
                 <label class="flex items-center space-x-2 text-gray-300">
-                  <input type="checkbox" id="conexion" onchange="calcularPrecio()" class="text-cyan-400" />
-                  <span>Conexiones - $40</span>
+                  <input type="checkbox" class="text-cyan-400" />
+                  <span>Codo PPR ($15)</span>
                 </label>
                 <label class="flex items-center space-x-2 text-gray-300">
                   <input type="checkbox" id="cople" onchange="calcularPrecio()" class="text-cyan-400" />
-                  <span>Cople - $10</span>
+                  <span>Cople PPR ($10)</span>
+                </label>
+                <label class="flex items-center space-x-2 text-gray-300">
+                  <input type="checkbox" id="conexion" onchange="calcularPrecio()" class="text-cyan-400" />
+                  <span>Conexión macho ($20)</span>
+                </label>
+                <label class="flex items-center space-x-2 text-gray-300">
+                  <input type="checkbox" class="text-cyan-400" />
+                  <span>Conexión hembra ($20)</span>
+                </label>
+                <label class="flex items-center space-x-2 text-gray-300">
+                  <input type="checkbox" class="text-cyan-400" />
+                  <span>Presurizador manual ($600)</span>
                 </label>
                 <label class="flex items-center space-x-2 text-gray-300">
                   <input type="checkbox" id="bombaAutomatica" onchange="calcularPrecio()" class="text-cyan-400" />
-                  <span>Bomba Automática - $1000</span>
+                  <span>Presurizador automático ($1000)</span>
                 </label>
               </div>
             </div>
@@ -87,52 +106,27 @@
               <div class="text-xl font-bold text-cyan-400">Total: <span id="precioTotal">$0</span></div>
             </div>
 
-            <!-- Cliente -->
-            <div class="grid md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-300 mb-1">Nombre del cliente</label>
-                <input id="clienteNombre" type="text" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-300 mb-1">WhatsApp</label>
-                <input id="clienteTelefono" type="tel" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white" />
-              </div>
-            </div>
-
-            <!-- Botones -->
             <div class="flex gap-3 mt-6">
-              <button onclick="generarPDF()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">📄 PDF</button>
-              <button onclick="enviarWhatsApp()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">📲 Enviar WhatsApp</button>
-              <button onclick="guardarEnUltraBase()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded">🧠 Guardar</button>
+              <button type="button" onclick="generarPDF()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded">Generar Cotización</button>
+              <button type="button" onclick="enviarWhatsApp()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded">📲 WhatsApp</button>
+              <button type="button" onclick="guardarEnUltraBase()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">📄 PDF</button>
             </div>
-          </div>
+          </form>
         </section>
 
         <!-- Módulo 3: Simulación Tinaco -->
         <section id="tinaco" class="hidden">
-          <h2 class="text-2xl font-semibold mb-6 text-cyan-300">🪣 Simulación de Tinaco</h2>
+          <h2 class="text-2xl font-semibold mb-6 text-cyan-300">Simulador de Nivel de Agua</h2>
           
-          <div class="flex flex-col items-center justify-center py-8">
-            <!-- Contenedor del tinaco -->
-            <div class="relative h-80 w-48 rounded-full border-4 border-cyan-400 bg-gradient-to-b from-gray-700 to-gray-800 overflow-hidden shadow-xl">
-              <!-- Agua -->
-              <div id="aguaTinaco" class="absolute bottom-0 left-0 w-full bg-cyan-500 text-white text-center font-bold flex items-center justify-center transition-all duration-500 ease-in-out rounded-b-full"
-                   style="height: 50%;">
-                <span id="textoNivel">50%</span>
-              </div>
+          <div class="w-full max-w-sm mx-auto bg-gray-800 shadow-md rounded-lg p-6">
+            <div class="h-64 w-full bg-gray-700 rounded relative overflow-hidden border border-gray-600">
+              <div id="nivelAgua" class="absolute bottom-0 w-full transition-all duration-500 bg-cyan-500" style="height: 50%;"></div>
             </div>
-
-            <!-- Botón -->
-            <button onclick="simularCambioNivel()" class="mt-6 flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg shadow">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16M4 4l16 16" />
-              </svg>
-              Simular Nivel
-            </button>
-
-            <p class="text-sm text-gray-400 mt-6 text-center w-full max-w-sm">
-              Esta simulación visual representa un tinaco vertical. En la versión final se conectará al sensor real de nivel.
-            </p>
+            <div class="mt-4">
+              <label class="block text-sm font-medium text-gray-300 mb-2">Nivel de agua (%)</label>
+              <input type="range" min="0" max="100" value="50" class="mt-2 w-full accent-cyan-500" onchange="actualizarNivel(this.value)">
+              <div class="text-center mt-2 text-cyan-400 font-semibold" id="porcentajeNivel">50%</div>
+            </div>
           </div>
         </section>
 
@@ -234,6 +228,32 @@
         document.querySelectorAll("main section").forEach(s => s.classList.add("hidden"));
         document.getElementById(id).classList.remove("hidden");
       }
+
+      function enviarUbicacion() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition((position) => {
+            alert(`Ubicación: Lat ${position.coords.latitude}, Lng ${position.coords.longitude}`);
+          });
+        } else {
+          alert('Tu navegador no permite obtener ubicación.');
+        }
+      }
+
+      function actualizarNivel(valor) {
+        const nivel = document.getElementById('nivelAgua');
+        const porcentaje = document.getElementById('porcentajeNivel');
+        nivel.style.height = valor + '%';
+        porcentaje.textContent = valor + '%';
+        // Cambiar color según el nivel
+        if (valor > 75) {
+          nivel.style.backgroundColor = '#06b6d4'; // cyan-500
+        } else if (valor > 30) {
+          nivel.style.backgroundColor = '#eab308'; // yellow-500
+        } else {
+          nivel.style.backgroundColor = '#dc2626'; // red-600
+        }
+      }
+
       // Cargar módulo inicial
       showModule("inicio");
     </script>

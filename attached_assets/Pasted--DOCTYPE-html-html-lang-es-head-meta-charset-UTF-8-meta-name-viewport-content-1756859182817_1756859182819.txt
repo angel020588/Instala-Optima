@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instala DOF - Cotización y Simulación</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="min-h-screen flex">
+    <!-- Menú lateral -->
+    <aside class="w-64 bg-gray-800 text-white p-4 space-y-6">
+      <h1 class="text-2xl font-bold">Instala DOF</h1>
+      <nav class="flex flex-col space-y-2">
+        <button onclick="mostrarSeccion('cotizacion')" class="text-left px-4 py-2 hover:bg-gray-700 rounded">Cotización</button>
+        <button onclick="mostrarSeccion('simulador')" class="text-left px-4 py-2 hover:bg-gray-700 rounded">Simulador Tinaco</button>
+      </nav>
+    </aside>
+
+    <!-- Contenido -->
+    <main class="flex-1 p-8">
+      <!-- Cotización -->
+      <section id="cotizacion" class="hidden">
+        <h2 class="text-2xl font-semibold mb-4">Cotiza tu Instalación</h2>
+        <form class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block font-medium">Nombre del cliente</label>
+              <input type="text" class="w-full p-2 border rounded" placeholder="Juan Pérez">
+            </div>
+            <div>
+              <label class="block font-medium">Teléfono</label>
+              <input type="tel" class="w-full p-2 border rounded" placeholder="55 1234 5678">
+            </div>
+            <div>
+              <label class="block font-medium">Ubicación</label>
+              <input type="text" class="w-full p-2 border rounded" placeholder="Ciudad o dirección">
+            </div>
+            <div>
+              <label class="block font-medium">Enviar ubicación GPS</label>
+              <button type="button" onclick="enviarUbicacion()" class="w-full bg-blue-600 text-white py-2 px-4 rounded">Enviar ubicación</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-medium mb-2">Materiales</label>
+            <div class="grid grid-cols-2 gap-4">
+              <label><input type="checkbox"> Tubo PPR ($100)</label>
+              <label><input type="checkbox"> Codo PPR ($15)</label>
+              <label><input type="checkbox"> Cople PPR ($10)</label>
+              <label><input type="checkbox"> Conexión macho ($20)</label>
+              <label><input type="checkbox"> Conexión hembra ($20)</label>
+              <label><input type="checkbox"> Presurizador manual ($600)</label>
+              <label><input type="checkbox"> Presurizador automático ($1000)</label>
+            </div>
+          </div>
+
+          <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded">Generar Cotización</button>
+        </form>
+      </section>
+
+      <!-- Simulador Tinaco -->
+      <section id="simulador" class="hidden">
+        <h2 class="text-2xl font-semibold mb-4">Simulador de Nivel de Agua</h2>
+        <div class="w-full max-w-sm mx-auto bg-white shadow-md rounded p-4">
+          <div class="h-64 w-full bg-gray-200 rounded relative overflow-hidden">
+            <div id="nivelAgua" class="absolute bottom-0 w-full transition-all duration-500"></div>
+          </div>
+          <input type="range" min="0" max="100" value="50" class="mt-4 w-full" onchange="actualizarNivel(this.value)">
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function mostrarSeccion(id) {
+      document.querySelectorAll('main section').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function enviarUbicacion() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          alert(`Ubicación: Lat ${position.coords.latitude}, Lng ${position.coords.longitude}`);
+        });
+      } else {
+        alert('Tu navegador no permite obtener ubicación.');
+      }
+    }
+
+    function actualizarNivel(valor) {
+      const nivel = document.getElementById('nivelAgua');
+      nivel.style.height = valor + '%';
+      nivel.style.backgroundColor = valor > 75 ? 'blue' : valor > 30 ? 'yellow' : 'red';
+    }
+
+    // Mostrar cotización por defecto
+    mostrarSeccion('cotizacion');
+  </script>
+</body>
+</html>
