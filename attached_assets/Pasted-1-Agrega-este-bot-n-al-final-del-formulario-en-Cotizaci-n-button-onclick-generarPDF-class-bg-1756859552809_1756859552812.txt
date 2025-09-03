@@ -1,0 +1,50 @@
+1. Agrega este botón al final del formulario en Cotización:
+<button onclick="generarPDF()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full mt-6">
+  Descargar Cotización en PDF
+</button>
+
+✅ 2. Agrega este div con ID oculto para generar el contenido del PDF (puedes ponerlo al final del HTML):
+<div id="pdf-content" class="hidden bg-white text-black p-6">
+  <h2 class="text-2xl font-bold mb-4">Cotización - Instala DOF</h2>
+  <p><strong>Nombre:</strong> <span id="pdf-nombre"></span></p>
+  <p><strong>Teléfono:</strong> <span id="pdf-telefono"></span></p>
+  <p><strong>Ubicación:</strong> <span id="pdf-ubicacion"></span></p>
+  <hr class="my-4" />
+  <div id="pdf-productos"></div>
+  <hr class="my-4" />
+  <p><strong>Total estimado:</strong> $<span id="pdf-total"></span> MXN</p>
+</div>
+
+✅ 3. Agrega este script al final antes del </body>:
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+  function generarPDF() {
+    // Obtener datos del formulario
+    const nombre = document.getElementById("nombre").value;
+    const telefono = document.getElementById("telefono").value;
+    const ubicacion = document.getElementById("ubicacion").value;
+
+    const productosSeleccionados = Array.from(document.querySelectorAll("input[type='checkbox']:checked"));
+    const pdfProductosDiv = document.getElementById("pdf-productos");
+    pdfProductosDiv.innerHTML = "";
+    let total = 0;
+
+    productosSeleccionados.forEach(p => {
+      const precio = parseInt(p.dataset.precio);
+      total += precio;
+      const item = document.createElement("p");
+      item.innerHTML = `✅ ${p.value}: $${precio}`;
+      pdfProductosDiv.appendChild(item);
+    });
+
+    // Llenar los datos en el PDF
+    document.getElementById("pdf-nombre").textContent = nombre;
+    document.getElementById("pdf-telefono").textContent = telefono;
+    document.getElementById("pdf-ubicacion").textContent = ubicacion;
+    document.getElementById("pdf-total").textContent = total;
+
+    // Generar y descargar
+    const pdfElement = document.getElementById("pdf-content");
+    html2pdf().from(pdfElement).save(`cotizacion-${nombre}.pdf`);
+  }
+</script>

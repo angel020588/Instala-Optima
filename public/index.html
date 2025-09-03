@@ -57,7 +57,7 @@
               </div>
               <div>
                 <label class="block font-medium text-gray-300 mb-1">Ubicación</label>
-                <input type="text" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white" placeholder="Ciudad o dirección">
+                <input id="ubicacion" type="text" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white" placeholder="Ciudad o dirección">
               </div>
               <div>
                 <label class="block font-medium text-gray-300 mb-1">Enviar ubicación GPS</label>
@@ -69,31 +69,31 @@
               <label class="block font-medium text-gray-300 mb-3">Materiales</label>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <label class="flex items-center space-x-2 text-gray-300">
-                  <input type="checkbox" id="tubo4m" onchange="calcularPrecio()" class="text-cyan-400" />
+                  <input type="checkbox" id="tubo4m" onchange="calcularPrecio()" class="text-cyan-400" data-precio="100" value="Tubo PPR" />
                   <span>Tubo PPR ($100)</span>
                 </label>
                 <label class="flex items-center space-x-2 text-gray-300">
-                  <input type="checkbox" class="text-cyan-400" />
+                  <input type="checkbox" class="text-cyan-400" data-precio="15" value="Codo PPR" />
                   <span>Codo PPR ($15)</span>
                 </label>
                 <label class="flex items-center space-x-2 text-gray-300">
-                  <input type="checkbox" id="cople" onchange="calcularPrecio()" class="text-cyan-400" />
+                  <input type="checkbox" id="cople" onchange="calcularPrecio()" class="text-cyan-400" data-precio="10" value="Cople PPR" />
                   <span>Cople PPR ($10)</span>
                 </label>
                 <label class="flex items-center space-x-2 text-gray-300">
-                  <input type="checkbox" id="conexion" onchange="calcularPrecio()" class="text-cyan-400" />
+                  <input type="checkbox" id="conexion" onchange="calcularPrecio()" class="text-cyan-400" data-precio="20" value="Conexión macho" />
                   <span>Conexión macho ($20)</span>
                 </label>
                 <label class="flex items-center space-x-2 text-gray-300">
-                  <input type="checkbox" class="text-cyan-400" />
+                  <input type="checkbox" class="text-cyan-400" data-precio="20" value="Conexión hembra" />
                   <span>Conexión hembra ($20)</span>
                 </label>
                 <label class="flex items-center space-x-2 text-gray-300">
-                  <input type="checkbox" class="text-cyan-400" />
+                  <input type="checkbox" class="text-cyan-400" data-precio="600" value="Presurizador manual" />
                   <span>Presurizador manual ($600)</span>
                 </label>
                 <label class="flex items-center space-x-2 text-gray-300">
-                  <input type="checkbox" id="bombaAutomatica" onchange="calcularPrecio()" class="text-cyan-400" />
+                  <input type="checkbox" id="bombaAutomatica" onchange="calcularPrecio()" class="text-cyan-400" data-precio="1000" value="Presurizador automático" />
                   <span>Presurizador automático ($1000)</span>
                 </label>
               </div>
@@ -107,10 +107,13 @@
             </div>
 
             <div class="flex gap-3 mt-6">
-              <button type="button" onclick="generarPDF()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded">Generar Cotización</button>
               <button type="button" onclick="enviarWhatsApp()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded">📲 WhatsApp</button>
-              <button type="button" onclick="guardarEnUltraBase()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">📄 PDF</button>
+              <button type="button" onclick="guardarEnUltraBase()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">💾 Guardar</button>
             </div>
+            
+            <button onclick="generarPDF()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full mt-6">
+              Descargar Cotización en PDF
+            </button>
           </form>
         </section>
 
@@ -223,6 +226,18 @@
       <button onclick="showModule('bot')">🤖</button>
     </nav>
 
+    <!-- Contenido para PDF (oculto) -->
+    <div id="pdf-content" class="hidden bg-white text-black p-6">
+      <h2 class="text-2xl font-bold mb-4">Cotización - Instala DOF</h2>
+      <p><strong>Nombre:</strong> <span id="pdf-nombre"></span></p>
+      <p><strong>Teléfono:</strong> <span id="pdf-telefono"></span></p>
+      <p><strong>Ubicación:</strong> <span id="pdf-ubicacion"></span></p>
+      <hr class="my-4" />
+      <div id="pdf-productos"></div>
+      <hr class="my-4" />
+      <p><strong>Total estimado:</strong> $<span id="pdf-total"></span> MXN</p>
+    </div>
+
     <script>
       function showModule(id) {
         document.querySelectorAll("main section").forEach(s => s.classList.add("hidden"));
@@ -256,6 +271,39 @@
 
       // Cargar módulo inicial
       showModule("inicio");
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+      function generarPDF() {
+        // Obtener datos del formulario
+        const nombre = document.getElementById("clienteNombre").value;
+        const telefono = document.getElementById("clienteTelefono").value;
+        const ubicacion = document.getElementById("ubicacion").value;
+
+        const productosSeleccionados = Array.from(document.querySelectorAll("input[type='checkbox']:checked"));
+        const pdfProductosDiv = document.getElementById("pdf-productos");
+        pdfProductosDiv.innerHTML = "";
+        let total = 0;
+
+        productosSeleccionados.forEach(p => {
+          const precio = parseInt(p.dataset.precio);
+          total += precio;
+          const item = document.createElement("p");
+          item.innerHTML = `✅ ${p.value}: $${precio}`;
+          pdfProductosDiv.appendChild(item);
+        });
+
+        // Llenar los datos en el PDF
+        document.getElementById("pdf-nombre").textContent = nombre;
+        document.getElementById("pdf-telefono").textContent = telefono;
+        document.getElementById("pdf-ubicacion").textContent = ubicacion;
+        document.getElementById("pdf-total").textContent = total;
+
+        // Generar y descargar
+        const pdfElement = document.getElementById("pdf-content");
+        html2pdf().from(pdfElement).save(`cotizacion-${nombre}.pdf`);
+      }
     </script>
     <script src="app.js"></script>
   </body>
