@@ -269,41 +269,45 @@
     </nav>
 
     <!-- Contenido para PDF (oculto) -->
-    <div id="pdf-content" class="hidden bg-white text-black p-6 relative">
-      <!-- Logo superior derecho -->
-      <img src="logo.png" style="position: absolute; top: 10px; right: 20px; height: 60px;" />
+    <div id="pdf-content" class="hidden bg-white text-black p-6 relative" style="font-family: sans-serif;">
+
+      <!-- Logo pequeño (arriba derecha) -->
+      <img src="a60deb80-b7c6-4113-bc4f-2244e51d96e8.png" 
+           style="position: absolute; top: 20px; right: 30px; height: 60px;" />
 
       <!-- Marca de agua centrada -->
-      <img src="logo.png" style="position: absolute; opacity: 0.3; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60%;" />
+      <img src="a60deb80-b7c6-4113-bc4f-2244e51d96e8.png"
+           style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.3; width: 60%;" />
 
-      <div class="text-center mb-6">
-        <h2 class="text-3xl font-extrabold mb-2">INSTALACIÓN ÓPTIMA</h2>
-        <p><strong>Folio:</strong> <span id="pdf-folio"></span> | <strong>Fecha:</strong> <span id="pdf-fecha"></span></p>
+      <div class="text-center mb-6 z-10 relative">
+        <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 10px;">INSTALACIÓN ÓPTIMA</h1>
+        <p><strong>Folio:</strong> <span id="pdf-folio"></span> |
+           <strong>Fecha:</strong> <span id="pdf-fecha"></span></p>
       </div>
-      
-      <div class="mb-4">
-        <h3 class="text-lg font-bold mb-2">Datos del Cliente:</h3>
+
+      <div class="mb-4 z-10 relative">
+        <h3 style="font-weight: bold; font-size: 18px; margin-bottom: 6px;">Datos del Cliente:</h3>
         <p><strong>Nombre:</strong> <span id="pdf-nombre"></span></p>
         <p><strong>Teléfono:</strong> <span id="pdf-telefono"></span></p>
         <p><strong>Ubicación:</strong> <span id="pdf-ubicacion"></span></p>
       </div>
 
-      <hr class="my-4" />
+      <hr style="margin: 20px 0;" />
 
-      <div class="mb-4">
-        <h3 class="text-lg font-bold mb-2">Productos:</h3>
+      <div class="mb-4 z-10 relative">
+        <h3 style="font-weight: bold; font-size: 18px; margin-bottom: 6px;">Productos:</h3>
         <div id="pdf-productos"></div>
       </div>
 
-      <hr class="my-4" />
+      <hr style="margin: 20px 0;" />
 
-      <div class="text-right">
-        <p class="text-xl font-bold">TOTAL: $<span id="pdf-total"></span> MXN</p>
+      <div class="text-right z-10 relative">
+        <p style="font-size: 20px; font-weight: bold;">TOTAL: $<span id="pdf-total"></span> MXN</p>
       </div>
 
-      <div class="mt-8 text-center text-sm text-gray-600">
-        <p>Esta cotización es válida por 30 días</p>
-        <p>¡Gracias por confiar en Instala Óptima!</p>
+      <div class="mt-8 text-center text-sm text-gray-600 z-10 relative">
+        <p>Esta cotización es válida por 30 días.</p>
+        <p>Gracias por confiar en <strong>Instala Óptima</strong>.</p>
       </div>
     </div>
 
