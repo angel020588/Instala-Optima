@@ -70,23 +70,81 @@ function enviarWhatsApp() {
   window.open(url, "_blank");
 }
 
-// Guardar en backend (simulado)
-function guardarEnUltraBase() {
-  const data = {
-    nombre: document.getElementById("clienteNombre").value,
-    telefono: document.getElementById("clienteTelefono").value,
-    resumen: document.getElementById("resumen").innerText,
-    total: document.getElementById("precioTotal").textContent,
-  };
+// Guardar en UltraBase
+async function guardarEnUltraBase() {
+  try {
+    // Obtener datos del formulario
+    const nombre = document.getElementById('clienteNombre').value;
+    const telefono = document.getElementById('clienteTelefono').value;
+    const ubicacion = document.getElementById('ubicacion').value;
 
-  fetch("/guardar", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  })
-    .then((res) => res.json())
-    .then((res) => alert("Guardado en UltraBase (simulado)"))
-    .catch((err) => console.error("Error al guardar:", err));
+    if (!nombre) {
+      alert('Por favor ingresa el nombre del cliente');
+      return;
+    }
+
+    // Calcular productos y total
+    const inputs = document.querySelectorAll('input[type="number"][data-precio]');
+    const manoObra = document.getElementById('manoObra').checked;
+    let productos = [];
+    let total = 0;
+
+    inputs.forEach(input => {
+      const cantidad = parseInt(input.value) || 0;
+      if (cantidad > 0) {
+        const precio = parseInt(input.dataset.precio);
+        const subtotal = cantidad * precio;
+        total += subtotal;
+        const nombreProducto = input.previousElementSibling.textContent.split(' - ')[0];
+        
+        productos.push({
+          nombre: nombreProducto,
+          precio: precio,
+          cantidad: cantidad,
+          subtotal: subtotal
+        });
+      }
+    });
+
+    if (manoObra) {
+      total += 750;
+      productos.push({
+        nombre: 'Mano de obra',
+        precio: 750,
+        cantidad: 1,
+        subtotal: 750
+      });
+    }
+
+    const datosCompletos = {
+      folio: folio,
+      fecha: fecha,
+      nombreCliente: nombre,
+      telefono: telefono,
+      ubicacion: ubicacion,
+      productos: productos,
+      manoObra: manoObra,
+      total: total
+    };
+
+    const response = await fetch('/api/cotizaciones/guardar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(datosCompletos)
+    });
+
+    const resultado = await response.json();
+    console.log('✅ Guardado en UltraBase:', resultado);
+    
+    if (response.ok) {
+      alert(`✅ Cotización ${folio} guardada correctamente en UltraBase`);
+    } else {
+      throw new Error(resultado.mensaje || 'Error al guardar');
+    }
+  } catch (error) {
+    console.error('Error al guardar:', error);
+    alert('❌ Error al guardar en UltraBase');
+  }
 }
 
 // FUNCIONES DEL MENÚ LATERAL Y NAVEGACIÓN

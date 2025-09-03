@@ -8,14 +8,16 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Ruta para guardar cotización (temporal)
+// Ruta para guardar cotización - redirigir a API
 app.post("/guardar", (req, res) => {
   const cotizacion = req.body;
-  console.log("📥 Cotización recibida:", cotizacion);
-
-  // Simulación de guardado
-  // Aquí podrías conectar con UltraBase o una base real
-  res.json({ status: "ok", message: "Cotización guardada correctamente" });
+  console.log("📥 Cotización recibida, redirigiendo a UltraBase...");
+  
+  // Redirigir a la API de UltraBase
+  res.status(200).json({ 
+    mensaje: "✅ Cotización procesada, guardando en UltraBase...",
+    redirect: "/api/cotizaciones/guardar"
+  });
 });
 
 // Servir index.html por defecto
