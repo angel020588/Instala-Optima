@@ -50,23 +50,40 @@
 
     <script>
       async function enviar() {
-        const porcentaje = document.getElementById("porcentaje").value;
-        const estado_bomba = document.getElementById("estado_bomba").value;
+        const porcentajeElement = document.getElementById("porcentaje");
+        const estadoBombaElement = document.getElementById("estado_bomba");
+        const respuestaElement = document.getElementById("respuesta");
+        
+        if (!porcentajeElement || !estadoBombaElement || !respuestaElement) {
+          console.error("Elementos del formulario no encontrados");
+          return;
+        }
+        
+        const porcentaje = porcentajeElement.value;
+        const estado_bomba = estadoBombaElement.value;
 
-        const respuesta = await fetch("/api/nivel", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            dispositivo: "simulador-web",
-            porcentaje: parseFloat(porcentaje),
-            estado_bomba: estado_bomba,
-          }),
-        });
+        try {
+          respuestaElement.innerText = "⏳ Enviando datos...";
+          
+          const respuesta = await fetch("/api/nivel", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              dispositivo: "simulador-web",
+              porcentaje: parseFloat(porcentaje),
+              estado_bomba: estado_bomba,
+            }),
+          });
 
-        const res = await respuesta.json();
-        document.getElementById("respuesta").innerText = res.ok
-          ? "✅ Datos enviados correctamente."
-          : "❌ Error al enviar.";
+          const res = await respuesta.json();
+          respuestaElement.innerText = res.ok
+            ? "✅ Datos enviados correctamente."
+            : "❌ Error al enviar: " + (res.mensaje || "Error desconocido");
+            
+        } catch (error) {
+          console.error("Error al enviar datos:", error);
+          respuestaElement.innerText = "❌ Error de conexión: " + error.message;
+        }
       }
     </script>
   </body>
