@@ -55,6 +55,21 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+// Endpoint para recibir datos del ESP32
+app.post('/api/nivel', (req, res) => {
+  const { dispositivo, nivel_cm, estado_bomba } = req.body;
+
+  console.log("📡 Datos recibidos del ESP32:");
+  console.log({ dispositivo, nivel_cm, estado_bomba });
+
+  // Aquí puedes agregar lógica adicional como:
+  // - Guardar en base de datos
+  // - Enviar alertas si el nivel es muy bajo
+  // - Actualizar estado en tiempo real
+
+  res.status(200).json({ ok: true, mensaje: "Datos recibidos correctamente" });
+});
+
 // Ruta principal para servir el frontend
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public/index.html"));
