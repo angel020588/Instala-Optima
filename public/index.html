@@ -144,12 +144,14 @@
           
           <div class="w-full max-w-sm mx-auto bg-gray-800 shadow-md rounded-lg p-6">
             <div class="h-64 w-full bg-gray-700 rounded relative overflow-hidden border border-gray-600">
-              <div id="nivelAgua" class="absolute bottom-0 w-full transition-all duration-500 bg-cyan-500" style="height: 50%;"></div>
+              <div id="aguaTinaco" class="absolute bottom-0 w-full transition-all duration-500 bg-cyan-500" style="height: 50%;"></div>
             </div>
             <div class="mt-4">
               <label class="block text-sm font-medium text-gray-300 mb-2">Nivel de agua (%)</label>
               <input type="range" min="0" max="100" value="50" class="mt-2 w-full accent-cyan-500" onchange="actualizarNivel(this.value)">
-              <div class="text-center mt-2 text-cyan-400 font-semibold" id="porcentajeNivel">50%</div>
+              <div class="text-center mt-2 text-cyan-400 font-semibold" id="porcentajeTinaco">50%</div>
+              <div class="text-center mt-1 text-gray-400 text-sm">Litros: <span id="litrosActuales">600</span>L</div>
+              <div class="text-center mt-1 text-sm">Estado bomba: <span id="estadoBomba" class="text-gray-600">Apagada</span></div>
             </div>
           </div>
         </section>
@@ -332,17 +334,36 @@
       }
 
       function actualizarNivel(valor) {
-        const nivel = document.getElementById('nivelAgua');
-        const porcentaje = document.getElementById('porcentajeNivel');
-        nivel.style.height = valor + '%';
-        porcentaje.textContent = valor + '%';
-        // Cambiar color según el nivel
-        if (valor > 75) {
-          nivel.style.backgroundColor = '#06b6d4'; // cyan-500
-        } else if (valor > 30) {
-          nivel.style.backgroundColor = '#eab308'; // yellow-500
-        } else {
-          nivel.style.backgroundColor = '#dc2626'; // red-600
+        const aguaTinaco = document.getElementById('aguaTinaco');
+        const porcentajeTinaco = document.getElementById('porcentajeTinaco');
+        const litrosActuales = document.getElementById('litrosActuales');
+        const estadoBomba = document.getElementById('estadoBomba');
+        
+        if (aguaTinaco) {
+          aguaTinaco.style.height = valor + '%';
+          // Cambiar color según el nivel
+          if (valor > 75) {
+            aguaTinaco.style.backgroundColor = '#06b6d4'; // cyan-500
+          } else if (valor > 30) {
+            aguaTinaco.style.backgroundColor = '#eab308'; // yellow-500
+          } else {
+            aguaTinaco.style.backgroundColor = '#dc2626'; // red-600
+          }
+        }
+        if (porcentajeTinaco) {
+          porcentajeTinaco.textContent = valor + '%';
+        }
+        if (litrosActuales) {
+          litrosActuales.textContent = Math.round(1200 * valor / 100);
+        }
+        if (estadoBomba) {
+          if (valor < 30) {
+            estadoBomba.textContent = "Encendida (Auto)";
+            estadoBomba.className = "text-green-600 font-semibold";
+          } else {
+            estadoBomba.textContent = "Apagada";
+            estadoBomba.className = "text-gray-600";
+          }
         }
       }
 
