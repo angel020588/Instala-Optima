@@ -8,6 +8,14 @@ const sequelize = require("./config/db");
 app.use(cors());
 app.use(express.json());
 
+// Configuración para producción
+app.use((req, res, next) => {
+  res.header('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.header('Pragma', 'no-cache');
+  res.header('Expires', '0');
+  next();
+});
+
 // Servir archivos estáticos del frontend
 app.use(express.static(path.join(__dirname, "public")));
 

@@ -60,10 +60,20 @@ function generarPDF() {
 
 // Enviar WhatsApp
 function enviarWhatsApp() {
-  const nombre = document.getElementById("clienteNombre").value;
-  const telefono = document.getElementById("clienteTelefono").value;
-  const resumen = document.getElementById("resumen").innerText;
-  const total = document.getElementById("precioTotal").textContent;
+  const nombreElement = document.getElementById("clienteNombre");
+  const telefonoElement = document.getElementById("clienteTelefono");
+  const resumenElement = document.getElementById("resumen");
+  const totalElement = document.getElementById("precioTotal");
+  
+  if (!nombreElement || !telefonoElement || !resumenElement || !totalElement) {
+    alert('Error: Datos del formulario no disponibles');
+    return;
+  }
+  
+  const nombre = nombreElement.value;
+  const telefono = telefonoElement.value;
+  const resumen = resumenElement.innerText;
+  const total = totalElement.textContent;
 
   const mensaje = `🚿 *Instala DOF - Cotización* \n\n👤 *Cliente:* ${nombre}\n\n${resumen}\n\n💰 *Total:* ${total}`;
   const url = `https://wa.me/52${telefono}?text=${encodeURIComponent(mensaje)}`;
@@ -73,10 +83,20 @@ function enviarWhatsApp() {
 // Guardar en UltraBase
 async function guardarEnUltraBase() {
   try {
-    // Obtener datos del formulario
-    const nombre = document.getElementById('clienteNombre').value;
-    const telefono = document.getElementById('clienteTelefono').value;
-    const ubicacion = document.getElementById('ubicacion').value;
+    // Obtener elementos del formulario con validación
+    const nombreElement = document.getElementById('clienteNombre');
+    const telefonoElement = document.getElementById('clienteTelefono');
+    const ubicacionElement = document.getElementById('ubicacion');
+    
+    if (!nombreElement || !telefonoElement || !ubicacionElement) {
+      console.error('Elementos del formulario no encontrados');
+      alert('Error: Formulario no disponible');
+      return;
+    }
+    
+    const nombre = nombreElement.value;
+    const telefono = telefonoElement.value;
+    const ubicacion = ubicacionElement.value;
 
     if (!nombre) {
       alert('Por favor ingresa el nombre del cliente');
