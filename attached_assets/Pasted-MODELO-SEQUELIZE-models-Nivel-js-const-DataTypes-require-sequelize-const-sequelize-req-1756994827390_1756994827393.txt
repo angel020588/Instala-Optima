@@ -1,0 +1,145 @@
+MODELO SEQUELIZE – models/Nivel.js
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/db");
+
+const Nivel = sequelize.define("Nivel", {
+  dispositivo: { type: DataTypes.STRING },
+  porcentaje: { type: DataTypes.FLOAT },
+  estado_bomba: { type: DataTypes.STRING },
+}, {
+  timestamps: true
+});
+
+module.exports = Nivel;
+
+2️⃣ RUTA routes/nivel.js
+const express = require("express");
+const router = express.Router();
+const Nivel = require("../models/Nivel");
+
+// Recibir datos desde el ESP32
+router.post("/", async (req, res) => {
+  const { dispositivo, porcentaje, estado_bomba } = req.body;
+
+  try {
+    await Nivel.create({ dispositivo, porcentaje, estado_bomba });
+    res.status(200).json({ ok: true, mensaje: "Nivel guardado correctamente" });
+  } catch (error) {
+    console.error("❌ Error al guardar nivel:", error);
+    res.status(500).json({ ok: false, mensaje: "Error interno" });
+  }
+});
+
+// Devolver historial para la página
+router.get("/historial", async (req, res) => {
+  try {
+    const historial = await Nivel.findAll({
+      order: [['createdAt', 'DESC']],
+      limit: 20
+    });
+    res.json(historial);
+  } catch (error) {
+    console.error("❌ Error al obtener historial:", error);
+    res.status(500).json({ ok: false });
+  }
+});
+
+module.exports = router;
+
+3️⃣ REGISTRO EN index.js
+
+Agrega esto arriba del endpoint de cotizaciones:
+
+const nivelRoutes = require("./routes/nivel");
+app.use("/api/nivel", nivelRoutes);
+
+4️⃣ PÁGINA VISUAL public/nivel.html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Nivel de Agua - Instala Óptima</title>
+  <style>
+    body { font-family: Arial, background: #f4f4f4; padding: 20px; }
+    h1 { color: #145DA0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    button { background: red; color: white; padding: 10px 20px; border: none; font-size: 16px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>💧 Monitoreo de Tinaco</h1>
+  <p><strong>Último porcentaje de llenado:</strong> <span id="ultimo">Cargando...</span>%</p>
+  <button onclick="apagarBomba()">🚫 Apagar Bomba</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Dispositivo</th>
+        <th>% Llenado</th>
+        <th>Estado Bomba</th>
+      </tr>
+    </thead>
+    <tbody id="tabla"></tbody>
+  </table>
+
+  <script>
+    async function cargarHistorial() {
+      const res = await fetch('/api/nivel/historial');
+      const datos = await res.json();
+      const tabla = document.getElementById('tabla');
+      const ultimo = document.getElementById('ultimo');
+      tabla.innerHTML = "";
+
+      datos.forEach((row, i) => {
+        if (i === 0) ultimo.textContent = row.porcentaje;
+        tabla.innerHTML += `
+          <tr>
+            <td>${new Date(row.createdAt).toLocaleString()}</td>
+            <td>${row.dispositivo}</td>
+            <td>${row.porcentaje}%</td>
+            <td>${row.estado_bomba}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function apagarBomba() {
+      fetch('/api/nivel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dispositivo: "esp32-001", porcentaje: 0, estado_bomba: "OFF" })
+      }).then(() => {
+        alert("🚨 Comando enviado para apagar la bomba.");
+        cargarHistorial();
+      });
+    }
+
+    cargarHistorial();
+    setInterval(cargarHistorial, 5000); // Actualiza cada 5 segundos
+  </script>
+</body>
+</html>
+
+5️⃣ MODIFICA EL CÓDIGO DEL ESP32 PARA ENVIAR PORCENTAJE
+
+Reemplaza esta parte del código:
+
+distancia_cm = random(20, 71); // Simula nivel
+
+
+Por esta:
+
+float altura_max = 60.0; // Ejemplo: altura máxima del tinaco en cm
+float distancia = random(0, int(altura_max) + 1);
+float porcentaje = 100.0 - ((distancia / altura_max) * 100.0);
+
+
+Y en el JSON, manda esto:
+
+String json = "{";
+json += "\"dispositivo\":\"esp32-001\",";
+json += "\"porcentaje\":" + String(porcentaje, 1) + ",";
+json += "\"estado_bomba\":\"" + estado_bomba + "\"";
+json += "}";
