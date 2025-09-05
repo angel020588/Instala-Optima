@@ -1,25 +1,48 @@
-if (WiFi.status() == WL_CONNECTED) {
-  HTTPClient http;
-  http.begin("https://instala-optima-ecotisat.replit.app/api/esp32");
-  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-  String postData = "nivel=" + String(porcentaje);
-  int httpResponseCode = http.POST(postData);
+const express = require('express');
+const router = express.Router();
 
-  if (httpResponseCode > 0) {
-    String respuesta = http.getString();
-    Serial.println("Respuesta servidor: " + respuesta);
+// Ruta para recibir datos del ESP32
+router.get('/', (req, res) => {
+  const nivel = parseInt(req.query.nivel);
 
-    if (respuesta.indexOf("apagar") >= 0) {
-      digitalWrite(relayPin, HIGH);
-    } else if (respuesta.indexOf("encender") >= 0) {
-      digitalWrite(relayPin, LOW);
-    }
-
-  } else {
-    Serial.print("Error HTTP: ");
-    Serial.println(httpResponseCode);
+  if (isNaN(nivel)) {
+    return res.status(400).send('nivel inválido');
   }
 
-  http.end();
-}
+  console.log('📡 Nivel recibido del ESP32:', nivel + '%');
+
+  if (nivel <= 20) {
+    return res.send('encender');
+  } else if (nivel >= 95) {
+    return res.send('apagar');
+  } else {
+    return res.send('esperar');
+  }
+});
+
+// Ruta POST para recibir datos del ESP32 (alternativa)
+router.post('/', (req, res) => {
+  const { nivel, dispositivo } = req.body;
+
+  if (isNaN(nivel)) {
+    return res.status(400).json({ error: 'Nivel inválido' });
+  }
+
+  console.log('📡 Datos ESP32:', { dispositivo, nivel: nivel + '%' });
+
+  let comando = 'esperar';
+  if (nivel <= 20) {
+    comando = 'encender';
+  } else if (nivel >= 95) {
+    comando = 'apagar';
+  }
+
+  res.json({ 
+    comando: comando,
+    nivel: nivel,
+    mensaje: `Nivel ${nivel}% - ${comando} bomba`
+  });
+});
+
+module.exports = router;
