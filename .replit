@@ -58,6 +58,5 @@ waitForPort = 5000
 [workflows.workflow.metadata]
 outputType = "webview"
 
-# ✅ CORREGIDO: Exponer directamente el puerto 5000 (no lo mapeamos a 80)
 [[ports]]
 localPort = 5000
