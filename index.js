@@ -9,9 +9,6 @@ const sequelize = require("./config/db");
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const esp32Router = require("./routes/esp32"); // o "./api/esp32" según tu estructura
-app.use("/api/esp32", esp32Router);
-
 // ✅ Evitar caché
 app.use((req, res, next) => {
   res.header("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -28,87 +25,9 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
-// ✅ RUTA ESP32 - Recibir datos del sensor y enviar órdenes
-app.post("/api/esp32", (req, res) => {
-  console.log("📥 Datos recibidos desde ESP32:", req.body);
-
-  const nivel = parseInt(req.body.nivel);
-  const dispositivo = req.body.dispositivo || "ESP32";
-  const estado = req.body.estado || "desconocido";
-
-  if (isNaN(nivel)) {
-    return res.status(400).send("ERROR");
-  }
-
-  console.log(
-    `📊 Nivel de agua: ${nivel}%, Dispositivo: ${dispositivo}, Estado: ${estado}`,
-  );
-
-  // Lógica de control de bomba mejorada
-  let orden = "ESPERAR";
-  if (nivel <= 30) {
-    orden = "ENCENDER";
-  } else if (nivel >= 90) {
-    orden = "APAGAR";
-  }
-
-  console.log(`🚦 Enviando orden al ESP32: ${orden}`);
-
-  // Enviar respuesta como texto plano para el ESP32
-  res.status(200).send(orden);
-});
-
-// ✅ Ruta GET para pruebas (opcional)
-app.get("/api/esp32", (req, res) => {
-  const nivel = parseInt(req.query.nivel);
-
-  if (isNaN(nivel)) {
-    return res.send(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>API ESP32 - Instala Óptima</title>
-        <style>
-          body { font-family: Arial; max-width: 600px; margin: 50px auto; padding: 20px; }
-          .status { background: #22c55e; color: white; padding: 15px; border-radius: 5px; text-align: center; }
-          .test { background: #f3f4f6; padding: 15px; border-radius: 5px; margin: 15px 0; }
-        </style>
-      </head>
-      <body>
-        <h1>📡 API ESP32 - Instala Óptima</h1>
-        <div class="status">✅ Servidor funcionando correctamente</div>
-        
-        <div class="test">
-          <h3>🧪 Prueba la API:</h3>
-          <p><strong>Ejemplos:</strong></p>
-          <ul>
-            <li><a href="/api/esp32?nivel=15">Nivel 15% (debería responder: encender)</a></li>
-            <li><a href="/api/esp32?nivel=50">Nivel 50% (debería responder: esperar)</a></li>
-            <li><a href="/api/esp32?nivel=98">Nivel 98% (debería responder: apagar)</a></li>
-          </ul>
-        </div>
-
-        <div class="test">
-          <h3>⚙️ Lógica de control:</h3>
-          <ul>
-            <li><strong>Nivel ≤ 20%:</strong> Encender bomba</li>
-            <li><strong>Nivel ≥ 95%:</strong> Apagar bomba</li>
-            <li><strong>21% - 94%:</strong> Esperar</li>
-          </ul>
-        </div>
-      </body>
-      </html>
-    `);
-  }
-
-  // Respuesta simple para pruebas GET
-  let respuesta = "esperar";
-  if (nivel <= 20) respuesta = "encender";
-  else if (nivel >= 95) respuesta = "apagar";
-
-  console.log(`📊 Nivel GET recibido: ${nivel}% - Respuesta: ${respuesta}`);
-  res.send(respuesta);
-});
+// ✅ CONECTAR RUTA ESP32 (usando el router separado)
+const esp32Router = require("./routes/esp32");
+app.use("/api/esp32", esp32Router);
 
 // ✅ Otras rutas API
 const nivelRoutes = require("./routes/nivel");
@@ -189,10 +108,18 @@ sequelize
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`🚀 Servidor UltraBase corriendo en puerto ${PORT}`);
       console.log(
-        `📡 API ESP32 disponible en: http://localhost:${PORT}/api/esp32`,
+        `📡 API ESP32 disponible en: https://instala-optima-ecotisat.replit.app/api/esp32`,
       );
+      console.log(`📊 Panel web: https://instala-optima-ecotisat.replit.app`);
     });
   })
   .catch((err) => {
     console.error("❌ Error al conectar UltraBase:", err);
+    // Arrancar servidor sin base de datos en caso de error
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`🚀 Servidor básico corriendo en puerto ${PORT} (sin BD)`);
+      console.log(
+        `📡 API ESP32 disponible en: https://instala-optima-ecotisat.replit.app/api/esp32`,
+      );
+    });
   });
