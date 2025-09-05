@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   calcularPrecio();
+  configurarChatInput();
 });
 
 // Valores base
@@ -270,9 +271,11 @@ function encenderBomba(estado) {
   console.log(`Bomba ${estado ? "ENCENDIDA" : "APAGADA"}`);
 }
 
-function actualizarUmbral() {
-  const umbral = document.getElementById('umbralEncendido').value;
-  document.getElementById('valorUmbral').textContent = `${umbral}%`;
+function actualizarValorUmbral(valor) {
+  const valorUmbralElement = document.getElementById('valorUmbral');
+  if (valorUmbralElement) {
+    valorUmbralElement.textContent = `${valor}%`;
+  }
 }
 
 function guardarConfigBomba() {
@@ -304,6 +307,18 @@ function enviarMensaje() {
     const respuesta = generarRespuestaBot(pregunta);
     agregarMensajeChat('Bot', respuesta, 'bg-blue-100');
   }, 1000);
+}
+
+// Permitir enviar mensaje con Enter
+function configurarChatInput() {
+  const chatInput = document.getElementById('chatInput');
+  if (chatInput) {
+    chatInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        enviarMensaje();
+      }
+    });
+  }
 }
 
 function preguntaRapida(pregunta) {
@@ -338,8 +353,8 @@ function generarRespuestaBot(mensaje) {
 
 // NUEVA FUNCIÓN PARA EL CHATBOT CON IA REAL
 async function responderIA() {
-  const input = document.getElementById("inputIA");
-  const chat = document.getElementById("chatBot");
+  const input = document.getElementById("chatInput");
+  const chat = document.getElementById("chatMessages");
 
   if (!input || !chat) {
     console.error("Elementos del chat no encontrados");
