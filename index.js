@@ -176,16 +176,16 @@ app.use((req, res) => {
 // ✅ Configuración del puerto
 const PORT = process.env.PORT || 5000;
 
-// ✅ Conexión y arranque del servidor
+// ✅ Conexión y arranque del servidor UltraBase
 sequelize
   .sync({ alter: true })
   .then(() => {
-    console.log("✅ Base de datos conectada y sincronizada correctamente.");
+    console.log("✅ UltraBase (Hetzner) conectada y sincronizada correctamente.");
     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
+      console.log(`🚀 Servidor UltraBase corriendo en puerto ${PORT}`);
       console.log(`📡 API ESP32 disponible en: http://localhost:${PORT}/api/esp32`);
     });
   })
   .catch((err) => {
-    console.error("❌ Error al conectar base de datos:", err);
+    console.error("❌ Error al conectar UltraBase:", err);
   });
