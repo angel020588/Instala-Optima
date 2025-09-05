@@ -1,4 +1,3 @@
-
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -10,6 +9,8 @@ const sequelize = require("./config/db");
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+const esp32Router = require("./routes/esp32"); // o "./api/esp32" según tu estructura
+app.use("/api/esp32", esp32Router);
 
 // ✅ Evitar caché
 app.use((req, res, next) => {
@@ -39,7 +40,9 @@ app.post("/api/esp32", (req, res) => {
     return res.status(400).send("ERROR");
   }
 
-  console.log(`📊 Nivel de agua: ${nivel}%, Dispositivo: ${dispositivo}, Estado: ${estado}`);
+  console.log(
+    `📊 Nivel de agua: ${nivel}%, Dispositivo: ${dispositivo}, Estado: ${estado}`,
+  );
 
   // Lógica de control de bomba mejorada
   let orden = "ESPERAR";
@@ -50,7 +53,7 @@ app.post("/api/esp32", (req, res) => {
   }
 
   console.log(`🚦 Enviando orden al ESP32: ${orden}`);
-  
+
   // Enviar respuesta como texto plano para el ESP32
   res.status(200).send(orden);
 });
@@ -58,7 +61,7 @@ app.post("/api/esp32", (req, res) => {
 // ✅ Ruta GET para pruebas (opcional)
 app.get("/api/esp32", (req, res) => {
   const nivel = parseInt(req.query.nivel);
-  
+
   if (isNaN(nivel)) {
     return res.send(`
       <!DOCTYPE html>
@@ -137,7 +140,9 @@ app.post("/api/chat", async (req, res) => {
         messages: [
           {
             role: "system",
-            content: contexto || "Eres un asistente especializado en sistemas de agua e instalaciones hidráulicas para la empresa 'Instala Óptima'. Ayudas con preguntas sobre sensores ESP32, tinacos, bombas, cotizaciones y instalaciones de agua. Responde de manera profesional y útil en español.",
+            content:
+              contexto ||
+              "Eres un asistente especializado en sistemas de agua e instalaciones hidráulicas para la empresa 'Instala Óptima'. Ayudas con preguntas sobre sensores ESP32, tinacos, bombas, cotizaciones y instalaciones de agua. Responde de manera profesional y útil en español.",
           },
           { role: "user", content: mensaje },
         ],
@@ -157,7 +162,8 @@ app.post("/api/chat", async (req, res) => {
     console.error("❌ Error en chat IA:", error);
     res.status(500).json({
       error: "Error interno del servidor",
-      respuesta: "Lo siento, tengo problemas técnicos temporales. Intenta de nuevo en unos momentos.",
+      respuesta:
+        "Lo siento, tengo problemas técnicos temporales. Intenta de nuevo en unos momentos.",
     });
   }
 });
@@ -177,10 +183,14 @@ const PORT = process.env.PORT || 5000;
 sequelize
   .sync({ alter: true })
   .then(() => {
-    console.log("✅ UltraBase (Hetzner) conectada y sincronizada correctamente.");
+    console.log(
+      "✅ UltraBase (Hetzner) conectada y sincronizada correctamente.",
+    );
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`🚀 Servidor UltraBase corriendo en puerto ${PORT}`);
-      console.log(`📡 API ESP32 disponible en: http://localhost:${PORT}/api/esp32`);
+      console.log(
+        `📡 API ESP32 disponible en: http://localhost:${PORT}/api/esp32`,
+      );
     });
   })
   .catch((err) => {
