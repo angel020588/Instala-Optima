@@ -333,6 +333,12 @@ function generarRespuestaBot(mensaje) {
 async function responderIA() {
   const input = document.getElementById("inputIA");
   const chat = document.getElementById("chatBot");
+  
+  if (!input || !chat) {
+    console.error("Elementos del chat no encontrados");
+    return;
+  }
+  
   const pregunta = input.value.trim();
 
   if (!pregunta) return;
@@ -361,7 +367,10 @@ async function responderIA() {
     const data = await response.json();
     
     // Remover indicador de carga
-    document.getElementById("loading-msg").remove();
+    const loadingMsg = document.getElementById("loading-msg");
+    if (loadingMsg) {
+      loadingMsg.remove();
+    }
     
     // Mostrar respuesta de la IA
     chat.innerHTML += `<div class="text-sm text-blue-600">🤖 InstalaBot: ${data.respuesta}</div>`;
@@ -370,7 +379,10 @@ async function responderIA() {
     console.error('Error al consultar IA:', error);
     
     // Remover indicador de carga
-    document.getElementById("loading-msg").remove();
+    const loadingMsg = document.getElementById("loading-msg");
+    if (loadingMsg) {
+      loadingMsg.remove();
+    }
     
     // Respuesta de fallback
     chat.innerHTML += `<div class="text-sm text-blue-600">🤖 InstalaBot: Lo siento, tengo problemas técnicos. Puedes preguntar sobre sensores, bombas, tinacos o cotizaciones y te ayudo con información básica.</div>`;

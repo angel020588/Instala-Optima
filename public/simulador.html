@@ -2,88 +2,94 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>Simulador ESP32 - Instala Óptima</title>
+    <title>Simulador de Nivel - Instala Óptima</title>
     <style>
       body {
         font-family: Arial, sans-serif;
-        background: #f2f2f2;
-        padding: 20px;
+        background: #f0f4f8;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
       }
+
       h1 {
-        color: #145da0;
+        margin-bottom: 20px;
       }
-      label {
-        display: block;
-        margin-top: 15px;
+
+      input {
+        padding: 10px;
+        font-size: 18px;
+        width: 200px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
       }
-      input,
-      select,
+
       button {
-        padding: 8px;
+        padding: 10px 20px;
         font-size: 16px;
-        margin-top: 5px;
-      }
-      button {
-        background-color: #28a745;
-        color: white;
+        background-color: #0077ff;
+        color: #fff;
         border: none;
-        margin-top: 20px;
+        border-radius: 8px;
         cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #005fcc;
       }
     </style>
   </head>
   <body>
-    <h1>🧪 Simulador ESP32 - Instala Óptima</h1>
+    <h1>Simulador de Nivel de Agua</h1>
 
-    <label for="porcentaje">Porcentaje de llenado:</label>
-    <input type="number" id="porcentaje" min="0" max="100" value="75" />
-
-    <label for="estado_bomba">Estado de la bomba:</label>
-    <select id="estado_bomba">
-      <option value="ON">ON</option>
-      <option value="OFF">OFF</option>
-    </select>
-
-    <button onclick="enviar()">Enviar datos simulados</button>
-
-    <p id="respuesta" style="margin-top: 20px"></p>
+    <input
+      type="number"
+      id="nivel"
+      placeholder="Porcentaje (%)"
+      min="0"
+      max="100"
+    />
+    <button onclick="enviar()">Enviar</button>
 
     <script>
-      async function enviar() {
-        const porcentajeElement = document.getElementById("porcentaje");
-        const estadoBombaElement = document.getElementById("estado_bomba");
-        const respuestaElement = document.getElementById("respuesta");
+      function enviar() {
+        const nivelElement = document.getElementById("nivel");
         
-        if (!porcentajeElement || !estadoBombaElement || !respuestaElement) {
-          console.error("Elementos del formulario no encontrados");
+        if (!nivelElement) {
+          alert("Error: No se pudo encontrar el campo de nivel");
           return;
         }
         
-        const porcentaje = porcentajeElement.value;
-        const estado_bomba = estadoBombaElement.value;
-
-        try {
-          respuestaElement.innerText = "⏳ Enviando datos...";
-          
-          const respuesta = await fetch("/api/nivel", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              dispositivo: "simulador-web",
-              porcentaje: parseFloat(porcentaje),
-              estado_bomba: estado_bomba,
-            }),
-          });
-
-          const res = await respuesta.json();
-          respuestaElement.innerText = res.ok
-            ? "✅ Datos enviados correctamente."
-            : "❌ Error al enviar: " + (res.mensaje || "Error desconocido");
-            
-        } catch (error) {
-          console.error("Error al enviar datos:", error);
-          respuestaElement.innerText = "❌ Error de conexión: " + error.message;
+        const porcentaje = nivelElement.value;
+        if (porcentaje === "" || porcentaje < 0 || porcentaje > 100) {
+          alert("Ingresa un valor entre 0 y 100");
+          return;
         }
+
+        fetch("/api/nivel", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ 
+            dispositivo: "simulador-web",
+            porcentaje: Number(porcentaje),
+            estado_bomba: "OFF"
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            alert("✅ Nivel enviado: " + porcentaje + "%");
+          })
+          .catch((err) => {
+            console.error(err);
+            alert("❌ Error al enviar nivel");
+          });
       }
     </script>
   </body>

@@ -67,6 +67,26 @@ app.post('/api/chat', async (req, res) => {
 });
 
 
+// Endpoint ESP32 para recibir datos de sensores
+app.get("/api/esp32", (req, res) => {
+  const nivel = parseInt(req.query.nivel);
+
+  if (isNaN(nivel)) {
+    return res.status(400).send("nivel inválido");
+  }
+
+  console.log("📡 Nivel recibido del ESP32:", nivel + "%");
+
+  // Lógica de control automático de bomba
+  if (nivel <= 20) {
+    return res.send("encender");
+  } else if (nivel >= 95) {
+    return res.send("apagar");
+  } else {
+    return res.send("esperar");
+  }
+});
+
 // Ruta principal para servir el frontend
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public/index.html"));
