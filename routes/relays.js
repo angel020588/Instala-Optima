@@ -2,6 +2,10 @@
 const express = require("express");
 const router = express.Router();
 const Nivel = require("../models/Nivel");
+const axios = require("axios");
+
+// IP del ESP32 COM4 (relé) en red local
+const RELAY_IP = "http://192.168.100.39"; // Cambiar por la IP real del COM4
 
 // Variable para almacenar el estado manual (se reinicia al reiniciar servidor)
 let estadoManual = null; // null = automático, "encender" o "apagar" = manual
@@ -40,8 +44,8 @@ router.get("/comando", async (req, res) => {
   }
 });
 
-// Nueva ruta para control manual
-router.post("/manual", (req, res) => {
+// Ruta para control manual - NUEVA VERSIÓN con comunicación directa al ESP32
+router.post("/manual", async (req, res) => {
   const comando = req.body.comando;
 
   if (!comando || !["encender", "apagar", "automatico"].includes(comando)) {
@@ -50,14 +54,43 @@ router.post("/manual", (req, res) => {
     });
   }
 
+  // Si es modo automático, solo cambiar el estado interno
   if (comando === "automatico") {
     estadoManual = null; // Volver a modo automático
     console.log("🔄 Modo automático activado");
-    res.json({ mensaje: "Modo automático activado", estado: "automatico" });
-  } else {
-    estadoManual = comando; // Guardar comando manual
-    console.log("🔧 Comando manual establecido:", comando);
-    res.json({ mensaje: `Bomba ${comando} manualmente`, estado: comando });
+    return res.json({ mensaje: "Modo automático activado", estado: "automatico" });
+  }
+
+  // Para comandos encender/apagar, enviar al ESP32 COM4
+  try {
+    console.log(`🔧 Enviando comando "${comando}" al ESP32: ${RELAY_IP}`);
+    
+    const respuesta = await axios.post(`${RELAY_IP}/api/orden-rele`, comando, {
+      headers: { "Content-Type": "text/plain" },
+      timeout: 5000 // 5 segundos de timeout
+    });
+
+    // Guardar estado manual
+    estadoManual = comando;
+    console.log("✅ Comando enviado exitosamente al ESP32:", respuesta.data);
+    
+    res.json({ 
+      mensaje: `Bomba ${comando} manualmente - Enviado al ESP32`, 
+      estado: comando,
+      esp32_respuesta: respuesta.data
+    });
+
+  } catch (error) {
+    console.error("❌ Error al enviar comando al ESP32:", error.message);
+    
+    // Aún así guardar el estado manual para el sistema interno
+    estadoManual = comando;
+    
+    res.status(500).json({ 
+      error: "Error al enviar al ESP32", 
+      detalle: error.message,
+      mensaje: `Estado "${comando}" guardado localmente pero no se pudo enviar al ESP32`
+    });
   }
 });
 
@@ -65,7 +98,8 @@ router.post("/manual", (req, res) => {
 router.get("/estado", (req, res) => {
   res.json({
     modo: estadoManual ? "manual" : "automatico",
-    comando: estadoManual || "automatico"
+    comando: estadoManual || "automatico",
+    esp32_ip: RELAY_IP
   });
 });
 
