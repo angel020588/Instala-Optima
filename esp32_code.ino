@@ -17,6 +17,12 @@ void setup() {
     Serial.println("Conectando a WiFi...");
   }
   Serial.println("Conectado a WiFi");
+  
+  // Debug adicional para verificar conexión
+  Serial.print("IP local: ");
+  Serial.println(WiFi.localIP());
+  Serial.print("Señal WiFi: ");
+  Serial.println(WiFi.RSSI());
 }
 
 void loop() {
@@ -30,6 +36,10 @@ void loop() {
 
     String postData = "nivel=" + String(porcentaje) + "&dispositivo=ESP32";
     int httpResponseCode = http.POST(postData);
+
+    // Debug mejorado para respuesta HTTP
+    Serial.print("HTTP Response code: ");
+    Serial.println(httpResponseCode);
 
     if (httpResponseCode > 0) {
       String respuesta = http.getString();
@@ -46,6 +56,8 @@ void loop() {
     } else {
       Serial.print("Error HTTP: ");
       Serial.println(httpResponseCode);
+      Serial.print("Error detalle: ");
+      Serial.println(http.errorToString(httpResponseCode));
     }
 
     http.end();
