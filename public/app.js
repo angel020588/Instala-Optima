@@ -19,6 +19,12 @@ function calcularPrecio() {
   let total = 0;
   let resumen = [];
 
+  // Verificar si estamos en la página correcta antes de calcular
+  const precioTotalElement = document.getElementById("precioTotal");
+  if (!precioTotalElement) {
+    return; // No estamos en la página de cotizaciones
+  }
+
   const tipoElement = document.getElementById("tipoInstalacion");
   if (tipoElement && tipoElement.value && precios[tipoElement.value]) {
     const tipo = tipoElement.value;
@@ -34,7 +40,6 @@ function calcularPrecio() {
     }
   });
 
-  const precioTotalElement = document.getElementById("precioTotal");
   const resumenElement = document.getElementById("resumen");
   
   if (precioTotalElement) {
