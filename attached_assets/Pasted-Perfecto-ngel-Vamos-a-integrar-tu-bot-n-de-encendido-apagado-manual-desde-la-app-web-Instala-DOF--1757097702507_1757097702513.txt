@@ -1,0 +1,112 @@
+Perfecto, Ángel. Vamos a integrar tu botón de encendido/apagado manual desde la app web Instala DOF para que le mande el comando al ESP32 COM4 (192.168.100.39) en red local.
+
+✅ Objetivo
+
+Cuando desde tu app web se haga clic en un botón (por ejemplo, “Encender” o “Apagar”), se enviará un POST a:
+
+http://192.168.100.39/api/orden-rele
+
+
+con el cuerpo:
+
+encender
+
+
+o
+
+apagar
+
+
+Tu ESP32 COM4 ya está listo para recibir esto.
+
+🧠 ¿Qué partes necesitamos?
+
+✅ Ruta en el backend de Replit (Node.js) para recibir el clic del usuario.
+
+✅ Esa ruta usa Axios para enviar el POST al ESP32 COM4.
+
+✅ Tu frontend hace fetch("/api/relays/manual", {comando: "encender"}).
+
+🔧 PASO 1: Ruta en el backend (Node.js / Express)
+
+Crea un archivo o edita routes/relays.js:
+
+// routes/relays.js
+const express = require("express");
+const router = express.Router();
+const axios = require("axios");
+
+// IP del ESP32 COM4 (relé)
+const RELAY_IP = "http://192.168.100.39";
+
+router.post("/manual", async (req, res) => {
+  const comando = req.body.comando;
+
+  if (!["encender", "apagar"].includes(comando)) {
+    return res.status(400).json({ error: "Comando inválido" });
+  }
+
+  try {
+    const respuesta = await axios.post(`${RELAY_IP}/api/orden-rele`, comando, {
+      headers: { "Content-Type": "text/plain" }
+    });
+
+    res.json({ status: "ok", respuesta: respuesta.data });
+  } catch (error) {
+    console.error("❌ Error al contactar al ESP32 COM4:", error.message);
+    res.status(500).json({ error: "No se pudo contactar al ESP32", detalle: error.message });
+  }
+});
+
+module.exports = router;
+
+PASO 2: Conectar la ruta en tu index.js
+
+Asegúrate de tener esto en tu archivo principal:
+
+const relayRoutes = require("./routes/relays");
+app.use("/api/relays", relayRoutes);
+
+🎯 PASO 3: Botón en tu frontend (HTML + JavaScript)
+
+Aquí tienes un ejemplo simple de botón en HTML que llama la ruta manual:
+
+<button onclick="encenderBomba()">Encender Bomba</button>
+<button onclick="apagarBomba()">Apagar Bomba</button>
+
+<script>
+  function encenderBomba() {
+    enviarComando("encender");
+  }
+
+  function apagarBomba() {
+    enviarComando("apagar");
+  }
+
+  async function enviarComando(comando) {
+    const res = await fetch("/api/relays/manual", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ comando })
+    });
+
+    const data = await res.json();
+    console.log("Respuesta del backend:", data);
+    alert("Bomba: " + data.respuesta);
+  }
+</script>
+
+✅ ¿Qué va a pasar ahora?
+
+Clic en botón "Encender" → frontend llama a /api/relays/manual → backend → ESP32 COM4.
+
+Si todo está bien, verás en el Serial del COM4:
+
+📥 Orden recibida: encender
+⚡️ Relé ENCENDIDO
+
+🚨 NOTA IMPORTANTE
+
+Este método solo funcionará si tu backend está en la misma red local que el ESP32 COM4 (por ejemplo, en tu laptop, o en Replit con un túnel).
