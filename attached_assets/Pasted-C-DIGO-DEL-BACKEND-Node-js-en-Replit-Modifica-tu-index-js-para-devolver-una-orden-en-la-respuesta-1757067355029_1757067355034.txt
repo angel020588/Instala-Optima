@@ -1,0 +1,98 @@
+CÓDIGO DEL BACKEND (Node.js en Replit)
+
+Modifica tu index.js para devolver una orden en la respuesta:
+
+// index.js (fragmento)
+
+app.post('/api/esp32', (req, res) => {
+  const { nivel, estado } = req.body;
+
+  console.log(`📥 Datos del ESP32 → Nivel: ${nivel}%, Estado: ${estado}`);
+
+  // 🔁 Lógica de decisión (ejemplo simple)
+  let orden = 'ESPERAR';
+
+  if (parseInt(nivel) <= 30) {
+    orden = 'ENCENDER';
+  } else if (parseInt(nivel) >= 90) {
+    orden = 'APAGAR';
+  }
+
+  console.log(`🚦 Enviando orden al ESP32: ${orden}`);
+  res.status(200).send(orden); // 👉 Se envía como texto plano
+});
+
+📟 2. CÓDIGO DEL ESP32
+
+Ajusta tu código para capturar la orden del servidor:
+
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <WiFiClientSecure.h>
+
+const char* ssid = "TU_SSID";
+const char* password = "TU_PASSWORD";
+
+const char* serverName = "https://instala-optima-ecotisat.replit.app:5000/api/esp32";
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(5, OUTPUT); // 👈 Suponiendo que el relé o enchufe está en GPIO 5
+
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\n✅ WiFi conectado");
+
+  // 👉 Comunicación HTTPS
+  WiFiClientSecure client;
+  client.setInsecure(); // ⚠️ Solo para pruebas
+
+  HTTPClient https;
+  https.begin(client, serverName);
+  https.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+  String postData = "nivel=25&estado=esperar"; // Simula nivel bajo
+  int httpResponseCode = https.POST(postData);
+
+  if (httpResponseCode > 0) {
+    String orden = https.getString();
+    Serial.print("📩 Orden recibida del servidor: ");
+    Serial.println(orden);
+
+    // 👉 Ejecutar orden
+    if (orden == "ENCENDER") {
+      digitalWrite(5, HIGH);  // Enciende relé
+      Serial.println("⚡ Relé ENCENDIDO");
+    } else if (orden == "APAGAR") {
+      digitalWrite(5, LOW);   // Apaga relé
+      Serial.println("🛑 Relé APAGADO");
+    } else {
+      Serial.println("⏸️ Esperando instrucciones...");
+    }
+
+  } else {
+    Serial.print("❌ Error HTTP: ");
+    Serial.println(httpResponseCode);
+  }
+
+  https.end();
+}
+
+void loop() {
+  // Aquí podrías repetir la consulta cada X minutos, si quieres que sea dinámico
+}
+
+✅ Resultado esperado
+Si el nivel de agua es 25:
+
+El backend responde ENCENDER
+
+El ESP32 activa el GPIO 5 (enciende relé o enchufe)
+
+Imprime en el monitor serial:
+
+📩 Orden recibida del servidor: ENCENDER
+⚡ Relé ENCENDIDO
