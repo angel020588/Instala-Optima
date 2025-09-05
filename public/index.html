@@ -379,25 +379,35 @@
       
       // Inicializar al cargar
       document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('folio').textContent = folio;
-        document.getElementById('fecha').textContent = fecha;
+        const folioElement = document.getElementById('folio');
+        const fechaElement = document.getElementById('fecha');
+        
+        if (folioElement) {
+          folioElement.textContent = folio;
+        }
+        if (fechaElement) {
+          fechaElement.textContent = fecha;
+        }
       });
 
       function calcularTotal() {
         const inputs = document.querySelectorAll('input[type="number"][data-precio]');
-        const manoObra = document.getElementById('manoObra').checked;
+        const manoObraElement = document.getElementById('manoObra');
+        const manoObra = manoObraElement ? manoObraElement.checked : false;
         let total = 0;
         let resumen = [];
 
         inputs.forEach(input => {
-          const cantidad = parseInt(input.value) || 0;
-          const precio = parseInt(input.dataset.precio);
-          const subtotal = cantidad * precio;
-          
-          if (cantidad > 0) {
-            total += subtotal;
-            const nombre = input.previousElementSibling.textContent.split(' - ')[0];
-            resumen.push(`${nombre}: ${cantidad} × $${precio} = $${subtotal}`);
+          if (input && input.value !== undefined) {
+            const cantidad = parseInt(input.value) || 0;
+            const precio = parseInt(input.dataset.precio);
+            const subtotal = cantidad * precio;
+            
+            if (cantidad > 0) {
+              total += subtotal;
+              const nombre = input.previousElementSibling ? input.previousElementSibling.textContent.split(' - ')[0] : 'Producto';
+              resumen.push(`${nombre}: ${cantidad} × $${precio} = $${subtotal}`);
+            }
           }
         });
 
@@ -406,21 +416,35 @@
           resumen.push('Mano de obra: $750');
         }
 
-        document.getElementById('precioTotal').textContent = total;
+        const precioTotalElement = document.getElementById('precioTotal');
+        if (precioTotalElement) {
+          precioTotalElement.textContent = total;
+        }
         
         const resumenDiv = document.getElementById('resumen');
-        if (resumen.length > 0) {
-          resumenDiv.innerHTML = resumen.join('<br>');
-        } else {
-          resumenDiv.textContent = 'Ingresa cantidades para cotizar.';
+        if (resumenDiv) {
+          if (resumen.length > 0) {
+            resumenDiv.innerHTML = resumen.join('<br>');
+          } else {
+            resumenDiv.textContent = 'Ingresa cantidades para cotizar.';
+          }
         }
       }
 
       function generarPDF() {
         // Obtener datos del formulario
-        const nombre = document.getElementById("clienteNombre").value;
-        const telefono = document.getElementById("clienteTelefono").value;
-        const ubicacion = document.getElementById("ubicacion").value;
+        const nombreElement = document.getElementById("clienteNombre");
+        const telefonoElement = document.getElementById("clienteTelefono");
+        const ubicacionElement = document.getElementById("ubicacion");
+        
+        if (!nombreElement || !telefonoElement || !ubicacionElement) {
+          alert("Error: No se pudieron encontrar los campos del formulario");
+          return;
+        }
+        
+        const nombre = nombreElement.value;
+        const telefono = telefonoElement.value;
+        const ubicacion = ubicacionElement.value;
 
         if (!nombre) {
           alert('Por favor ingresa el nombre del cliente');
