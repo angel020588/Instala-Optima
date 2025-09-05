@@ -191,11 +191,32 @@
 
         <!-- Módulo 5: Bomba -->
         <section id="bomba" class="hidden">
-          <h2 class="text-2xl font-semibold mb-6 text-cyan-300">⚙️ Encendido de Bomba</h2>
+          <h2 class="text-2xl font-semibold mb-6 text-cyan-300">⚙️ Control de Bomba</h2>
 
           <div class="bg-gray-800 rounded-lg p-8 shadow-md max-w-2xl space-y-6">
-            <div>
-              <label class="block text-sm font-medium text-gray-300 mb-2">Encender bomba automáticamente si el nivel es menor a:</label>
+            
+            <!-- Control Manual -->
+            <div class="bg-gray-700 p-6 rounded-lg">
+              <h3 class="text-lg font-semibold text-cyan-300 mb-4">🔧 Control Manual</h3>
+              <div class="grid grid-cols-3 gap-4">
+                <button onclick="encenderBombaManual()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-semibold">
+                  🟢 Encender
+                </button>
+                <button onclick="apagarBombaManual()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg font-semibold">
+                  🔴 Apagar
+                </button>
+                <button onclick="modoAutomatico()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-semibold">
+                  🤖 Automático
+                </button>
+              </div>
+              <p class="text-sm text-gray-400 mt-3">Estado actual: <span id="estadoBomba" class="text-cyan-400">🤖 Automático</span></p>
+            </div>
+
+            <!-- Configuración Automática -->
+            <div class="bg-gray-700 p-6 rounded-lg">
+              <h3 class="text-lg font-semibold text-cyan-300 mb-4">🤖 Configuración Automática</h3>
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Encender bomba automáticamente si el nivel es menor a:</label>
               <div class="flex items-center gap-2">
                 <input id="umbralEncendido" type="range" min="5" max="95" value="30" onchange="actualizarUmbral()" class="flex-1 accent-cyan-500" />
                 <span id="valorUmbral" class="text-sm text-cyan-400 font-bold">30%</span>

@@ -249,6 +249,77 @@ function actualizarTinaco(porcentaje) {
   }
 }
 
+// FUNCIONES DE CONTROL MANUAL DE BOMBA
+function encenderBombaManual() {
+  fetch('/api/relays/manual', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ comando: 'encender' })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert('✅ ' + data.mensaje);
+    actualizarEstadoBomba('manual-encendida');
+  })
+  .catch(err => {
+    console.error('Error:', err);
+    alert('❌ Error al encender bomba');
+  });
+}
+
+function apagarBombaManual() {
+  fetch('/api/relays/manual', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ comando: 'apagar' })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert('✅ ' + data.mensaje);
+    actualizarEstadoBomba('manual-apagada');
+  })
+  .catch(err => {
+    console.error('Error:', err);
+    alert('❌ Error al apagar bomba');
+  });
+}
+
+function modoAutomatico() {
+  fetch('/api/relays/manual', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ comando: 'automatico' })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert('✅ ' + data.mensaje);
+    actualizarEstadoBomba('automatico');
+  })
+  .catch(err => {
+    console.error('Error:', err);
+    alert('❌ Error al activar modo automático');
+  });
+}
+
+function actualizarEstadoBomba(estado) {
+  const estadoBombaElement = document.getElementById('estadoBomba');
+  if (estadoBombaElement) {
+    switch(estado) {
+      case 'manual-encendida':
+        estadoBombaElement.innerHTML = '<span class="text-green-400">🔧 Manual - Encendida</span>';
+        break;
+      case 'manual-apagada':
+        estadoBombaElement.innerHTML = '<span class="text-red-400">🔧 Manual - Apagada</span>';
+        break;
+      case 'automatico':
+        estadoBombaElement.innerHTML = '<span class="text-blue-400">🤖 Automático</span>';
+        break;
+      default:
+        estadoBombaElement.innerHTML = '<span class="text-gray-400">Esperando...</span>';
+    }
+  }
+}
+
 // FUNCIONES DEL SENSOR
 function configurarWifi() {
   const wifiNameElement = document.getElementById('wifiName');
