@@ -96,13 +96,16 @@ app.use((req, res) => {
   });
 });
 
+// ✅ Configuración dinámica del puerto
+const PORT = process.env.PORT || 5000;
+
 // ✅ Conexión y arranque del servidor
 sequelize
   .sync({ alter: true })
   .then(() => {
     console.log("✅ UltraBase conectada y sincronizada correctamente.");
-    app.listen(5000, "0.0.0.0", () => {
-      console.log("🚀 Servidor de UltraBase corriendo en puerto 5000");
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`🚀 Servidor de UltraBase corriendo en puerto ${PORT}`);
     });
   })
   .catch((err) => {
