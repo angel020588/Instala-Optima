@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
-// ✅ RUTA ESP32 - Recibir datos del sensor
+// ✅ RUTA ESP32 - Recibir datos del sensor y enviar órdenes
 app.post("/api/esp32", (req, res) => {
   console.log("📥 Datos recibidos desde ESP32:", req.body);
 
@@ -36,26 +36,23 @@ app.post("/api/esp32", (req, res) => {
   const estado = req.body.estado || "desconocido";
 
   if (isNaN(nivel)) {
-    return res.status(400).json({ error: "Nivel inválido" });
+    return res.status(400).send("ERROR");
   }
 
   console.log(`📊 Nivel de agua: ${nivel}%, Dispositivo: ${dispositivo}, Estado: ${estado}`);
 
-  // Lógica de control de bomba
-  let comando = "esperar";
-  if (nivel <= 20) {
-    comando = "encender";
-  } else if (nivel >= 95) {
-    comando = "apagar";
+  // Lógica de control de bomba mejorada
+  let orden = "ESPERAR";
+  if (nivel <= 30) {
+    orden = "ENCENDER";
+  } else if (nivel >= 90) {
+    orden = "APAGAR";
   }
 
-  // Respuesta al ESP32
-  res.status(200).json({
-    comando: comando,
-    nivel: nivel,
-    mensaje: `Nivel ${nivel}% - ${comando} bomba`,
-    timestamp: new Date().toISOString()
-  });
+  console.log(`🚦 Enviando orden al ESP32: ${orden}`);
+  
+  // Enviar respuesta como texto plano para el ESP32
+  res.status(200).send(orden);
 });
 
 // ✅ Ruta GET para pruebas (opcional)

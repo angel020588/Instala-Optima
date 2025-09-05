@@ -1,24 +1,29 @@
 
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include <WiFiClientSecure.h>
 
 const char* ssid = "TU_RED_WIFI";
 const char* password = "TU_PASSWORD";
-const int relayPin = 2;
+const char* serverName = "https://instala-optima-ecotisat.replit.app/api/esp32";
+
+const int relayPin = 5; // GPIO para controlar el relé/bomba
+int nivelActual = 50;   // Variable para simular sensor (reemplaza con lectura real)
 
 void setup() {
   Serial.begin(115200);
   pinMode(relayPin, OUTPUT);
-  digitalWrite(relayPin, HIGH); // Bomba apagada por defecto
+  digitalWrite(relayPin, LOW); // Bomba apagada por defecto
   
+  // Conectar a WiFi
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println("Conectando a WiFi...");
   }
-  Serial.println("Conectado a WiFi");
+  Serial.println("✅ WiFi conectado");
   
-  // Debug adicional para verificar conexión
+  // Debug de conexión
   Serial.print("IP local: ");
   Serial.println(WiFi.localIP());
   Serial.print("Señal WiFi: ");
@@ -26,42 +31,69 @@ void setup() {
 }
 
 void loop() {
-  // Aquí iría tu código para medir el nivel de agua
-  int porcentaje = 50; // Ejemplo: reemplaza con lectura real del sensor
-  
   if (WiFi.status() == WL_CONNECTED) {
-    HTTPClient http;
-    http.begin("https://instala-optima-ecotisat.replit.app/api/esp32");
-    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-
-    String postData = "nivel=" + String(porcentaje) + "&dispositivo=ESP32";
-    int httpResponseCode = http.POST(postData);
-
-    // Debug mejorado para respuesta HTTP
+    
+    // Simular lectura del sensor (reemplaza con código real del sensor)
+    nivelActual = random(10, 100); // Para pruebas - usar sensor real
+    
+    Serial.print("📊 Nivel medido: ");
+    Serial.print(nivelActual);
+    Serial.println("%");
+    
+    // Configurar cliente HTTPS
+    WiFiClientSecure client;
+    client.setInsecure(); // Para desarrollo - considera certificados en producción
+    
+    HTTPClient https;
+    https.begin(client, serverName);
+    https.addHeader("Content-Type", "application/x-www-form-urlencoded");
+    
+    // Preparar datos para enviar
+    String postData = "nivel=" + String(nivelActual) + "&dispositivo=ESP32&estado=activo";
+    
+    // Enviar datos al servidor
+    int httpResponseCode = https.POST(postData);
+    
     Serial.print("HTTP Response code: ");
     Serial.println(httpResponseCode);
-
+    
     if (httpResponseCode > 0) {
-      String respuesta = http.getString();
-      Serial.println("Respuesta servidor: " + respuesta);
-
-      if (respuesta.indexOf("apagar") >= 0) {
+      String orden = https.getString();
+      orden.trim(); // Eliminar espacios en blanco
+      
+      Serial.print("📩 Orden recibida del servidor: ");
+      Serial.println(orden);
+      
+      // Ejecutar la orden recibida
+      if (orden == "ENCENDER") {
         digitalWrite(relayPin, HIGH);
-        Serial.println("Bomba APAGADA");
-      } else if (respuesta.indexOf("encender") >= 0) {
+        Serial.println("⚡ Bomba ENCENDIDA");
+      } 
+      else if (orden == "APAGAR") {
         digitalWrite(relayPin, LOW);
-        Serial.println("Bomba ENCENDIDA");
+        Serial.println("🛑 Bomba APAGADA");
+      } 
+      else if (orden == "ESPERAR") {
+        Serial.println("⏸️ Bomba en espera...");
       }
-
+      else {
+        Serial.println("❓ Orden no reconocida: " + orden);
+      }
+      
     } else {
-      Serial.print("Error HTTP: ");
+      Serial.print("❌ Error HTTP: ");
       Serial.println(httpResponseCode);
       Serial.print("Error detalle: ");
-      Serial.println(http.errorToString(httpResponseCode));
+      Serial.println(https.errorToString(httpResponseCode));
     }
-
-    http.end();
+    
+    https.end();
+    
+  } else {
+    Serial.println("❌ WiFi desconectado - reintentando...");
+    WiFi.reconnect();
   }
   
-  delay(10000); // Esperar 10 segundos antes del siguiente envío
+  // Esperar 15 segundos antes de la siguiente consulta
+  delay(15000);
 }

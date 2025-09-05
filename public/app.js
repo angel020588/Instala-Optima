@@ -255,7 +255,7 @@ function configurarWifi() {
   const wifiPassElement = document.getElementById('wifiPass');
   
   if (!wifiNameElement || !wifiPassElement) {
-    alert('Elementos de WiFi no encontrados');
+    console.warn('Elementos de WiFi no encontrados en esta página');
     return;
   }
   
@@ -276,6 +276,10 @@ function configurarWifi() {
     
     if (estadoElement) estadoElement.textContent = 'Conectado';
     if (senalElement) senalElement.textContent = '-42 dBm';
+    
+    // Actualizar otros elementos si existen
+    const nivelElement = document.getElementById('nivelAgua');
+    if (nivelElement) nivelElement.textContent = '75%';
   }, 2000);
 }
 
