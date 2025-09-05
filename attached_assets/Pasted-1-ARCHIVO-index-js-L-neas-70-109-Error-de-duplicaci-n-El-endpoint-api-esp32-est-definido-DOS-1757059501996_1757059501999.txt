@@ -1,0 +1,65 @@
+1. ARCHIVO: index.js (Líneas 70-109)
+Error de duplicación: El endpoint /api/esp32 está definido DOS VECES idénticamente
+Líneas 70-86: Primera definición
+Líneas 93-109: Segunda definición duplicada
+Impacto: Confusión en rutas, solo funciona la última definición
+2. ARCHIVO: public/index.html (Líneas 183-184)
+Error en inputs WiFi: No tienen id definidos
+Línea 183: <input type="text" placeholder="Nombre de tu Red (SSID)" - FALTA ID
+Línea 184: <input type="password" placeholder="Contraseña" - FALTA ID
+Impacto: Las funciones JavaScript no pueden acceder a estos elementos
+3. ARCHIVO: public/app.js (Líneas 240-241)
+Error de elementos no definidos: Busca elementos que no existen
+Línea 240: document.getElementById('wifiName') - ELEMENTO NO EXISTE
+Línea 241: document.getElementById('wifiPass') - ELEMENTO NO EXISTE
+Impacto: Error "Cannot read properties of null (reading 'value')"
+4. ARCHIVO: public/app.js (Líneas 274-280)
+Error de elementos no definidos: Busca elementos inexistentes
+Línea 274: document.getElementById('umbralEncendido') - NO EXISTE
+Línea 275: document.getElementById('valorUmbral') - NO EXISTE
+Línea 279: document.getElementById('umbralEncendido') - NO EXISTE
+Línea 280: document.getElementById('tiempoMax') - NO EXISTE
+5. ARCHIVO: public/app.js (Líneas 286-304)
+Error de elementos no definidos: Referencias a elementos inexistentes
+Línea 286: document.getElementById('chatInput') - NO EXISTE
+Línea 303: document.getElementById('chatInput') - NO EXISTE
+Línea 308: document.getElementById('chatMessages') - NO EXISTE
+🟡 ERRORES MENORES
+6. ARCHIVO: public/index.html (Línea 455)
+Error potencial: Acceso directo sin validación
+Línea 455: document.getElementById('manoObra').checked sin verificar si existe
+Impacto: Posible error si el elemento no existe
+7. ARCHIVO: public/app.js (Líneas 108, 252-253)
+Error potencial: Acceso a elementos sin validación
+Línea 108: document.getElementById('manoObra').checked sin verificar
+Líneas 252-253: Acceso a elementos que pueden no existir
+8. ARCHIVO: server.js
+Error funcional: Archivo redundante e innecesario
+Problema: Contiene un servidor Express separado que no se usa
+Impacto: Confusión en el código, archivo sobrante
+9. ARCHIVO: cotizador_new.html
+Error funcional: Archivo HTML fragmentado
+Problema: Solo contiene un fragmento HTML sin estructura completa
+Impacto: Archivo no funcional, posible confusión
+🟢 INCONSISTENCIAS DE CÓDIGO
+10. ARCHIVO: public/index.html (Línea 200)
+Inconsistencia: Input con ID umbralAuto pero JavaScript busca umbralEncendido
+Línea 200: <input id="umbralAuto"... vs JavaScript que busca umbralEncendido
+11. ARCHIVO: public/index.html (Línea 215)
+Inconsistencia: Elemento con ID estadoBomba duplicado
+Problema: Hay múltiples elementos con el mismo ID en diferentes secciones
+Impacto: JavaScript puede acceder al elemento incorrecto
+📊 RESUMEN DE ERRORES
+Tipo de Error	Cantidad	Criticidad
+Duplicación de código	1	Alta
+Elementos DOM faltantes	8	Alta
+Archivos redundantes	2	Media
+IDs inconsistentes	2	Media
+TOTAL	13	Mixta
+🔥 ERRORES QUE CAUSAN EL ERROR ACTUAL
+Los errores que están causando el mensaje "Cannot read properties of null (reading 'value')" son:
+
+app.js líneas 240-241 - wifiName/wifiPass
+app.js líneas 274-280 - umbralEncendido/valorUmbral/tiempoMax
+app.js líneas 286-304 - chatInput/chatMessages
+index.html líneas 183-184 - inputs sin ID
