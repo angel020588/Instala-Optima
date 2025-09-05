@@ -1,3 +1,4 @@
+
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -5,12 +6,12 @@ const path = require("path");
 const app = express();
 const sequelize = require("./config/db");
 
-// Middleware
+// ✅ Middlewares necesarios
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // ✅ Necesario para ESP32
+app.use(express.urlencoded({ extended: true })); // <- NECESARIO para datos tipo x-www-form-urlencoded
 
-// Evitar caché en producción
+// ✅ Evitar caché en producción
 app.use((req, res, next) => {
   res.header("Cache-Control", "no-cache, no-store, must-revalidate");
   res.header("Pragma", "no-cache");
@@ -18,24 +19,31 @@ app.use((req, res, next) => {
   next();
 });
 
-// Servir archivos estáticos del frontend (desde carpeta public/)
+// ✅ Servir archivos estáticos del frontend (desde carpeta public/)
 app.use(express.static(path.join(__dirname, "public")));
 
-// Rutas existentes
-
-const cotizaciones = require("./routes/cotizaciones");
-app.use("/api/cotizaciones", cotizaciones);
+// ✅ Rutas API - orden optimizado
+const esp32Routes = require("./routes/esp32");
+app.use("/api/esp32", esp32Routes);
 
 const nivelRoutes = require("./routes/nivel");
 app.use("/api/nivel", nivelRoutes);
 
-const esp32Routes = require("./routes/esp32");
-app.use("/api/esp32", esp32Routes);
+const cotizaciones = require("./routes/cotizaciones");
+app.use("/api/cotizaciones", cotizaciones);
 
-// Ruta de Chat IA
+// ✅ Ruta de Chat IA con manejo completo de errores
 app.post("/api/chat", async (req, res) => {
   try {
     const { mensaje, contexto } = req.body;
+
+    // Validar datos de entrada
+    if (!mensaje) {
+      return res.status(400).json({
+        error: "Mensaje requerido",
+        respuesta: "Por favor, escribe un mensaje para continuar."
+      });
+    }
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -46,7 +54,10 @@ app.post("/api/chat", async (req, res) => {
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
         messages: [
-          { role: "system", content: contexto },
+          { 
+            role: "system", 
+            content: contexto || "Eres un asistente especializado en sistemas de agua e instalaciones hidráulicas para la empresa 'Instala Óptima'. Ayudas con preguntas sobre sensores ESP32, tinacos, bombas, cotizaciones y instalaciones de agua. Responde de manera profesional y útil en español."
+          },
           { role: "user", content: mensaje },
         ],
         max_tokens: 500,
@@ -65,18 +76,25 @@ app.post("/api/chat", async (req, res) => {
     console.error("❌ Error en chat IA:", error);
     res.status(500).json({
       error: "Error interno del servidor",
-      respuesta:
-        "Lo siento, tengo problemas técnicos temporales. Intenta de nuevo en unos momentos.",
+      respuesta: "Lo siento, tengo problemas técnicos temporales. Intenta de nuevo en unos momentos."
     });
   }
 });
 
-// Ruta raíz para frontend
+// ✅ Ruta raíz para frontend
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
-// Conexión y arranque
+// ✅ Manejo de rutas no encontradas
+app.use((req, res) => {
+  res.status(404).json({
+    error: "Ruta no encontrada",
+    mensaje: `La ruta ${req.method} ${req.path} no existe en este servidor.`
+  });
+});
+
+// ✅ Conexión y arranque del servidor
 sequelize
   .sync({ alter: true })
   .then(() => {
