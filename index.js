@@ -1,3 +1,4 @@
+
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -5,12 +6,12 @@ const path = require("path");
 const app = express();
 const sequelize = require("./config/db");
 
-// ✅ Middlewares necesarios
+// ✅ Middlewares esenciales
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // <- NECESARIO para datos tipo x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
 
-// ✅ Evitar caché en producción
+// ✅ Evitar caché
 app.use((req, res, next) => {
   res.header("Cache-Control", "no-cache, no-store, must-revalidate");
   res.header("Pragma", "no-cache");
@@ -18,25 +19,109 @@ app.use((req, res, next) => {
   next();
 });
 
-// ✅ Servir archivos estáticos del frontend (desde carpeta public/)
+// ✅ Servir archivos estáticos
 app.use(express.static(path.join(__dirname, "public")));
 
-// ✅ Rutas API - orden optimizado
-const esp32Routes = require("./routes/esp32");
-app.use("/api/esp32", esp32Routes);
+// ✅ Ruta principal
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/index.html"));
+});
 
+// ✅ RUTA ESP32 - Recibir datos del sensor
+app.post("/api/esp32", (req, res) => {
+  console.log("📥 Datos recibidos desde ESP32:", req.body);
+
+  const nivel = parseInt(req.body.nivel);
+  const dispositivo = req.body.dispositivo || "ESP32";
+  const estado = req.body.estado || "desconocido";
+
+  if (isNaN(nivel)) {
+    return res.status(400).json({ error: "Nivel inválido" });
+  }
+
+  console.log(`📊 Nivel de agua: ${nivel}%, Dispositivo: ${dispositivo}, Estado: ${estado}`);
+
+  // Lógica de control de bomba
+  let comando = "esperar";
+  if (nivel <= 20) {
+    comando = "encender";
+  } else if (nivel >= 95) {
+    comando = "apagar";
+  }
+
+  // Respuesta al ESP32
+  res.status(200).json({
+    comando: comando,
+    nivel: nivel,
+    mensaje: `Nivel ${nivel}% - ${comando} bomba`,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// ✅ Ruta GET para pruebas (opcional)
+app.get("/api/esp32", (req, res) => {
+  const nivel = parseInt(req.query.nivel);
+  
+  if (isNaN(nivel)) {
+    return res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>API ESP32 - Instala Óptima</title>
+        <style>
+          body { font-family: Arial; max-width: 600px; margin: 50px auto; padding: 20px; }
+          .status { background: #22c55e; color: white; padding: 15px; border-radius: 5px; text-align: center; }
+          .test { background: #f3f4f6; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        </style>
+      </head>
+      <body>
+        <h1>📡 API ESP32 - Instala Óptima</h1>
+        <div class="status">✅ Servidor funcionando correctamente</div>
+        
+        <div class="test">
+          <h3>🧪 Prueba la API:</h3>
+          <p><strong>Ejemplos:</strong></p>
+          <ul>
+            <li><a href="/api/esp32?nivel=15">Nivel 15% (debería responder: encender)</a></li>
+            <li><a href="/api/esp32?nivel=50">Nivel 50% (debería responder: esperar)</a></li>
+            <li><a href="/api/esp32?nivel=98">Nivel 98% (debería responder: apagar)</a></li>
+          </ul>
+        </div>
+
+        <div class="test">
+          <h3>⚙️ Lógica de control:</h3>
+          <ul>
+            <li><strong>Nivel ≤ 20%:</strong> Encender bomba</li>
+            <li><strong>Nivel ≥ 95%:</strong> Apagar bomba</li>
+            <li><strong>21% - 94%:</strong> Esperar</li>
+          </ul>
+        </div>
+      </body>
+      </html>
+    `);
+  }
+
+  // Respuesta simple para pruebas GET
+  let respuesta = "esperar";
+  if (nivel <= 20) respuesta = "encender";
+  else if (nivel >= 95) respuesta = "apagar";
+
+  console.log(`📊 Nivel GET recibido: ${nivel}% - Respuesta: ${respuesta}`);
+  res.send(respuesta);
+});
+
+// ✅ Otras rutas API
 const nivelRoutes = require("./routes/nivel");
 app.use("/api/nivel", nivelRoutes);
 
 const cotizaciones = require("./routes/cotizaciones");
 app.use("/api/cotizaciones", cotizaciones);
 
-// ✅ Ruta de Chat IA con manejo completo de errores
+// ✅ Ruta de Chat IA
 app.post("/api/chat", async (req, res) => {
   try {
     const { mensaje, contexto } = req.body;
 
-    // Validar datos de entrada
     if (!mensaje) {
       return res.status(400).json({
         error: "Mensaje requerido",
@@ -55,9 +140,7 @@ app.post("/api/chat", async (req, res) => {
         messages: [
           {
             role: "system",
-            content:
-              contexto ||
-              "Eres un asistente especializado en sistemas de agua e instalaciones hidráulicas para la empresa 'Instala Óptima'. Ayudas con preguntas sobre sensores ESP32, tinacos, bombas, cotizaciones y instalaciones de agua. Responde de manera profesional y útil en español.",
+            content: contexto || "Eres un asistente especializado en sistemas de agua e instalaciones hidráulicas para la empresa 'Instala Óptima'. Ayudas con preguntas sobre sensores ESP32, tinacos, bombas, cotizaciones y instalaciones de agua. Responde de manera profesional y útil en español.",
           },
           { role: "user", content: mensaje },
         ],
@@ -77,15 +160,9 @@ app.post("/api/chat", async (req, res) => {
     console.error("❌ Error en chat IA:", error);
     res.status(500).json({
       error: "Error interno del servidor",
-      respuesta:
-        "Lo siento, tengo problemas técnicos temporales. Intenta de nuevo en unos momentos.",
+      respuesta: "Lo siento, tengo problemas técnicos temporales. Intenta de nuevo en unos momentos.",
     });
   }
-});
-
-// ✅ Ruta raíz para frontend
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
 // ✅ Manejo de rutas no encontradas
@@ -96,18 +173,19 @@ app.use((req, res) => {
   });
 });
 
-// ✅ Configuración dinámica del puerto
+// ✅ Configuración del puerto
 const PORT = process.env.PORT || 5000;
 
 // ✅ Conexión y arranque del servidor
 sequelize
   .sync({ alter: true })
   .then(() => {
-    console.log("✅ UltraBase conectada y sincronizada correctamente.");
+    console.log("✅ Base de datos conectada y sincronizada correctamente.");
     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`🚀 Servidor de UltraBase corriendo en puerto ${PORT}`);
+      console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
+      console.log(`📡 API ESP32 disponible en: http://localhost:${PORT}/api/esp32`);
     });
   })
   .catch((err) => {
-    console.error("❌ Error al conectar UltraBase:", err);
+    console.error("❌ Error al conectar base de datos:", err);
   });
