@@ -21,11 +21,15 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, "public")));
 
 // Rutas existentes
+
 const cotizaciones = require("./routes/cotizaciones");
 app.use("/api/cotizaciones", cotizaciones);
 
 const nivelRoutes = require("./routes/nivel");
 app.use("/api/nivel", nivelRoutes);
+
+const esp32Routes = require("./routes/esp32");
+app.use("/api/esp32", esp32Routes);
 
 // Ruta de Chat IA
 app.post("/api/chat", async (req, res) => {
