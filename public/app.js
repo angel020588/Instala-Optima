@@ -284,17 +284,24 @@ function guardarConfigBomba() {
 // FUNCIONES DEL CHATBOT
 function enviarMensaje() {
   const input = document.getElementById('chatInput');
-  const mensaje = input.value.trim();
+  const chat = document.getElementById('chatMessages');
 
-  if (!mensaje) return;
+  if (!input || !chat) {
+    console.error('Elementos de chat no encontrados');
+    return;
+  }
+
+  const pregunta = input.value.trim();
+
+  if (!pregunta) return;
 
   // Agregar mensaje del usuario
-  agregarMensajeChat('Usuario', mensaje, 'bg-gray-100');
+  agregarMensajeChat('Usuario', pregunta, 'bg-gray-100');
   input.value = '';
 
   // Simular respuesta del bot
   setTimeout(() => {
-    const respuesta = generarRespuestaBot(mensaje);
+    const respuesta = generarRespuestaBot(pregunta);
     agregarMensajeChat('Bot', respuesta, 'bg-blue-100');
   }, 1000);
 }

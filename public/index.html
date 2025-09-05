@@ -49,7 +49,7 @@
         <!-- Módulo 2: Cotización -->
         <section id="cotizacion" class="hidden">
           <h2 class="text-2xl font-semibold mb-6 text-cyan-300">Cotización de Instalación</h2>
-          
+
           <div class="bg-gray-700 p-4 rounded mb-6 grid grid-cols-2 gap-4 text-sm">
             <div>
               <span class="text-gray-300">Folio: </span>
@@ -60,7 +60,7 @@
               <span class="text-cyan-400 font-bold" id="fecha"></span>
             </div>
           </div>
-          
+
           <form class="bg-gray-800 rounded-lg p-6 space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -113,7 +113,7 @@
                   <input type="number" min="0" class="w-20 border border-gray-600 rounded px-2 py-1 bg-gray-700 text-white" value="0" onchange="calcularTotal()" data-precio="1000" id="cant-automatico" />
                 </div>
               </div>
-              
+
               <div class="flex items-center space-x-2 mt-4">
                 <input type="checkbox" id="manoObra" onchange="calcularTotal()" class="text-cyan-400" />
                 <label for="manoObra" class="text-gray-300">Agregar mano de obra ($750)</label>
@@ -131,7 +131,7 @@
               <button type="button" onclick="enviarWhatsApp()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded">📲 WhatsApp</button>
               <button type="button" onclick="guardarEnUltraBase()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">💾 Guardar</button>
             </div>
-            
+
             <button onclick="generarPDF()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full mt-6">
               Descargar Cotización en PDF
             </button>
@@ -141,7 +141,7 @@
         <!-- Módulo 3: Simulación Tinaco -->
         <section id="tinaco" class="hidden">
           <h2 class="text-2xl font-semibold mb-6 text-cyan-300">Simulador de Nivel de Agua</h2>
-          
+
           <div class="w-full max-w-sm mx-auto bg-gray-800 shadow-md rounded-lg p-6">
             <div class="h-64 w-full bg-gray-700 rounded relative overflow-hidden border border-gray-600">
               <div id="aguaTinaco" class="absolute bottom-0 w-full transition-all duration-500 bg-cyan-500" style="height: 50%;"></div>
@@ -159,7 +159,7 @@
         <!-- Módulo 4: Sensor Agua y WiFi -->
         <section id="sensor" class="hidden">
           <h2 class="text-2xl font-semibold mb-6 text-cyan-300">📡 Instalación del Sensor</h2>
-          
+
           <div class="grid md:grid-cols-2 gap-8">
             <!-- Imagen referencial -->
             <div class="bg-gray-800 p-6 rounded-lg shadow-md text-center">
@@ -192,7 +192,7 @@
         <!-- Módulo 5: Bomba -->
         <section id="bomba" class="hidden">
           <h2 class="text-2xl font-semibold mb-6 text-cyan-300">⚙️ Encendido de Bomba</h2>
-          
+
           <div class="bg-gray-800 rounded-lg p-8 shadow-md max-w-2xl space-y-6">
             <div>
               <label class="block text-sm font-medium text-gray-300 mb-2">Encender bomba automáticamente si el nivel es menor a:</label>
@@ -201,7 +201,7 @@
                 <span id="valorUmbral" class="text-sm text-cyan-400 font-bold">30%</span>
               </div>
             </div>
-            
+
             <div class="mt-4">
               <label class="block text-sm font-medium text-gray-300 mb-2">Tiempo máximo de funcionamiento:</label>
               <div class="flex items-center gap-2">
@@ -228,20 +228,20 @@
         <!-- Módulo 6: Bot IA -->
         <section id="bot" class="hidden">
           <h2 class="text-2xl font-semibold mb-6 text-cyan-300">🤖 Asistente Inteligente</h2>
-          
+
           <div class="bg-gray-800 rounded-lg p-8 shadow-md max-w-2xl space-y-6">
             <div id="chatMessages" class="h-40 overflow-y-auto bg-gray-700 p-3 rounded text-sm text-gray-200 space-y-2 border border-gray-600">
               <div class="bg-blue-100 p-3 rounded-lg mb-2">
                 <strong>Bot:</strong> ¡Hola! Soy tu asistente. Pregúntame sobre sensores, precios, instalaciones...
               </div>
             </div>
-            
+
             <div class="flex gap-2 mb-4">
               <button onclick="preguntaRapida('¿Cómo se instala el sensor?')" class="bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 rounded text-sm">💡 Sensor</button>
               <button onclick="preguntaRapida('¿Cuánto cuesta instalar un tinaco?')" class="bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 rounded text-sm">💰 Precios</button>
               <button onclick="preguntaRapida('¿Qué hace la bomba automática?')" class="bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 rounded text-sm">⚙️ Bomba</button>
             </div>
-            
+
             <div id="chatBot" class="h-64 overflow-y-auto bg-gray-700 p-3 rounded text-sm text-gray-200 space-y-2 border border-gray-600">
               <div class="font-semibold text-cyan-400">🤖 InstalaBot:</div>
               <div>Hola, ¿en qué puedo ayudarte? Puedes preguntar por ejemplo:</div>
@@ -256,7 +256,7 @@
               <input id="chatInput" type="text" placeholder="Escribe tu pregunta..." class="flex-1 border border-gray-600 px-3 py-2 rounded bg-gray-700 text-white" onkeypress="if(event.key==='Enter') enviarMensaje()" />
               <button onclick="enviarMensaje()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded">Enviar</button>
             </div>
-            
+
             <div class="flex gap-2">
               <input id="inputIA" type="text" placeholder="O pregunta a la IA..." class="flex-1 border border-gray-600 px-3 py-2 rounded bg-gray-700 text-white" onkeypress="if(event.key==='Enter') responderIA()" />
               <button onclick="responderIA()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded">🤖 IA</button>
@@ -363,7 +363,7 @@
         const porcentajeTinaco = document.getElementById('porcentajeTinaco');
         const litrosActuales = document.getElementById('litrosActuales');
         const estadoBomba = document.getElementById('estadoBomba');
-        
+
         if (aguaTinaco) {
           aguaTinaco.style.height = valor + '%';
           // Cambiar color según el nivel
@@ -395,18 +395,18 @@
       // Cargar módulo inicial
       showModule("inicio");
     </script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
       // Variables globales
       let folio = Math.floor(100000 + Math.random() * 900000);
       let fecha = new Date().toLocaleDateString();
-      
+
       // Inicializar al cargar
       document.addEventListener('DOMContentLoaded', function() {
         const folioElement = document.getElementById('folio');
         const fechaElement = document.getElementById('fecha');
-        
+
         if (folioElement) {
           folioElement.textContent = folio;
         }
@@ -427,7 +427,7 @@
             const cantidad = parseInt(input.value) || 0;
             const precio = parseInt(input.dataset.precio);
             const subtotal = cantidad * precio;
-            
+
             if (cantidad > 0) {
               total += subtotal;
               const nombre = input.previousElementSibling ? input.previousElementSibling.textContent.split(' - ')[0] : 'Producto';
@@ -445,7 +445,7 @@
         if (precioTotalElement) {
           precioTotalElement.textContent = total;
         }
-        
+
         const resumenDiv = document.getElementById('resumen');
         if (resumenDiv) {
           if (resumen.length > 0) {
@@ -461,12 +461,12 @@
         const nombreElement = document.getElementById("clienteNombre");
         const telefonoElement = document.getElementById("clienteTelefono");
         const ubicacionElement = document.getElementById("ubicacion");
-        
+
         if (!nombreElement || !telefonoElement || !ubicacionElement) {
           alert("Error: No se pudieron encontrar los campos del formulario");
           return;
         }
-        
+
         const nombre = nombreElement.value;
         const telefono = telefonoElement.value;
         const ubicacion = ubicacionElement.value;
@@ -498,7 +498,7 @@
             const subtotal = cantidad * precio;
             total += subtotal;
             const nombre = input.previousElementSibling.textContent.split(' - ')[0];
-            
+
             tabla += '<tr>';
             tabla += `<td style="border: 1px solid #ccc; padding: 8px;">${nombre}</td>`;
             tabla += `<td style="border: 1px solid #ccc; padding: 8px;">$${precio}</td>`;
@@ -533,7 +533,7 @@
         const pdfElement = document.getElementById("pdf-content");
         html2pdf().from(pdfElement).save(`cotizacion-${folio}.pdf`);
       }
-      
+
       // Función para obtener historial
       async function obtenerHistorial() {
         try {
@@ -613,7 +613,7 @@
         XLSX.writeFile(wb, "Historial_Cotizaciones.xlsx");
       }
     </script>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="app.js"></script>
   </body>
