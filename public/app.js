@@ -19,8 +19,9 @@ function calcularPrecio() {
   let total = 0;
   let resumen = [];
 
-  const tipo = document.getElementById("tipoInstalacion").value;
-  if (tipo && precios[tipo]) {
+  const tipoElement = document.getElementById("tipoInstalacion");
+  if (tipoElement && tipoElement.value && precios[tipoElement.value]) {
+    const tipo = tipoElement.value;
     total += precios[tipo];
     resumen.push(`🔧 Instalación: $${precios[tipo]}`);
   }
@@ -33,8 +34,15 @@ function calcularPrecio() {
     }
   });
 
-  document.getElementById("precioTotal").textContent = `$${total}`;
-  document.getElementById("resumen").innerHTML = resumen.join("<br>");
+  const precioTotalElement = document.getElementById("precioTotal");
+  const resumenElement = document.getElementById("resumen");
+  
+  if (precioTotalElement) {
+    precioTotalElement.textContent = `$${total}`;
+  }
+  if (resumenElement) {
+    resumenElement.innerHTML = resumen.join("<br>");
+  }
 }
 
 // Genera PDF con jsPDF
@@ -238,8 +246,16 @@ function actualizarTinaco(porcentaje) {
 
 // FUNCIONES DEL SENSOR
 function configurarWifi() {
-  const wifiName = document.getElementById('wifiName').value;
-  const wifiPass = document.getElementById('wifiPass').value;
+  const wifiNameElement = document.getElementById('wifiName');
+  const wifiPassElement = document.getElementById('wifiPass');
+  
+  if (!wifiNameElement || !wifiPassElement) {
+    alert('Elementos de WiFi no encontrados');
+    return;
+  }
+  
+  const wifiName = wifiNameElement.value;
+  const wifiPass = wifiPassElement.value;
 
   if (!wifiName || !wifiPass) {
     alert('Por favor completa ambos campos');
@@ -250,8 +266,11 @@ function configurarWifi() {
   alert(`Configurando WiFi "${wifiName}"...`);
   setTimeout(() => {
     alert('¡WiFi configurado exitosamente!');
-    document.getElementById('estadoSensor').textContent = 'Conectado';
-    document.getElementById('senalWifi').textContent = '-42 dBm';
+    const estadoElement = document.getElementById('estadoSensor');
+    const senalElement = document.getElementById('senalWifi');
+    
+    if (estadoElement) estadoElement.textContent = 'Conectado';
+    if (senalElement) senalElement.textContent = '-42 dBm';
   }, 2000);
 }
 
@@ -279,8 +298,12 @@ function actualizarValorUmbral(valor) {
 }
 
 function guardarConfigBomba() {
-  const umbral = document.getElementById('umbralEncendido').value;
-  const tiempo = document.getElementById('tiempoMax').value;
+  const umbralElement = document.getElementById('umbralEncendido');
+  const tiempoElement = document.getElementById('tiempoMax');
+  
+  const umbral = umbralElement ? umbralElement.value : '30';
+  const tiempo = tiempoElement ? tiempoElement.value : '10';
+  
   alert(`Configuración guardada: Encender al ${umbral}%, máximo ${tiempo} minutos`);
 }
 
