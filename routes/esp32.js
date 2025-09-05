@@ -1,24 +1,25 @@
-const express = require("express");
-const router = express.Router();
+if (WiFi.status() == WL_CONNECTED) {
+  HTTPClient http;
+  http.begin("https://instala-optima-ecotisat.replit.app/api/esp32");
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-// Ruta POST que espera el dato 'nivel' desde el ESP32
-router.post("/", (req, res) => {
-  const nivel = parseInt(req.body.nivel);
+  String postData = "nivel=" + String(porcentaje);
+  int httpResponseCode = http.POST(postData);
 
-  if (isNaN(nivel)) {
-    return res.status(400).send("nivel inválido");
-  }
+  if (httpResponseCode > 0) {
+    String respuesta = http.getString();
+    Serial.println("Respuesta servidor: " + respuesta);
 
-  console.log("🧪 Nivel recibido del ESP32:", nivel + "%");
+    if (respuesta.indexOf("apagar") >= 0) {
+      digitalWrite(relayPin, HIGH);
+    } else if (respuesta.indexOf("encender") >= 0) {
+      digitalWrite(relayPin, LOW);
+    }
 
-  // Lógica para controlar la bomba
-  if (nivel <= 20) {
-    return res.send("encender");
-  } else if (nivel >= 95) {
-    return res.send("apagar");
   } else {
-    return res.send("esperar");
+    Serial.print("Error HTTP: ");
+    Serial.println(httpResponseCode);
   }
-});
 
-module.exports = router;
+  http.end();
+}
