@@ -28,7 +28,7 @@ void loop() {
     http.begin("https://instala-optima-ecotisat.replit.app/api/esp32");
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-    String postData = "nivel=" + String(porcentaje);
+    String postData = "nivel=" + String(porcentaje) + "&dispositivo=ESP32";
     int httpResponseCode = http.POST(postData);
 
     if (httpResponseCode > 0) {
