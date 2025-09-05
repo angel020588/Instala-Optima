@@ -180,9 +180,9 @@
 
               <div class="mt-6">
                 <label class="block text-sm font-medium text-cyan-300 mb-2">Conectar a WiFi</label>
-                <input type="text" placeholder="Nombre de tu Red (SSID)" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white mb-2" />
-                <input type="password" placeholder="Contraseña" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white mb-3" />
-                <button class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded w-full">🔗 Conectar</button>
+                <input id="wifiName" type="text" placeholder="Nombre de tu Red (SSID)" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white mb-2" />
+                <input id="wifiPass" type="password" placeholder="Contraseña" class="w-full p-3 border border-gray-600 rounded bg-gray-700 text-white mb-3" />
+                <button onclick="configurarWifi()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded w-full">🔗 Conectar</button>
                 <p class="text-xs text-gray-400 mt-2">Este botón será funcional cuando el ESP32 esté en modo configuración.</p>
               </div>
             </div>
@@ -197,8 +197,16 @@
             <div>
               <label class="block text-sm font-medium text-gray-300 mb-2">Encender bomba automáticamente si el nivel es menor a:</label>
               <div class="flex items-center gap-2">
-                <input id="umbralAuto" type="number" value="30" min="5" max="95" class="w-20 border border-gray-600 px-2 py-1 rounded text-center bg-gray-700 text-white" />
-                <span class="text-sm text-gray-400">%</span>
+                <input id="umbralEncendido" type="range" min="5" max="95" value="30" onchange="actualizarUmbral()" class="flex-1 accent-cyan-500" />
+                <span id="valorUmbral" class="text-sm text-cyan-400 font-bold">30%</span>
+              </div>
+            </div>
+            
+            <div class="mt-4">
+              <label class="block text-sm font-medium text-gray-300 mb-2">Tiempo máximo de funcionamiento:</label>
+              <div class="flex items-center gap-2">
+                <input id="tiempoMax" type="number" value="30" min="1" max="120" class="w-20 border border-gray-600 px-2 py-1 rounded text-center bg-gray-700 text-white" />
+                <span class="text-sm text-gray-400">minutos</span>
               </div>
             </div>
 
@@ -222,6 +230,18 @@
           <h2 class="text-2xl font-semibold mb-6 text-cyan-300">🤖 Asistente Inteligente</h2>
           
           <div class="bg-gray-800 rounded-lg p-8 shadow-md max-w-2xl space-y-6">
+            <div id="chatMessages" class="h-40 overflow-y-auto bg-gray-700 p-3 rounded text-sm text-gray-200 space-y-2 border border-gray-600">
+              <div class="bg-blue-100 p-3 rounded-lg mb-2">
+                <strong>Bot:</strong> ¡Hola! Soy tu asistente. Pregúntame sobre sensores, precios, instalaciones...
+              </div>
+            </div>
+            
+            <div class="flex gap-2 mb-4">
+              <button onclick="preguntaRapida('¿Cómo se instala el sensor?')" class="bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 rounded text-sm">💡 Sensor</button>
+              <button onclick="preguntaRapida('¿Cuánto cuesta instalar un tinaco?')" class="bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 rounded text-sm">💰 Precios</button>
+              <button onclick="preguntaRapida('¿Qué hace la bomba automática?')" class="bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 rounded text-sm">⚙️ Bomba</button>
+            </div>
+            
             <div id="chatBot" class="h-64 overflow-y-auto bg-gray-700 p-3 rounded text-sm text-gray-200 space-y-2 border border-gray-600">
               <div class="font-semibold text-cyan-400">🤖 InstalaBot:</div>
               <div>Hola, ¿en qué puedo ayudarte? Puedes preguntar por ejemplo:</div>
@@ -233,8 +253,13 @@
             </div>
 
             <div class="flex gap-2">
-              <input id="inputIA" type="text" placeholder="Escribe tu pregunta..." class="flex-1 border border-gray-600 px-3 py-2 rounded bg-gray-700 text-white" />
-              <button onclick="responderIA()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded">Enviar</button>
+              <input id="chatInput" type="text" placeholder="Escribe tu pregunta..." class="flex-1 border border-gray-600 px-3 py-2 rounded bg-gray-700 text-white" onkeypress="if(event.key==='Enter') enviarMensaje()" />
+              <button onclick="enviarMensaje()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded">Enviar</button>
+            </div>
+            
+            <div class="flex gap-2">
+              <input id="inputIA" type="text" placeholder="O pregunta a la IA..." class="flex-1 border border-gray-600 px-3 py-2 rounded bg-gray-700 text-white" onkeypress="if(event.key==='Enter') responderIA()" />
+              <button onclick="responderIA()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded">🤖 IA</button>
             </div>
           </div>
         </section>

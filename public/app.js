@@ -64,12 +64,12 @@ function enviarWhatsApp() {
   const telefonoElement = document.getElementById("clienteTelefono");
   const resumenElement = document.getElementById("resumen");
   const totalElement = document.getElementById("precioTotal");
-  
+
   if (!nombreElement || !telefonoElement || !resumenElement || !totalElement) {
     alert('Error: Datos del formulario no disponibles');
     return;
   }
-  
+
   const nombre = nombreElement.value;
   const telefono = telefonoElement.value;
   const resumen = resumenElement.innerText;
@@ -87,13 +87,13 @@ async function guardarEnUltraBase() {
     const nombreElement = document.getElementById('clienteNombre');
     const telefonoElement = document.getElementById('clienteTelefono');
     const ubicacionElement = document.getElementById('ubicacion');
-    
+
     if (!nombreElement || !telefonoElement || !ubicacionElement) {
       console.error('Elementos del formulario no encontrados');
       alert('Error: Formulario no disponible');
       return;
     }
-    
+
     const nombre = nombreElement.value;
     const telefono = telefonoElement.value;
     const ubicacion = ubicacionElement.value;
@@ -116,7 +116,7 @@ async function guardarEnUltraBase() {
         const subtotal = cantidad * precio;
         total += subtotal;
         const nombreProducto = input.previousElementSibling.textContent.split(' - ')[0];
-        
+
         productos.push({
           nombre: nombreProducto,
           precio: precio,
@@ -155,7 +155,7 @@ async function guardarEnUltraBase() {
 
     const resultado = await response.json();
     console.log('✅ Guardado en UltraBase:', resultado);
-    
+
     if (response.ok) {
       alert(`✅ Cotización ${folio} guardada correctamente en UltraBase`);
     } else {
@@ -212,7 +212,7 @@ function actualizarTinaco(porcentaje) {
   const porcentajeTinaco = document.getElementById('porcentajeTinaco');
   const litrosActuales = document.getElementById('litrosActuales');
   const estadoBomba = document.getElementById('estadoBomba');
-  
+
   if (aguaTinaco) {
     aguaTinaco.style.height = `${porcentaje}%`;
   }
@@ -222,7 +222,7 @@ function actualizarTinaco(porcentaje) {
   if (litrosActuales) {
     litrosActuales.textContent = Math.round(1200 * porcentaje / 100);
   }
-  
+
   // Actualizar estado de la bomba
   if (estadoBomba) {
     if (porcentaje < 30) {
@@ -239,12 +239,12 @@ function actualizarTinaco(porcentaje) {
 function configurarWifi() {
   const wifiName = document.getElementById('wifiName').value;
   const wifiPass = document.getElementById('wifiPass').value;
-  
+
   if (!wifiName || !wifiPass) {
     alert('Por favor completa ambos campos');
     return;
   }
-  
+
   // Simular configuración
   alert(`Configurando WiFi "${wifiName}"...`);
   setTimeout(() => {
@@ -285,13 +285,13 @@ function guardarConfigBomba() {
 function enviarMensaje() {
   const input = document.getElementById('chatInput');
   const mensaje = input.value.trim();
-  
+
   if (!mensaje) return;
-  
+
   // Agregar mensaje del usuario
   agregarMensajeChat('Usuario', mensaje, 'bg-gray-100');
   input.value = '';
-  
+
   // Simular respuesta del bot
   setTimeout(() => {
     const respuesta = generarRespuestaBot(mensaje);
@@ -315,7 +315,7 @@ function agregarMensajeChat(remitente, mensaje, claseCSS) {
 
 function generarRespuestaBot(mensaje) {
   const mensajeLower = mensaje.toLowerCase();
-  
+
   if (mensajeLower.includes('sensor')) {
     return 'El sensor ESP32 mide el nivel de agua cada 10 segundos y envía los datos por WiFi. Es completamente inalámbrico y tiene batería para 6 meses.';
   } else if (mensajeLower.includes('costo') || mensajeLower.includes('precio')) {
@@ -333,19 +333,19 @@ function generarRespuestaBot(mensaje) {
 async function responderIA() {
   const input = document.getElementById("inputIA");
   const chat = document.getElementById("chatBot");
-  
+
   if (!input || !chat) {
     console.error("Elementos del chat no encontrados");
     return;
   }
-  
+
   const pregunta = input.value.trim();
 
   if (!pregunta) return;
 
   // Mostrar mensaje del usuario
   chat.innerHTML += `<div class="text-right text-sm text-green-600">🧑 Tú: ${pregunta}</div>`;
-  
+
   // Mostrar indicador de carga
   chat.innerHTML += `<div class="text-sm text-blue-600" id="loading-msg">🤖 InstalaBot: Escribiendo...</div>`;
   input.value = "";
@@ -365,28 +365,28 @@ async function responderIA() {
     });
 
     const data = await response.json();
-    
+
     // Remover indicador de carga
     const loadingMsg = document.getElementById("loading-msg");
     if (loadingMsg) {
       loadingMsg.remove();
     }
-    
+
     // Mostrar respuesta de la IA
     chat.innerHTML += `<div class="text-sm text-blue-600">🤖 InstalaBot: ${data.respuesta}</div>`;
-    
+
   } catch (error) {
     console.error('Error al consultar IA:', error);
-    
+
     // Remover indicador de carga
     const loadingMsg = document.getElementById("loading-msg");
     if (loadingMsg) {
       loadingMsg.remove();
     }
-    
+
     // Respuesta de fallback
     chat.innerHTML += `<div class="text-sm text-blue-600">🤖 InstalaBot: Lo siento, tengo problemas técnicos. Puedes preguntar sobre sensores, bombas, tinacos o cotizaciones y te ayudo con información básica.</div>`;
   }
-  
+
   chat.scrollTop = chat.scrollHeight;
 }

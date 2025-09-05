@@ -72,6 +72,7 @@ app.post("/api/chat", async (req, res) => {
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public/index.html"));
 });
+
 // Ruta directa para recibir datos del ESP32
 app.get("/api/esp32", (req, res) => {
   const nivel = parseInt(req.query.nivel);
