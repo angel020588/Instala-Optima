@@ -1,4 +1,3 @@
-
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -41,7 +40,7 @@ app.post("/api/chat", async (req, res) => {
     if (!mensaje) {
       return res.status(400).json({
         error: "Mensaje requerido",
-        respuesta: "Por favor, escribe un mensaje para continuar."
+        respuesta: "Por favor, escribe un mensaje para continuar.",
       });
     }
 
@@ -54,9 +53,11 @@ app.post("/api/chat", async (req, res) => {
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
         messages: [
-          { 
-            role: "system", 
-            content: contexto || "Eres un asistente especializado en sistemas de agua e instalaciones hidráulicas para la empresa 'Instala Óptima'. Ayudas con preguntas sobre sensores ESP32, tinacos, bombas, cotizaciones y instalaciones de agua. Responde de manera profesional y útil en español."
+          {
+            role: "system",
+            content:
+              contexto ||
+              "Eres un asistente especializado en sistemas de agua e instalaciones hidráulicas para la empresa 'Instala Óptima'. Ayudas con preguntas sobre sensores ESP32, tinacos, bombas, cotizaciones y instalaciones de agua. Responde de manera profesional y útil en español.",
           },
           { role: "user", content: mensaje },
         ],
@@ -76,7 +77,8 @@ app.post("/api/chat", async (req, res) => {
     console.error("❌ Error en chat IA:", error);
     res.status(500).json({
       error: "Error interno del servidor",
-      respuesta: "Lo siento, tengo problemas técnicos temporales. Intenta de nuevo en unos momentos."
+      respuesta:
+        "Lo siento, tengo problemas técnicos temporales. Intenta de nuevo en unos momentos.",
     });
   }
 });
@@ -90,7 +92,7 @@ app.get("/", (req, res) => {
 app.use((req, res) => {
   res.status(404).json({
     error: "Ruta no encontrada",
-    mensaje: `La ruta ${req.method} ${req.path} no existe en este servidor.`
+    mensaje: `La ruta ${req.method} ${req.path} no existe en este servidor.`,
   });
 });
 
