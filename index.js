@@ -33,6 +33,9 @@ app.use("/api/esp32", esp32Router);
 const nivelRoutes = require("./routes/nivel");
 app.use("/api/nivel", nivelRoutes);
 
+const relayRoutes = require("./routes/relays");
+app.use("/api/relays", relayRoutes);
+
 const cotizaciones = require("./routes/cotizaciones");
 app.use("/api/cotizaciones", cotizaciones);
 
