@@ -41,7 +41,7 @@ function calcularPrecio() {
   });
 
   const resumenElement = document.getElementById("resumen");
-  
+
   if (precioTotalElement) {
     precioTotalElement.textContent = `$${total}`;
   }
@@ -297,7 +297,7 @@ function modoAutomatico() {
   })
   .catch(err => {
     console.error('Error:', err);
-    alert('❌ Error al activar modo automático');
+    alert('❌ Error al cambiar a modo automático');
   });
 }
 
@@ -324,12 +324,12 @@ function actualizarEstadoBomba(estado) {
 function configurarWifi() {
   const wifiNameElement = document.getElementById('wifiName');
   const wifiPassElement = document.getElementById('wifiPass');
-  
+
   if (!wifiNameElement || !wifiPassElement) {
     console.warn('Elementos de WiFi no encontrados en esta página');
     return;
   }
-  
+
   const wifiName = wifiNameElement.value;
   const wifiPass = wifiPassElement.value;
 
@@ -344,10 +344,10 @@ function configurarWifi() {
     alert('¡WiFi configurado exitosamente!');
     const estadoElement = document.getElementById('estadoSensor');
     const senalElement = document.getElementById('senalWifi');
-    
+
     if (estadoElement) estadoElement.textContent = 'Conectado';
     if (senalElement) senalElement.textContent = '-42 dBm';
-    
+
     // Actualizar otros elementos si existen
     const nivelElement = document.getElementById('nivelAgua');
     if (nivelElement) nivelElement.textContent = '75%';
@@ -380,10 +380,10 @@ function actualizarValorUmbral(valor) {
 function guardarConfigBomba() {
   const umbralElement = document.getElementById('umbralEncendido');
   const tiempoElement = document.getElementById('tiempoMax');
-  
+
   const umbral = umbralElement ? umbralElement.value : '30';
   const tiempo = tiempoElement ? tiempoElement.value : '10';
-  
+
   alert(`Configuración guardada: Encender al ${umbral}%, máximo ${tiempo} minutos`);
 }
 
