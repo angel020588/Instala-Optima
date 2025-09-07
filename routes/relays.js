@@ -4,8 +4,9 @@ const router = express.Router();
 const Nivel = require("../models/Nivel");
 const axios = require("axios");
 
-// IP del ESP32 COM4 (relé) en red local
-const RELAY_IP = "http://192.168.100.39"; // Cambiar por la IP real del COM4
+// IP del ESP32 COM4 (relé) en red local - usar HTTPS por seguridad
+const RELAY_IP = "https://192.168.100.39"; // Cambiar por la IP real del COM4
+const RELAY_IP_FALLBACK = "http://192.168.100.39"; // Fallback si HTTPS no está disponible
 
 // Variable para almacenar el estado manual (se reinicia al reiniciar servidor)
 let estadoManual = null; // null = automático, "encender" o "apagar" = manual
@@ -65,10 +66,21 @@ router.post("/manual", async (req, res) => {
   try {
     console.log(`🔧 Enviando comando "${comando}" al ESP32: ${RELAY_IP}`);
     
-    const respuesta = await axios.post(`${RELAY_IP}/api/orden-rele`, comando, {
-      headers: { "Content-Type": "text/plain" },
-      timeout: 5000 // 5 segundos de timeout
-    });
+    let respuesta;
+    try {
+      // Intentar HTTPS primero por seguridad
+      respuesta = await axios.post(`${RELAY_IP}/api/orden-rele`, comando, {
+        headers: { "Content-Type": "text/plain" },
+        timeout: 5000 // 5 segundos de timeout
+      });
+    } catch (httpsError) {
+      console.log("⚠️ HTTPS falló, intentando HTTP como fallback:", httpsError.message);
+      // Fallback a HTTP si HTTPS no está disponible
+      respuesta = await axios.post(`${RELAY_IP_FALLBACK}/api/orden-rele`, comando, {
+        headers: { "Content-Type": "text/plain" },
+        timeout: 5000
+      });
+    }
 
     // Guardar estado manual
     estadoManual = comando;
