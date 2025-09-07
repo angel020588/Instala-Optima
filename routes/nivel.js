@@ -6,11 +6,39 @@ const Nivel = require("../models/Nivel");
 router.post("/", async (req, res) => {
   const { dispositivo, porcentaje, estado_bomba } = req.body;
 
+  // ✅ Validación de datos de entrada
+  if (!dispositivo || isNaN(porcentaje) || !estado_bomba) {
+    console.log("❌ Datos incompletos recibidos:", { dispositivo, porcentaje, estado_bomba });
+    return res.status(400).json({ 
+      ok: false, 
+      mensaje: "Datos incompletos o inválidos",
+      esperados: {
+        dispositivo: "string requerido",
+        porcentaje: "número requerido (0-100)",
+        estado_bomba: "string requerido"
+      }
+    });
+  }
+
+  // ✅ Validación adicional del porcentaje
+  const porcentajeNum = Number(porcentaje);
+  if (porcentajeNum < 0 || porcentajeNum > 100) {
+    console.log("❌ Porcentaje fuera de rango:", porcentajeNum);
+    return res.status(400).json({ 
+      ok: false, 
+      mensaje: "El porcentaje debe estar entre 0 y 100" 
+    });
+  }
+
   try {
-    await Nivel.create({ dispositivo, porcentaje, estado_bomba });
+    await Nivel.create({ 
+      dispositivo: dispositivo.toString().trim(),
+      porcentaje: porcentajeNum, 
+      estado_bomba: estado_bomba.toString().toUpperCase().trim()
+    });
     console.log("📡 Datos del ESP32 guardados:", {
       dispositivo,
-      porcentaje,
+      porcentaje: porcentajeNum,
       estado_bomba,
     });
     res.status(200).json({ ok: true, mensaje: "Nivel guardado correctamente" });
