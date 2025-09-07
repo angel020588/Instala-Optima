@@ -8,7 +8,11 @@ router.post("/", async (req, res) => {
 
   try {
     await Nivel.create({ dispositivo, porcentaje, estado_bomba });
-    console.log("📡 Datos del ESP32 guardados:", { dispositivo, porcentaje, estado_bomba });
+    console.log("📡 Datos del ESP32 guardados:", {
+      dispositivo,
+      porcentaje,
+      estado_bomba,
+    });
     res.status(200).json({ ok: true, mensaje: "Nivel guardado correctamente" });
   } catch (error) {
     console.error("❌ Error al guardar nivel:", error);
@@ -20,8 +24,8 @@ router.post("/", async (req, res) => {
 router.get("/historial", async (req, res) => {
   try {
     const historial = await Nivel.findAll({
-      order: [['createdAt', 'DESC']],
-      limit: 20
+      order: [["createdAt", "DESC"]],
+      limit: 20,
     });
     res.json(historial);
   } catch (error) {

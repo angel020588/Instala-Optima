@@ -26,11 +26,15 @@ router.post(["/", ""], (req, res) => {
   console.log("📡 POST recibido en /api/esp32");
   console.log("📦 Body:", req.body);
   console.log("📦 Query:", req.query);
-  
+
   // Soportar múltiples formatos de entrada
-  const nivelRaw = req.body?.nivel ?? req.query?.nivel ?? req.body?.porcentaje ?? req.query?.porcentaje;
+  const nivelRaw =
+    req.body?.nivel ??
+    req.query?.nivel ??
+    req.body?.porcentaje ??
+    req.query?.porcentaje;
   const nivel = Number(nivelRaw);
-  
+
   if (Number.isNaN(nivel) || nivel < 0 || nivel > 100) {
     console.log("❌ Nivel inválido recibido:", nivelRaw);
     return res.status(400).send("ESPERAR"); // fallback seguro
@@ -42,9 +46,11 @@ router.post(["/", ""], (req, res) => {
   if (estado.modo === "AUTO") {
     estado.comando = calcularComandoAuto(estado.nivel);
   }
-  
-  console.log(`✅ Nivel: ${estado.nivel}% → Comando: ${estado.comando} (Modo: ${estado.modo})`);
-  
+
+  console.log(
+    `✅ Nivel: ${estado.nivel}% → Comando: ${estado.comando} (Modo: ${estado.modo})`,
+  );
+
   // Si está en MANUAL, respetamos el comando ya fijado
   res.type("text/plain").send(estado.comando);
 });
