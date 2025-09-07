@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Instala Óptima – Panel</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px; max-width: 420px; }
+    .row { display:flex; align-items:center; justify-content:space-between; margin:8px 0; }
+    button { padding:10px 14px; border-radius:10px; border:1px solid #999; cursor:pointer; }
+    .pill { padding:6px 10px; border-radius:999px; background:#f4f4f4; }
+    .grid { display:grid; gap:12px; grid-template-columns: 1fr 1fr; }
+  </style>
+</head>
+<body>
+  <h1>INSTALA ÓPTIMA – Control de Bomba</h1>
+  <div class="card">
+    <div class="row"><strong>Nivel actual</strong><span id="nivel" class="pill">--%</span></div>
+    <div class="row"><strong>Comando</strong><span id="comando" class="pill">ESPERAR</span></div>
+    <div class="row"><strong>Modo</strong><span id="modo" class="pill">AUTO</span></div>
+    <div class="row"><small>Actualizado</small><small id="updatedAt">--</small></div>
+    <hr/>
+    <div class="grid">
+      <button id="btnAuto">Modo AUTO</button>
+      <button id="btnManual">Modo MANUAL</button>
+      <button id="btnOn">Encender</button>
+      <button id="btnOff">Apagar</button>
+    </div>
+  </div>
+
+  <script>
+    const API = "/api/esp32";
+    const elNivel = document.getElementById('nivel');
+    const elComando = document.getElementById('comando');
+    const elModo = document.getElementById('modo');
+    const elUpd  = document.getElementById('updatedAt');
+
+    async function refrescar() {
+      try {
+        const r = await fetch(`${API}/estado`);
+        const j = await r.json();
+        if (j.ok) {
+          elNivel.textContent = (j.nivel ?? '--') + '%';
+          elComando.textContent = j.comando || 'ESPERAR';
+          elModo.textContent = j.modo || 'AUTO';
+          elUpd.textContent = j.updatedAt ? new Date(j.updatedAt).toLocaleString() : '--';
+        }
+      } catch (e) { /* no-op */ }
+    }
+
+    async function setModo(modo) {
+      await fetch(`${API}/modo`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({modo}) });
+      refrescar();
+    }
+    async function setComando(accion) {
+      await fetch(`${API}/comando`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({accion}) });
+      refrescar();
+    }
+
+    document.getElementById('btnAuto').onclick = () => setModo('AUTO');
+    document.getElementById('btnManual').onclick = () => setModo('MANUAL');
+    document.getElementById('btnOn').onclick = () => setComando('ENCENDER');
+    document.getElementById('btnOff').onclick = () => setComando('APAGAR');
+
+    refrescar();
+    setInterval(refrescar, 5000);
+  </script>
+</body>
+</html>
