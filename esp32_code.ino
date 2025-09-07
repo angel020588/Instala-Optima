@@ -1,75 +1,137 @@
-const express = require("express");
-const router = express.Router();
 
-// 🧠 Estado en memoria (puedes migrarlo a BD cuando quieras)
-let estado = {
-  nivel: null,            // 0-100
-  comando: "ESPERAR",     // ENCENDER | APAGAR | ESPERAR
-  modo: "AUTO",           // AUTO | MANUAL
-  updatedAt: null
-};
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <ArduinoJson.h>
 
-// 🔧 Umbrales automáticos (ajústalos si quieres)
-const UMBRAL_ENCENDER = 20; // <= 20% enciende
-const UMBRAL_APAGAR  = 95;  // >= 95% apaga
+// Configuración WiFi
+const char* ssid = "TU_WIFI_SSID";
+const char* password = "TU_WIFI_PASSWORD";
 
-// 🔁 Lógica automática
-function calcularComandoAuto(nivel) {
-  if (nivel <= UMBRAL_ENCENDER) return "ENCENDER";
-  if (nivel >= UMBRAL_APAGAR)  return "APAGAR";
-  return "ESPERAR";
+// URL del servidor (asegúrate de que termine con /)
+const String serverURL = "https://instala-optima-ecotisat.replit.app/api/esp32/";
+
+// Pin del sensor ultrasónico
+const int trigPin = 2;
+const int echoPin = 4;
+
+// Pin del relé (bomba)
+const int relayPin = 5;
+
+// Variables del tanque
+const float alturaTanque = 200.0; // altura total del tanque en cm
+
+void setup() {
+  Serial.begin(115200);
+  
+  // Configurar pines
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(relayPin, OUTPUT);
+  digitalWrite(relayPin, LOW); // Bomba apagada inicialmente
+  
+  // Conectar a WiFi
+  WiFi.begin(ssid, password);
+  Serial.print("Conectando a WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println();
+  Serial.println("WiFi conectado!");
+  Serial.print("IP: ");
+  Serial.println(WiFi.localIP());
 }
 
-// ✅ ESP32 envía nivel (x-www-form-urlencoded o JSON)
-// Devuelvo SOLO el comando en texto plano.
-router.post("/", (req, res) => {
-  // Soportar ambos formatos
-  const nivel = Number(req.body?.nivel ?? req.query?.nivel);
-  if (Number.isNaN(nivel) || nivel < 0 || nivel > 100) {
-    return res.status(400).send("ESPERAR"); // fallback seguro
+void loop() {
+  // Leer sensor ultrasónico
+  float distancia = leerSensorUltrasonico();
+  float porcentaje = calcularPorcentaje(distancia);
+  
+  Serial.print("Distancia: ");
+  Serial.print(distancia);
+  Serial.print(" cm, Nivel: ");
+  Serial.print(porcentaje);
+  Serial.println("%");
+  
+  // Enviar datos al servidor y recibir comando
+  String comando = enviarDatosAlServidor(porcentaje);
+  
+  // Ejecutar comando recibido
+  ejecutarComando(comando);
+  
+  delay(10000); // Esperar 10 segundos antes de la siguiente lectura
+}
+
+float leerSensorUltrasonico() {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  long duration = pulseIn(echoPin, HIGH);
+  float distancia = duration * 0.034 / 2;
+  
+  return distancia;
+}
+
+float calcularPorcentaje(float distancia) {
+  float nivelAgua = alturaTanque - distancia;
+  if (nivelAgua < 0) nivelAgua = 0;
+  if (nivelAgua > alturaTanque) nivelAgua = alturaTanque;
+  
+  float porcentaje = (nivelAgua / alturaTanque) * 100;
+  return porcentaje;
+}
+
+String enviarDatosAlServidor(float porcentaje) {
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("WiFi desconectado");
+    return "ESPERAR";
   }
-
-  estado.nivel = Math.round(nivel);
-  estado.updatedAt = new Date().toISOString();
-
-  if (estado.modo === "AUTO") {
-    estado.comando = calcularComandoAuto(estado.nivel);
+  
+  HTTPClient http;
+  http.begin(serverURL);
+  http.addHeader("Content-Type", "application/json");
+  
+  // Crear JSON
+  DynamicJsonDocument doc(1024);
+  doc["nivel"] = round(porcentaje);
+  
+  String jsonString;
+  serializeJson(doc, jsonString);
+  
+  Serial.print("Enviando: ");
+  Serial.println(jsonString);
+  
+  int httpResponseCode = http.POST(jsonString);
+  
+  String comando = "ESPERAR";
+  if (httpResponseCode > 0) {
+    comando = http.getString();
+    comando.trim();
+    Serial.print("Comando recibido: ");
+    Serial.println(comando);
+  } else {
+    Serial.print("Error HTTP: ");
+    Serial.println(httpResponseCode);
   }
-  // Si está en MANUAL, respetamos el comando ya fijado
-  res.type("text/plain").send(estado.comando);
-});
+  
+  http.end();
+  return comando;
+}
 
-// ✅ Forzar comando manual: ENCENDER | APAGAR
-router.post("/comando", (req, res) => {
-  const accionRaw = (req.body?.accion || req.query?.accion || "").toString().toUpperCase();
-  const accion = ["ENCENDER", "APAGAR"].includes(accionRaw) ? accionRaw : null;
-  if (!accion) return res.status(400).json({ ok:false, error:"accion inválida" });
-
-  estado.modo = "MANUAL";
-  estado.comando = accion;
-  estado.updatedAt = new Date().toISOString();
-  return res.json({ ok:true, ...estado });
-});
-
-// ✅ Cambiar modo: AUTO | MANUAL
-router.post("/modo", (req, res) => {
-  const modoRaw = (req.body?.modo || req.query?.modo || "").toString().toUpperCase();
-  if (!["AUTO", "MANUAL"].includes(modoRaw)) {
-    return res.status(400).json({ ok:false, error:"modo inválido" });
+void ejecutarComando(String comando) {
+  comando.toUpperCase();
+  
+  if (comando == "ENCENDER") {
+    digitalWrite(relayPin, HIGH);
+    Serial.println("💧 BOMBA ENCENDIDA");
+  } else if (comando == "APAGAR") {
+    digitalWrite(relayPin, LOW);
+    Serial.println("🚫 BOMBA APAGADA");
+  } else {
+    // ESPERAR - mantener estado actual
+    Serial.println("⏳ ESPERANDO...");
   }
-  estado.modo = modoRaw;
-
-  // si regresamos a AUTO, recalculamos
-  if (estado.modo === "AUTO" && typeof estado.nivel === "number") {
-    estado.comando = calcularComandoAuto(estado.nivel);
-  }
-  estado.updatedAt = new Date().toISOString();
-  return res.json({ ok:true, ...estado });
-});
-
-// ✅ Consultar estado (para la app)
-router.get("/estado", (req, res) => {
-  return res.json({ ok:true, ...estado });
-});
-
-module.exports = router;
+}

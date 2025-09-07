@@ -22,7 +22,7 @@ function calcularComandoAuto(nivel) {
 
 // ✅ ESP32 envía nivel (x-www-form-urlencoded o JSON)
 // Devuelvo SOLO el comando en texto plano.
-router.post("/", (req, res) => {
+router.post(["/", ""], (req, res) => {
   console.log("📡 POST recibido en /api/esp32");
   console.log("📦 Body:", req.body);
   console.log("📦 Query:", req.query);
