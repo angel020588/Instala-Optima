@@ -1,0 +1,189 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Instala Óptima – Panel de Control</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; background: #f5f5f5; }
+    .card { 
+      border: 1px solid #ddd; 
+      border-radius: 12px; 
+      padding: 20px; 
+      max-width: 420px; 
+      background: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin: 0 auto;
+    }
+    .row { 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      margin: 12px 0; 
+    }
+    button { 
+      padding: 12px 16px; 
+      border-radius: 8px; 
+      border: 1px solid #999; 
+      cursor: pointer;
+      background: white;
+      transition: background 0.2s;
+    }
+    button:hover { background: #f0f0f0; }
+    .pill { 
+      padding: 6px 12px; 
+      border-radius: 999px; 
+      background: #e3f2fd; 
+      color: #1565c0;
+      font-weight: 500;
+    }
+    .grid { 
+      display: grid; 
+      gap: 12px; 
+      grid-template-columns: 1fr 1fr; 
+      margin-top: 16px;
+    }
+    h1 { 
+      text-align: center; 
+      color: #1565c0; 
+      margin-bottom: 24px;
+    }
+    hr { 
+      border: none; 
+      height: 1px; 
+      background: #eee; 
+      margin: 16px 0;
+    }
+    .status-ok { background: #e8f5e8; color: #2e7d32; }
+    .status-error { background: #ffebee; color: #c62828; }
+    .btn-auto { background: #2196f3; color: white; border-color: #2196f3; }
+    .btn-manual { background: #ff9800; color: white; border-color: #ff9800; }
+    .btn-on { background: #4caf50; color: white; border-color: #4caf50; }
+    .btn-off { background: #f44336; color: white; border-color: #f44336; }
+  </style>
+</head>
+<body>
+  <h1>🚰 INSTALA ÓPTIMA – Control de Bomba</h1>
+  
+  <div class="card">
+    <div class="row">
+      <strong>📊 Nivel actual</strong>
+      <span id="nivel" class="pill">--%</span>
+    </div>
+    <div class="row">
+      <strong>⚡ Comando</strong>
+      <span id="comando" class="pill">ESPERAR</span>
+    </div>
+    <div class="row">
+      <strong>🔧 Modo</strong>
+      <span id="modo" class="pill">AUTO</span>
+    </div>
+    <div class="row">
+      <small>🕒 Actualizado</small>
+      <small id="updatedAt">--</small>
+    </div>
+    
+    <hr/>
+    
+    <div class="grid">
+      <button id="btnAuto" class="btn-auto">🤖 Modo AUTO</button>
+      <button id="btnManual" class="btn-manual">🔧 Modo MANUAL</button>
+      <button id="btnOn" class="btn-on">🟢 Encender</button>
+      <button id="btnOff" class="btn-off">🔴 Apagar</button>
+    </div>
+    
+    <div style="margin-top: 16px; text-align: center;">
+      <small style="color: #666;">
+        Panel conectado a: <code>/api/esp32</code>
+      </small>
+    </div>
+  </div>
+
+  <script>
+    const API = "/api/esp32";
+    const elNivel = document.getElementById('nivel');
+    const elComando = document.getElementById('comando');
+    const elModo = document.getElementById('modo');
+    const elUpd = document.getElementById('updatedAt');
+
+    async function refrescar() {
+      try {
+        const r = await fetch(`${API}/estado`);
+        const j = await r.json();
+        
+        if (j.ok) {
+          // Actualizar nivel
+          elNivel.textContent = (j.nivel ?? '--') + '%';
+          elNivel.className = 'pill ' + (j.nivel !== null ? 'status-ok' : '');
+          
+          // Actualizar comando
+          elComando.textContent = j.comando || 'ESPERAR';
+          elComando.className = 'pill ' + (j.comando === 'ENCENDER' ? 'status-ok' : '');
+          
+          // Actualizar modo
+          elModo.textContent = j.modo || 'AUTO';
+          elModo.className = 'pill ' + (j.modo === 'MANUAL' ? 'status-error' : 'status-ok');
+          
+          // Actualizar timestamp
+          elUpd.textContent = j.updatedAt ? new Date(j.updatedAt).toLocaleString() : '--';
+        }
+      } catch (e) {
+        console.error('Error al refrescar:', e);
+        elNivel.textContent = 'Error';
+        elNivel.className = 'pill status-error';
+      }
+    }
+
+    async function setModo(modo) {
+      try {
+        const response = await fetch(`${API}/modo`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ modo })
+        });
+        
+        const result = await response.json();
+        if (result.ok) {
+          console.log(`✅ Modo cambiado a: ${modo}`);
+        } else {
+          console.error('❌ Error:', result.error);
+        }
+        refrescar();
+      } catch (e) {
+        console.error('❌ Error al cambiar modo:', e);
+      }
+    }
+
+    async function setComando(accion) {
+      try {
+        const response = await fetch(`${API}/comando`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ accion })
+        });
+        
+        const result = await response.json();
+        if (result.ok) {
+          console.log(`✅ Comando enviado: ${accion}`);
+        } else {
+          console.error('❌ Error:', result.error);
+        }
+        refrescar();
+      } catch (e) {
+        console.error('❌ Error al enviar comando:', e);
+      }
+    }
+
+    // Event listeners
+    document.getElementById('btnAuto').onclick = () => setModo('AUTO');
+    document.getElementById('btnManual').onclick = () => setModo('MANUAL');
+    document.getElementById('btnOn').onclick = () => setComando('ENCENDER');
+    document.getElementById('btnOff').onclick = () => setComando('APAGAR');
+
+    // Inicializar
+    refrescar();
+    setInterval(refrescar, 5000); // Actualizar cada 5 segundos
+  </script>
+</body>
+</html>
