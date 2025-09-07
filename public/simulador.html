@@ -77,9 +77,9 @@
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ 
-            dispositivo: "simulador-web",
+            dispositivo: "esp32_001",
             porcentaje: Number(porcentaje),
-            estado_bomba: "OFF"
+            estado_bomba: "ENCENDIDA"
           }),
         })
           .then((res) => res.json())
