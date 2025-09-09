@@ -112,7 +112,7 @@ sequelize
       "✅ UltraBase (Hetzner) conectada y sincronizada correctamente.",
     );
     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`✅ Server escuchando en http://0.0.0.0:${PORT}`);
+      console.log(`Servidor corriendo en el puerto ${PORT}`);
       console.log(
         `📡 API ESP32 disponible en: https://instala-optima-ecotisat.replit.app/api/esp32`,
       );
@@ -123,7 +123,7 @@ sequelize
     console.error("❌ Error al conectar UltraBase:", err);
     // Arrancar servidor sin base de datos en caso de error
     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`✅ Servidor escuchando en http://0.0.0.0:${PORT} (sin BD)`);
+      console.log(`Servidor corriendo en el puerto ${PORT} (sin BD)`);
       console.log(
         `📡 API ESP32 disponible en: https://instala-optima-ecotisat.replit.app/api/esp32`,
       );
