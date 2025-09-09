@@ -25,6 +25,9 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
+// ✅ Ruta de salud para los health checks
+app.get("/ping", (req, res) => res.status(200).send("pong"));
+
 // ✅ CONECTAR RUTA ESP32 (usando el router separado)
 const esp32Router = require("./routes/esp32");
 app.use("/api/esp32", esp32Router);
@@ -109,7 +112,7 @@ sequelize
       "✅ UltraBase (Hetzner) conectada y sincronizada correctamente.",
     );
     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`🚀 Servidor UltraBase corriendo en puerto ${PORT}`);
+      console.log(`✅ Server escuchando en http://0.0.0.0:${PORT}`);
       console.log(
         `📡 API ESP32 disponible en: https://instala-optima-ecotisat.replit.app/api/esp32`,
       );
@@ -120,7 +123,7 @@ sequelize
     console.error("❌ Error al conectar UltraBase:", err);
     // Arrancar servidor sin base de datos en caso de error
     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`🚀 Servidor básico corriendo en puerto ${PORT} (sin BD)`);
+      console.log(`✅ Server escuchando en http://0.0.0.0:${PORT} (sin BD)`);
       console.log(
         `📡 API ESP32 disponible en: https://instala-optima-ecotisat.replit.app/api/esp32`,
       );
