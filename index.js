@@ -105,38 +105,39 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 8080;
 
 // ✅ Conexión y arranque del servidor UltraBase
-console.log('🔄 Intentando conectar a la base de datos...');
-console.log('🔍 Variables de entorno disponibles:', {
-  DATABASE_URL: process.env.DATABASE_URL ? '✅ Definida' : '❌ No definida',
-  PGUSER: process.env.PGUSER ? '✅ Definida' : '❌ No definida',
-  PGHOST: process.env.PGHOST ? '✅ Definida' : '❌ No definida'
+console.log('🔄 Conectando a UltraBase...');
+console.log('🔍 Variables de entorno:', {
+  DATABASE_URL: process.env.DATABASE_URL ? '✅ Configurada' : '❌ Faltante',
+  API_KEY_ULTRABASE: process.env.API_KEY_ULTRABASE ? '✅ Configurada' : '❌ Faltante',
+  API_KEY_HETZNER: process.env.API_KEY_HETZNER ? '✅ Configurada' : '❌ Faltante'
 });
 
 sequelize
   .authenticate()
   .then(() => {
-    console.log('✅ Conexión a base de datos establecida correctamente');
+    console.log('✅ UltraBase conectada correctamente');
     return sequelize.sync({ alter: true });
   })
   .then(() => {
-    console.log("✅ Base de datos sincronizada correctamente");
+    console.log("✅ UltraBase sincronizada correctamente");
     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Servidor corriendo en el puerto ${PORT}`);
-      console.log(`📡 API ESP32 disponible en: /api/esp32`);
-      console.log(`📊 Panel web disponible`);
-      console.log(`✅ Health check disponible en: /ping`);
+      console.log(`🚀 Instala Óptima corriendo en puerto ${PORT}`);
+      console.log(`📡 API ESP32: /api/esp32`);
+      console.log(`📊 Panel Web: /`);
+      console.log(`💾 UltraBase: Operativa`);
+      console.log(`✅ Health Check: /ping`);
     });
   })
   .catch((err) => {
-    console.error("❌ Error al conectar/sincronizar base de datos:", err.message);
-    console.log("🔄 Iniciando servidor sin base de datos...");
+    console.error("❌ Error UltraBase:", err.message);
+    console.log("🔄 Iniciando en modo seguro...");
     
     // Arrancar servidor sin base de datos en caso de error
     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Servidor corriendo en el puerto ${PORT} (MODO SEGURO - sin BD)`);
-      console.log(`📡 API ESP32 disponible en: /api/esp32`);
-      console.log(`📊 Panel web disponible`);
-      console.log(`✅ Health check disponible en: /ping`);
-      console.log(`⚠️  Funcionalidades de BD deshabilitadas temporalmente`);
+      console.log(`🚀 Instala Óptima corriendo en puerto ${PORT} (MODO SEGURO)`);
+      console.log(`📡 API ESP32: /api/esp32`);
+      console.log(`📊 Panel Web: /`);
+      console.log(`⚠️  UltraBase: Desconectada`);
+      console.log(`✅ Health Check: /ping`);
     });
   });
