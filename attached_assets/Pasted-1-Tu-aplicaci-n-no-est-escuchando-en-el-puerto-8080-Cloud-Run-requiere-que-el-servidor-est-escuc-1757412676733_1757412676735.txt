@@ -1,0 +1,76 @@
+1. Tu aplicación no está escuchando en el puerto 8080
+
+Cloud Run requiere que el servidor esté escuchando en el puerto process.env.PORT o, por defecto, el 8080.
+
+Revisa tu index.js o server.js y asegúrate que esté así:
+const express = require('express');
+const app = express();
+
+// Puerto obligatorio: Cloud Run espera process.env.PORT o 8080
+const PORT = process.env.PORT || 8080;
+
+app.get('/', (req, res) => {
+  res.send('Instala Óptima funcionando desde Cloud Run ✅');
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor iniciado en el puerto ${PORT}`);
+});
+
+
+⚠️ Si tu código tenía app.listen(3000) o cualquier otro, Cloud Run fallará.
+
+🔴 2. La app tarda más de 4 segundos en iniciar (timeout)
+
+Cloud Run por defecto da poco tiempo para que el contenedor responda. Puedes aumentar el tiempo de Startup Timeout.
+
+🔧 Cómo aumentar el timeout:
+
+Ve a Cloud Run
+ > instala-optima
+
+Clic en Editar y desplegar nueva revisión
+
+Da clic en "Mostrar configuración completa"
+
+En la sección "Contenedor" busca "Tiempo de espera de inicio (Startup timeout)"
+
+Auméntalo a 60 segundos para darte margen de prueba
+
+🔴 3. El contenedor no lanza tu app (CMD mal definido)
+
+Si estás usando Docker o Cloud Build, asegúrate que el comando de arranque esté bien:
+
+En Dockerfile:
+CMD ["node", "index.js"]
+
+O si usas package.json:
+"scripts": {
+  "start": "node index.js"
+}
+
+
+Cloud Run usará npm start por defecto si no defines un CMD.
+
+🔴 4. Falló la conexión a la base de datos y el servidor nunca arrancó
+
+Si tu app depende de conectar a PostgreSQL para iniciar, debe tener control de errores:
+
+sequelize.authenticate()
+  .then(() => {
+    console.log('✅ Conexión a BD exitosa');
+    app.listen(PORT, () => console.log(`🚀 Server on ${PORT}`));
+  })
+  .catch(err => {
+    console.error('❌ Error al conectar a la base de datos:', err);
+    // IMPORTANTE: aún así lanzar el server o Cloud Run fallará
+    app.listen(PORT, () => console.log(`⚠️ Server on ${PORT} (sin BD)`));
+  });
+
+✅ RECAPITULANDO: Qué debes verificar
+Revisión	Acción
+PORT=8080	Usa `process.env.PORT
+Timeout	Aumenta a 60s en configuración de Cloud Run
+Base de datos	Maneja errores de conexión con .catch() y aún así levanta el servidor
+CMD	Revisa que sea node index.js (o npm start)
+Dockerfile (si usas)	Incluye EXPOSE 8080 y CMD ["node", "index.js"]
