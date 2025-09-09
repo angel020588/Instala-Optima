@@ -99,7 +99,7 @@ app.use((req, res) => {
 });
 
 // ✅ Configuración del puerto
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 // ✅ Conexión y arranque del servidor UltraBase
 sequelize
