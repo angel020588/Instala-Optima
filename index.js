@@ -105,28 +105,38 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 8080;
 
 // ✅ Conexión y arranque del servidor UltraBase
+console.log('🔄 Intentando conectar a la base de datos...');
+console.log('🔍 Variables de entorno disponibles:', {
+  DATABASE_URL: process.env.DATABASE_URL ? '✅ Definida' : '❌ No definida',
+  PGUSER: process.env.PGUSER ? '✅ Definida' : '❌ No definida',
+  PGHOST: process.env.PGHOST ? '✅ Definida' : '❌ No definida'
+});
+
 sequelize
-  .sync({ alter: true })
+  .authenticate()
   .then(() => {
-    console.log(
-      "✅ UltraBase (Hetzner) conectada y sincronizada correctamente.",
-    );
+    console.log('✅ Conexión a base de datos establecida correctamente');
+    return sequelize.sync({ alter: true });
+  })
+  .then(() => {
+    console.log("✅ Base de datos sincronizada correctamente");
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`Servidor corriendo en el puerto ${PORT}`);
-      console.log(
-        `📡 API ESP32 disponible en: https://instala-optima-ecotisat.replit.app/api/esp32`,
-      );
-      console.log(`📊 Panel web: https://instala-optima-ecotisat.replit.app`);
+      console.log(`📡 API ESP32 disponible en: /api/esp32`);
+      console.log(`📊 Panel web disponible`);
+      console.log(`✅ Health check disponible en: /ping`);
     });
   })
   .catch((err) => {
-    console.error("❌ Error al conectar UltraBase:", err);
+    console.error("❌ Error al conectar/sincronizar base de datos:", err.message);
+    console.log("🔄 Iniciando servidor sin base de datos...");
+    
     // Arrancar servidor sin base de datos en caso de error
     app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Servidor corriendo en el puerto ${PORT} (sin BD)`);
-      console.log(
-        `📡 API ESP32 disponible en: https://instala-optima-ecotisat.replit.app/api/esp32`,
-      );
-      console.log(`📊 Panel web: https://instala-optima-ecotisat.replit.app`);
+      console.log(`Servidor corriendo en el puerto ${PORT} (MODO SEGURO - sin BD)`);
+      console.log(`📡 API ESP32 disponible en: /api/esp32`);
+      console.log(`📊 Panel web disponible`);
+      console.log(`✅ Health check disponible en: /ping`);
+      console.log(`⚠️  Funcionalidades de BD deshabilitadas temporalmente`);
     });
   });
